@@ -1,0 +1,17 @@
+<!-- MathJax: rendering di formule e matrici LaTeX nelle pagine della doc.
+     just-the-docs include questo file dentro <head>. Si usa MathJax 2.7:
+     - i blocchi $$...$$ vengono convertiti da kramdown in <script type="math/tex">
+       e resi dal preprocessore math/tex;
+     - l'inline $...$ (che kramdown lascia come testo) viene reso da tex2jax. -->
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  tex2jax: {
+    inlineMath: [['$', '$'], ['\\(', '\\)']],
+    displayMath: [['$$', '$$'], ['\\[', '\\]']],
+    processEscapes: true
+  }
+});
+</script>
+<script type="text/javascript" async
+  src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
