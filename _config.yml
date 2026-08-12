@@ -1,5 +1,5 @@
-title: feagent — Documentazione
-description: feagent — libreria FEM per travi 3D (Euler-Bernoulli/Timoshenko): sezioni variabili, termica, precompressione, analisi modale, casi di studio. Documentazione pubblica.
+title: "feagent — Documentazione"
+description: "feagent — libreria FEM per travi 3D (Euler-Bernoulli/Timoshenko): sezioni variabili, termica, precompressione, analisi modale, casi di studio. Documentazione pubblica."
 remote_theme: just-the-docs/just-the-docs
 baseurl: "/feagent-docs"
 url: "https://domenicogaudioso.github.io"
