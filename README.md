@@ -21,7 +21,7 @@ Questa repository contiene **solo la documentazione** (sorgenti Markdown, immagi
 ## Aggiornamento
 
 I sorgenti rispecchiano la cartella `docs/` della repository privata `feagent`
-(branch di lavoro `feagent`). La sincronizzazione e' automatica: dalla root
+(branch `main`). La sincronizzazione e' automatica: dalla root
 della repository privata
 
 ```bash
