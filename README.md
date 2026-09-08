@@ -20,4 +20,14 @@ Questa repository contiene **solo la documentazione** (sorgenti Markdown, immagi
 
 ## Aggiornamento
 
-I sorgenti rispecchiano la cartella `docs/` della repository privata `feagent` (branch `main`). Per aggiornare: copiare i file da `docs/` qui, adattare i link `*.md` → `*.html` e ricontrollare che non ci siano dati di commesse reali.
+I sorgenti rispecchiano la cartella `docs/` della repository privata `feagent`
+(branch di lavoro `feagent`). La sincronizzazione e' automatica: dalla root
+della repository privata
+
+```bash
+python scripts/sync_public_docs.py --commit -m "docs: ..."
+```
+
+copia le pagine riscrivendo i link `*.md` in `*.html`, aggiorna immagini e
+allegati, rimuove i file non piu' presenti nella sorgente e si blocca se una
+pagina contiene dati di commesse reali o nomi di progettisti.
