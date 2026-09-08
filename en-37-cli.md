@@ -50,7 +50,10 @@ it goes from installation to a solved model, sheet by sheet. This page is the
 | | `plot` | interactive HTML (Plotly) or PNG (Matplotlib) figures of model, loads, deformed shape, diagrams, reactions |
 | | `report` | Word calculation report (`.docx`) |
 | | `export` | export to OpenSees, SAP2000, MIDAS, Robot, Straus7 |
-| Integration | `mcp` | MCP server for AI agents, see [38 - MCP Server](en-38-mcp-server.html) |
+| AI connector | `connect` | configure an AI client (Claude Desktop/Code, ChatGPT, Codex, Gemini, Copilot, Cursor, ...) in one command |
+| | `mcp` | MCP server for AI agents, stdio or HTTP |
+| | `serve` | REST/OpenAPI server for Custom GPT Actions, Open WebUI, n8n |
+| | `tools` | tool definitions for function calling (OpenAI, Anthropic, Gemini, OpenAPI) |
 
 ```bash
 feagent                 # logo + command list
@@ -414,13 +417,35 @@ Generates a script that completes command names and options for `feagent`
 and `fg` (bash and zsh through `compgen`; PowerShell through
 `Register-ArgumentCompleter`). Reload the shell afterwards.
 
-## `logo`, `version`, `mcp`
+## AI connector - `connect`, `mcp`, `serve`, `tools`
+
+```bash
+feagent connect                                   # clients that can be configured, and where
+feagent connect claude-desktop --write            # register feagent in Claude Desktop (MCP, stdio)
+feagent connect cursor --project --url http://127.0.0.1:8765/mcp --api-key SECRET
+feagent connect chatgpt                           # printed procedures for ChatGPT (connector / Custom GPT Actions)
+feagent mcp                                       # MCP server on stdio (started by the client)
+feagent mcp --transport http --port 8765 --root C:/models --api-key SECRET --allow-any-host
+feagent serve --port 8766 --root C:/models --api-key SECRET    # REST + /openapi.json
+feagent tools                                     # table of the 17 tools
+feagent tools --format openai > tools.json        # or anthropic | gemini | json | openapi
+```
+
+| Command | Options |
+|---|---|
+| `connect [client]` | `--write` (merge into the client config with `.bak` backup), `--project` (project-level file), `--url` / `--api-key` (point to a running HTTP server), `--command python|feagent`, `--root`, `--rest-url`, `--json` |
+| `mcp` | `--transport stdio|http|sse`, `--host`, `--port` (8765), `--root` (sandbox folder), `--api-key` (or `FEAGENT_API_KEY`), `--allow-any-host`, `--stateless` |
+| `serve` | `--host`, `--port` (8766), `--root` (default: current folder), `--api-key`, `--cors ORIGIN`, `--no-cors`, `--verbose` |
+| `tools` | `--format table|json|openai|anthropic|gemini|openapi`, `--url` and `--secured` for the OpenAPI document |
+
+The whole picture (which client uses which channel, the tools, the JSON
+model spec, security) is in [38 - AI connector](en-38-mcp-server.html).
+
+## `logo`, `version`
 
 `feagent logo` plays the animated logo (`--still` static frame, `--loop`
 until Ctrl-C, `--image` for the truecolor pixel-art logo, `--image-variant
 ibeam` for the historical one). `feagent version` prints the version.
-`feagent mcp` starts the MCP server on stdio for Claude Code, Codex and other
-agents: see [38 - MCP Server](en-38-mcp-server.html).
 
 <div align="center">
   <img src="images/cli_logo.png" alt="feagent logo --still" width="520">

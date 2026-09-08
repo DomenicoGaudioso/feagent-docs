@@ -49,7 +49,8 @@ feagent plot model.xlsx --what deformed --open
 
 → [CLI tutorial (English)](en-41-cli-excel-tutorial.html) ·
 [Tutorial CLI (italiano)](it-41-cli-excel-tutorial.html) ·
-[CLI reference](en-37-cli.html)
+[CLI reference](en-37-cli.html) ·
+[AI connector](en-38-mcp-server.html)
 
 ## Quick start from Python
 
@@ -86,7 +87,8 @@ streamlit run app.py
 - **Load cases & combinations** with multiplicative coefficients, EN 1990 builders, **envelopes** with governing combination
 - **Modal**, **buckling**, response-spectrum, moving-load and time-history analyses (cross-validated against independent solvers and published benchmarks)
 - **Excel I/O** with validation (`feagent check`), **HDF5** results, **export** to OpenSees / SAP2000 / MIDAS / Robot / Straus7
-- **CLI** (`feagent`), **Plotly** 3D plots, **Word** reports, **Streamlit web UI**, **MCP server** for AI agents
+- **CLI** (`feagent`), **Plotly** 3D plots, **Word** reports, **Streamlit web UI**
+- **AI connector**: MCP server (Claude, ChatGPT, Codex, Gemini, Copilot, Cursor, ...), REST/OpenAPI server and function-calling definitions on the same 17 tools — `feagent connect <client> --write` ([guide](en-38-mcp-server.html))
 
 ## License
 

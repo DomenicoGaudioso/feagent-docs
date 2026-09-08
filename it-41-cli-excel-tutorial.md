@@ -435,7 +435,18 @@ per un solutore esterno con gli stessi assi locali e rilasci.
 - **Completamento**: `feagent completion powershell >> $PROFILE`
   (o `bash` / `zsh`) per completare comandi e opzioni con <kbd>Tab</kbd>.
 
-## 13. Risoluzione dei problemi
+## 13. Lasciar fare a un assistente AI
+
+Tutto quanto sopra e' disponibile anche agli assistenti AI tramite il
+[connettore AI](it-38-mcp-server.html): `feagent connect claude-desktop --write`
+(o `claude-code`, `codex`, `gemini`, `vscode`, `cursor`, ...) registra feagent
+come server MCP, e da li' l'assistente puo' validare il tuo workbook,
+costruirne uno nuovo da una descrizione (`build_model`), risolvere le
+combinazioni con gli inviluppi e mostrare la deformata come immagine. Per
+ChatGPT e le altre piattaforme OpenAPI usa `feagent serve` e
+`feagent connect chatgpt`.
+
+## 14. Risoluzione dei problemi
 
 | Sintomo | Causa e rimedio |
 |---|---|
