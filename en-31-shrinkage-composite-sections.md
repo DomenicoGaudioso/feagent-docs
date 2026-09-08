@@ -12,7 +12,7 @@ Concrete shrinkage is an imposed strain that, in composite sections, produces
 **stress states even without external loads**. Standard theory *splits* the
 shrinkage effect into two distinct contributions — a **primary (isostatic)**
 part and a **secondary (hyperstatic)** part — that must be treated separately.
-This page explains the theory and shows how to model it in beamfeapy through
+This page explains the theory and shows how to model it in feagent through
 imposed strains (thermal analogy).
 
 > References: EN 1992-1-1 §3.1.4 (shrinkage and creep), EN 1994-2 §5.4.2.2
@@ -139,9 +139,9 @@ with applying it over the whole beam.
 
 ---
 
-## 6. Modelling in beamfeapy
+## 6. Modelling in feagent
 
-beamfeapy has no explicit "composite" material: the composite beam is
+feagent has no explicit "composite" material: the composite beam is
 represented by an element with the $EA$ and $EI$ of the **homogenised section**
 (using $n_L$ for shrinkage/creep). Shrinkage is introduced as an **imposed
 initial strain** through [`add_thermal_load`](en-04-loads.html), via the thermal
@@ -180,11 +180,11 @@ The practical decomposition is:
 ## 7. Worked example: three-span twin-girder bridge
 
 The script
-[`scripts/shrinkage_composite_decomposition.py`](https://github.com/DomenicoGaudioso/beamfeapy/blob/main/scripts/shrinkage_composite_decomposition.py)
+[`scripts/shrinkage_composite_decomposition.py`](https://github.com/DomenicoGaudioso/feagent/blob/main/scripts/shrinkage_composite_decomposition.py)
 models the longitudinal girder of the
 [three-span twin-girder bridge](en-32-twin-girder-bridge.html) (50 + 60 + 50 m).
 The deck is made of **different structural segments**, the sections defined in
-[`scripts/_bridge_sections.py`](https://github.com/DomenicoGaudioso/beamfeapy/blob/main/scripts/_bridge_sections.py):
+[`scripts/_bridge_sections.py`](https://github.com/DomenicoGaudioso/feagent/blob/main/scripts/_bridge_sections.py):
 
 | Segment | Section | $I_{\text{vert}}$ [m⁴] | $e$ [m] | $M_{\text{pri}}$ [kNm] | State |
 |---------|---------|------------------------|---------|------------------------|-------|
@@ -271,7 +271,7 @@ Note that:
 ### Core workflow
 
 ```python
-from beamfeapy import Material, Model, Section, postprocess
+from feagent import Material, Model, Section, postprocess
 from scripts._bridge_sections import SEC_END, SEC_MID, SEC_SUPPORT
 
 steel = Material(E=210e9, nu=0.30, alpha=1.0)   # alpha=1 -> dT = strain

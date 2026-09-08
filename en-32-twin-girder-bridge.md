@@ -28,7 +28,7 @@ only two girders and with **variable structural segments** along the deck.
 
 The deck does not have a constant section: as in real bridges several segments
 are distinguished, defined in
-[`scripts/_bridge_sections.py`](https://github.com/DomenicoGaudioso/beamfeapy/blob/main/scripts/_bridge_sections.py)
+[`scripts/_bridge_sections.py`](https://github.com/DomenicoGaudioso/feagent/blob/main/scripts/_bridge_sections.py)
 and computed by homogenisation (effective concrete modulus, $n_L$):
 
 | Segment | Location | $A$ [m²] | $I_{\text{vert}}$ [m⁴] | State |
@@ -86,7 +86,7 @@ from scripts.generate_twin_girder_bridge_word_report import (
     build_twin_girder_model,
     solve_cases,
 )
-from beamfeapy.reporting import create_word_report
+from feagent.reporting import create_word_report
 
 model, groups = build_twin_girder_model()
 results, combinations = solve_cases(model)

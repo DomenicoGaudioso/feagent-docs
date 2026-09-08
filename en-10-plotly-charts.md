@@ -7,12 +7,12 @@ nav_order: 10
 
 # 10 - Plotly Charts
 
-beamfeapy provides 6 interactive visualization functions based on Plotly.
+feagent provides 6 interactive visualization functions based on Plotly.
 
 ## Installation
 
 ```bash
-pip install beamfeapy[plot]
+pip install feagent[plot]
 ```
 
 ## Available functions
@@ -22,7 +22,7 @@ pip install beamfeapy[plot]
 Model structure (nodes, elements, supports):
 
 ```python
-from beamfeapy.plotting import plot_model
+from feagent.plotting import plot_model
 fig = plot_model(m)
 fig.show()
 ```
@@ -32,7 +32,7 @@ fig.show()
 Structure + applied loads. Filterable by load case:
 
 ```python
-from beamfeapy.plotting import plot_loads
+from feagent.plotting import plot_loads
 plot_loads(m, case="G").show()    # only case G loads
 plot_loads(m, case="Q").show()    # only case Q
 plot_loads(m).show()              # all loads
@@ -47,7 +47,7 @@ plot_loads(m).show()              # all loads
 Internal force diagram along the structure:
 
 ```python
-from beamfeapy.plotting import plot_diagram
+from feagent.plotting import plot_diagram
 for comp in ["N", "Vy", "Vz", "T", "My", "Mz"]:
     plot_diagram(res, comp).show()
 ```
@@ -63,7 +63,7 @@ The diagram is drawn as a **bicolor filled area by sign** (with transparency): f
 Deformed configuration with scale factor:
 
 ```python
-from beamfeapy.plotting import plot_deformed
+from feagent.plotting import plot_deformed
 plot_deformed(res, scale=200).show()
 ```
 
@@ -74,7 +74,7 @@ plot_deformed(res, scale=200).show()
 Support reactions (forces and moments) at constraints:
 
 ```python
-from beamfeapy.plotting import plot_reactions
+from feagent.plotting import plot_reactions
 plot_reactions(res).show()
 ```
 
@@ -85,7 +85,7 @@ plot_reactions(res).show()
 The 6 diagrams (N, Vy, Vz, T, My, Mz) for a single element:
 
 ```python
-from beamfeapy.plotting import plot_internal_forces
+from feagent.plotting import plot_internal_forces
 plot_internal_forces(res, elem_id=1).show()
 ```
 
@@ -100,8 +100,8 @@ fig.write_image("diagram_Mz.png", width=1200, height=600)  # requires kaleido
 ## Complete portal frame example
 
 ```python
-from beamfeapy import Material, Model, Section
-from beamfeapy.plotting import plot_loads, plot_diagram, plot_deformed, plot_reactions
+from feagent import Material, Model, Section
+from feagent.plotting import plot_loads, plot_diagram, plot_deformed, plot_reactions
 
 mat = Material(210e9, 0.3)
 col = Section(A=0.16, Iy=2.13e-3, Iz=2.13e-3, J=3.6e-3)

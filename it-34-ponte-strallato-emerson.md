@@ -67,7 +67,7 @@ La massa propria dei cavi è inclusa e gli stralli sono linearizzati attorno
 all'equilibrio. Le frequenze verticali calcolate sono confrontate con quelle
 **identificate** sperimentalmente (NExT/ERA) e con il **modello FE benchmark**:
 
-| Modo verticale | beamfeapy | identificato | FE benchmark |
+| Modo verticale | feagent | identificato | FE benchmark |
 |----------------|----------:|-------------:|-------------:|
 | 1° | **0.319 Hz** | 0.323 Hz | 0.290 Hz |
 | 2° | 0.870 Hz | 0.414 Hz | 0.370 Hz |
@@ -83,7 +83,7 @@ il modello a spina, più rigido, non li riproduce tutti.
 **Forme di vibrare in 3D.** Rilasciando i gradi di libertà fuori-piano il modello
 diventa 3D e fornisce anche i modi laterale e torsionale:
 
-| Modo 3D | beamfeapy | riferimento |
+| Modo 3D | feagent | riferimento |
 |---------|----------:|------------:|
 | 1° verticale | 0.319 Hz | 0.323 Hz (identificato) |
 | 1° laterale | 0.515 Hz | 0.649 Hz (benchmark, lat-tors.) |

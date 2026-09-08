@@ -10,7 +10,7 @@ nav_order: 2
 Il primo modello: una mensola con carico in punta.
 
 ```python
-from beamfeapy import Model, Material, Section
+from feagent import Model, Material, Section
 
 # 1. Crea il modello
 m = Model()

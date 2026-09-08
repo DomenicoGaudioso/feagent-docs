@@ -7,7 +7,7 @@ nav_order: 21
 
 # 21 - Assemblaggio della matrice di rigidezza
 
-Questa pagina spiega come beamfeapy costruisce la matrice di rigidezza, dal singolo
+Questa pagina spiega come feagent costruisce la matrice di rigidezza, dal singolo
 elemento fino al sistema globale, e come applica i vincoli per risolvere.
 
 Il percorso completo è:
@@ -485,7 +485,7 @@ quindi assegnare rigidezze traslazionali e rotazionali indipendenti.
 
 {: .warning }
 **Non ancora implementati.** Questa sezione descrive la formulazione teorica
-prevista per `beamfeapy`. L'API (`Model.add_equal_dof`, `Model.add_rigid_link`)
+prevista per `feagent`. L'API (`Model.add_equal_dof`, `Model.add_rigid_link`)
 è una proposta e potrebbe cambiare. Allo stato attuale i vincoli disponibili
 sono i vincoli rigidi (`fix`), gli spostamenti imposti e i vincoli elastici
 (`add_elastic_support`).
@@ -557,7 +557,7 @@ può essere imposto in tre modi:
 | **Penalità** | aggiunge $\alpha\,\mathbf{C}^{\mathsf T}\mathbf{C}$ a $\mathbf{K}$ | semplice; vincolo approssimato, sensibile ad $\alpha$ |
 | **Moltiplicatori di Lagrange** | sistema aumentato $\begin{bmatrix}\mathbf{K} & \mathbf{C}^{\mathsf T}\\ \mathbf{C} & \mathbf{0}\end{bmatrix}\begin{bmatrix}\mathbf{U}\\ \boldsymbol{\lambda}\end{bmatrix} = \begin{bmatrix}\mathbf{F}\\ \mathbf{Q}\end{bmatrix}$ | esatto; aumenta la dimensione e perde la definita positività |
 
-L'approccio previsto per `beamfeapy` è l'**eliminazione master-slave**, coerente
+L'approccio previsto per `feagent` è l'**eliminazione master-slave**, coerente
 con la condensazione statica già usata per i rilasci (§1).
 
 {: .note }
@@ -576,7 +576,7 @@ m.add_rigid_link(master=3, slave=7)
 
 ```python
 import numpy as np
-from beamfeapy import Material, Model, Section
+from feagent import Material, Model, Section
 
 m = Model()
 m.add_node(1, 0, 0, 0); m.add_node(2, 4, 0, 0); m.add_node(3, 8, 0, 0)

@@ -10,7 +10,7 @@ nav_order: 2
 Your first model: a cantilever beam with a tip load.
 
 ```python
-from beamfeapy import Model, Material, Section
+from feagent import Model, Material, Section
 
 # 1. Create the model
 m = Model()

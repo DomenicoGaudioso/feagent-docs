@@ -169,7 +169,7 @@ in mezzeria. La validazione si appoggia alla teoria classica del cavo parabolico
 **Confronto con IBDAS (PS0005, fine costruzione).** Le forze del modello sono
 dello stesso ordine ma ~12–14 % più alte:
 
-| Grandezza (per piano di cavo) | beamfeapy | IBDAS | scarto |
+| Grandezza (per piano di cavo) | feagent | IBDAS | scarto |
 |-------------------------------|----------:|------:|------:|
 | Forza nel cavo in mezzeria | 1.334 MN | 1.170 MN | +14 % |
 | Forza nel cavo alla sella | 1.416 MN | ≈1.260 MN | +12 % |
@@ -181,7 +181,7 @@ wL²/8f entro lo 0,2 %).
 
 Il grafico ufficiale della forza nel cavo (modello ADINA/IBDAS, PS0005) mostra
 **N ≈ 1.170 MN in mezzeria** che cresce fino a **~1.260 MN alle torri**, con il
-caratteristico picco alla sella: lo stesso andamento del modello beamfeapy (1.334
+caratteristico picco alla sella: lo stesso andamento del modello feagent (1.334
 ÷ 1.416 MN), traslato verso l'alto per via del carico permanente più alto.
 
 ![Forza nel cavo principale — modello ufficiale ADINA/IBDAS (da PS0005)](images/messina_ibdas_cableforce.png)
@@ -215,7 +215,7 @@ rigidezza geometrica del cavo, proporzionale al tiro, fornisce la rigidezza
 trasversale). La massa deriva dai carichi permanenti reali. I primi quattro modi
 globali sono confrontati con i parametri modali IBDAS/ADINA di PS0005 (par. 7.2).
 
-| # | Tipo di modo | IBDAS | ADINA | beamfeapy | T [s] | scarto |
+| # | Tipo di modo | IBDAS | ADINA | feagent | T [s] | scarto |
 |---|--------------|------:|------:|----------:|------:|------:|
 | 1 | trasversale (laterale) | 0,0309 | 0,0313 | 0,0322 | 31,0 | +4 % |
 | 2 | verticale antisimmetrico | 0,0569 | 0,0585 | 0,0598 | 16,7 | +5 % |

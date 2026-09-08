@@ -45,7 +45,7 @@ Questo evita sia l'allocazione della matrice densa `ndof × ndof` sia lo scatter
 
 ## Ottimizzazioni del solutore
 
-beamfeapy adotta diverse tecniche per avvicinarsi alla velocità dei solutori
+feagent adotta diverse tecniche per avvicinarsi alla velocità dei solutori
 compilati (vedi [29 - Prestazioni e Benchmark](it-29-performance.html)):
 
 - **Forme chiuse per i carichi distribuiti**: le forze nodali equivalenti di
@@ -61,7 +61,7 @@ compilati (vedi [29 - Prestazioni e Benchmark](it-29-performance.html)):
   results = m.solve_many({"SLU": {"G": 1.35, "Q": 1.5}, "SLE": {"G": 1, "Q": 1}})
   ```
 
-- **pypardiso opzionale** (MKL Pardiso): se installato (`pip install beamfeapy[fast]`)
+- **pypardiso opzionale** (MKL Pardiso): se installato (`pip install feagent[fast]`)
   viene usato automaticamente come solutore sparso al posto di SuperLU.
 
 ## Analisi modale e di buckling sparse

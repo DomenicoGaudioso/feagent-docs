@@ -7,7 +7,7 @@ nav_order: 28
 
 # 28 - Web UI (Streamlit)
 
-`beamfeapy` ships with a **web user interface** built with
+`feagent` ships with a **web user interface** built with
 [Streamlit](https://streamlit.io/) (`app.py` in the repository root). It lets you
 build, analyze and visualize 3D frame models **without writing code**.
 
@@ -23,7 +23,7 @@ The workflow is linear:
 From the repository root:
 
 ```bash
-pip install beamfeapy streamlit plotly openpyxl
+pip install feagent streamlit plotly openpyxl
 streamlit run app.py
 ```
 
@@ -32,7 +32,7 @@ The browser opens automatically at `http://localhost:8501`.
 {: .note }
 **Demo mode** — to explore the app with a ready-made model (a 3D frame with a
 static and a modal analysis already computed) start it with the environment
-variable `BEAMFEAPY_DEMO=1` **or** open the URL with the `?demo=1` query
+variable `FEAGENT_DEMO=1` **or** open the URL with the `?demo=1` query
 parameter (e.g. `http://localhost:8501/?demo=1`). All the screenshots on this
 page use demo mode.
 

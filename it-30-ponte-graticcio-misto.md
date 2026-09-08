@@ -14,7 +14,7 @@ un ponte reale studiato con modello a graticcio.
 Il riferimento scelto e' il paper IABSE-JSCE 2020 di **Lu, Barker e Judd** sul
 ponte **Evanston I-80**, in Wyoming. La geometria e lo schema a graticcio sono
 ricavati dal caso pubblicato. I truck load del paper non vengono simulati qui,
-perche' beamfeapy non espone ancora una API per carichi mobili.
+perche' feagent non espone ancora una API per carichi mobili.
 
 Fonte: [Experimental and Numerical Studies on Post-Facture Behavior of Simple-Span Steel Girder Bridges](https://iabse-bd.org/2020/pdf/50.pdf)
 
@@ -93,7 +93,7 @@ from scripts.generate_composite_bridge_word_report import (
     build_iabse_evanston_grillage_model,
     solve_bridge_cases,
 )
-from beamfeapy.reporting import create_word_report
+from feagent.reporting import create_word_report
 
 model, groups = build_iabse_evanston_grillage_model()
 results, combinations = solve_bridge_cases(model)

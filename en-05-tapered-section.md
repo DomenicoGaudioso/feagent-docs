@@ -12,7 +12,7 @@ The tapered element uses the **force-based** formulation (Friedman & Kosmatka 19
 ## VariableSection
 
 ```python
-from beamfeapy import VariableSection
+from feagent import VariableSection
 
 # Rectangular section with variable height
 vs = VariableSection.rectangular(b=0.30, h=lambda xi: 0.70*(1-0.6*xi))

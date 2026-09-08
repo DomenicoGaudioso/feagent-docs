@@ -8,7 +8,7 @@ nav_order: 8
 
 # 33 - Cables: cable-stayed and suspension bridges
 
-beamfeapy provides **tension-only, large-displacement cable elements**, suitable
+feagent provides **tension-only, large-displacement cable elements**, suitable
 for **stay cables** (cable-stayed bridges) and **main cables** (suspension
 bridges). Cables make the problem **nonlinear** (stiffness depends on the
 tension and on the configuration) and are solved with `solve_nonlinear`
@@ -83,7 +83,7 @@ with a minimal residual material stiffness to avoid singularity.
 ## 2. Ernst equivalent modulus
 
 An inclined stay modelled with **a single element** has an apparent axial
-stiffness reduced by its self-weight sag. beamfeapy uses the Ernst modulus
+stiffness reduced by its self-weight sag. feagent uses the Ernst modulus
 (`ernst=True`):
 
 $$
@@ -102,8 +102,8 @@ nodes; the stays use the Ernst modulus.
 ![Cable-stayed bridge: layout and deformed shape](images/ex33_ponte_strallato.png)
 
 **Validations** (script
-[`scripts/generate_cable_bridges_figures.py`](https://github.com/DomenicoGaudioso/beamfeapy/blob/main/scripts/generate_cable_bridges_figures.py),
-and example [`usage_examples/37_ponte_strallato.py`](https://github.com/DomenicoGaudioso/beamfeapy/blob/main/usage_examples/37_ponte_strallato.py)):
+[`scripts/generate_cable_bridges_figures.py`](https://github.com/DomenicoGaudioso/feagent/blob/main/scripts/generate_cable_bridges_figures.py),
+and example [`usage_examples/37_ponte_strallato.py`](https://github.com/DomenicoGaudioso/feagent/blob/main/usage_examples/37_ponte_strallato.py)):
 
 - **single stay**: node equilibrium gives $T = P/\sin\theta$; the FEM reproduces
   it **exactly** (0.00 % error);
@@ -113,7 +113,7 @@ and example [`usage_examples/37_ponte_strallato.py`](https://github.com/Domenico
 
 ```python
 import math
-from beamfeapy import Material, Model, Section
+from feagent import Material, Model, Section
 
 m = Model()
 m.add_node(1, 0.0, 55.0, 0.0)     # pylon top
@@ -146,7 +146,7 @@ The main-cable tension ranges from ~52.8 MN (midspan) to ~56.7 MN (tower tops),
 where $T_{\max} = \sqrt{H^2 + V^2}$.
 
 ```python
-from beamfeapy import Material, Model, Section
+from feagent import Material, Model, Section
 
 m = Model()
 # main cable: one elastic CATENARY element per panel (exact self-weight)

@@ -28,7 +28,7 @@ due sole travi e con **conci strutturali variabili** lungo l'impalcato.
 
 L'impalcato non ha sezione costante: come nei ponti reali si distinguono più
 conci, definiti in
-[`scripts/_bridge_sections.py`](https://github.com/DomenicoGaudioso/beamfeapy/blob/main/scripts/_bridge_sections.py)
+[`scripts/_bridge_sections.py`](https://github.com/DomenicoGaudioso/feagent/blob/main/scripts/_bridge_sections.py)
 e calcolati per omogeneizzazione (modulo efficace del cls, $n_L$):
 
 | Concio | Posizione | $A$ [m²] | $I_{\text{vert}}$ [m⁴] | Stato |
@@ -86,7 +86,7 @@ from scripts.generate_twin_girder_bridge_word_report import (
     build_twin_girder_model,
     solve_cases,
 )
-from beamfeapy.reporting import create_word_report
+from feagent.reporting import create_word_report
 
 model, groups = build_twin_girder_model()
 results, combinations = solve_cases(model)

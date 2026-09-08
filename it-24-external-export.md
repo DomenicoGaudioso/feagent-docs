@@ -7,7 +7,7 @@ nav_order: 24
 
 # 24 - Export verso software di calcolo esterni
 
-beamfeapy può **esportare il modello** verso i principali software di calcolo
+feagent può **esportare il modello** verso i principali software di calcolo
 strutturale, generando file di testo importabili.
 
 | Software | Funzione | Estensione | Stato |
@@ -40,7 +40,7 @@ m.export("modello.txt", fmt="straus7")
 Dal modulo `export`:
 
 ```python
-from beamfeapy import export
+from feagent import export
 
 export.export(m, "modello.tcl", fmt="opensees_tcl")
 export.to_openseespy(m, "modello.py")
@@ -69,7 +69,7 @@ export.to_sap2000_s2k(m, "modello.s2k")
 ## 2. OpenSees (TCL e OpenSeesPy)
 
 L'elemento usato è **`elasticBeamColumn`**, trave 3D di Eulero-Bernoulli a 12 GdL
-— corrispondenza **esatta** con beamfeapy.
+— corrispondenza **esatta** con feagent.
 
 ### Esempio TCL generato
 
@@ -94,9 +94,9 @@ pattern Plain 1 1 {
 
 ### Assi locali: corrispondenza esatta
 
-Il punto delicato è l'orientazione della sezione. beamfeapy esporta per ogni
+Il punto delicato è l'orientazione della sezione. feagent esporta per ogni
 elemento il versore **`local_z` (ez)** come vettore `vecxz` della `geomTransf`.
-In OpenSees vale `local_y = vecxz × local_x`; poiché in beamfeapy il sistema è
+In OpenSees vale `local_y = vecxz × local_x`; poiché in feagent il sistema è
 destrorso (`ez = ex × ey`, quindi `ez × ex = ey`), la trasformazione riproduce
 **esattamente** gli stessi assi locali — qualunque sia l'orientazione impostata
 (`ref_vector`, `set_axes`, default). Questo è verificato dai test.

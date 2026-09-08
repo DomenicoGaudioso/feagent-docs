@@ -7,7 +7,7 @@ nav_order: 4
 
 # 04 - Loads
 
-beamfeapy supports all major load types for static analysis of frame structures.
+feagent supports all major load types for static analysis of frame structures.
 
 ## Nodal loads
 
@@ -86,7 +86,7 @@ m.add_thermal_profile(elem, [(-0.15, 0), (0.05, 2.5), (0.15, 15)],
 
 For self-equilibrating stresses (eigenstress):
 ```python
-from beamfeapy.loads import ThermalProfile
+from feagent.loads import ThermalProfile
 tp = ThermalProfile(elem, profile, axis="z", width=B)
 sigma = tp.eigenstress(element, s)  # self-equilibrating stress at height s
 ```
@@ -160,3 +160,60 @@ res = m.solve()                     # all loads
 Full gallery: [Case Studies](en-16-case-studies-gallery.html).
 
 See [Load Cases](en-07-load-cases.html) for details.
+
+## Automatic self-weight
+
+`add_self_weight` applies the self-weight of the **whole model** into a load
+case, with consistent load vectors per element category:
+
+```python
+mat = Material(E=210e9, nu=0.3, gamma=78.5e3)   # unit weight [N/m^3]
+W = m.add_self_weight(case="G1", direction=(0, 0, -1))   # returns weight [N]
+```
+
+- **beams** (tapered included): distributed load `γ·A(x)` registered as a
+  `DistributedLoad` → it enters diagrams and `internal_forces`;
+- **trusses**: half weight on each node;
+- **shells** Q4/T3: tributary nodal loads `γ·t·A` plus the optional
+  `extra_weight_per_area` surcharge (smeared ribs:
+  `ShellSectionOrthotropic.from_stiffeners(gamma_rib=...)`);
+- **cables** are excluded (their weight is intrinsic in `solve_nonlinear`).
+
+If `Material.gamma` is missing, `rho*g` is used; if both are missing the
+error is explicit (`gamma=0` deliberately excludes a material, e.g.
+fictitious rigid elements). Use `direction=(0, -1, 0)` in Y-up models.
+
+## Shell surface loads
+
+Normal pressure (Q4 and T3) and generic surface loads with **consistent**
+equivalent nodal forces (for the linear T3: `q·A/3` per node — resultant and
+centroid exact even on irregular meshes):
+
+```python
+m.add_shell_pressure(1, -2000.0, case="Q")                # along local +e3
+m.add_shell_surface_load(1, qz=-2000.0, frame="local")     # equivalent
+m.add_shell_surface_load(1, qx=800.0, case="W")            # global (wind)
+m.add_shell_surface_load(1, qz=-1200.0, projected=True)    # snow: intensity
+                                                            # on projected area
+```
+
+With `projected=True` (global frame only) the intensity refers to the area
+projected perpendicular to the load: on an inclined plane the resultant is
+`q·A·cosθ`.
+
+## Shell thermal loads
+
+Uniform change `dT` at the mid-plane and/or gradient `dT_grad` (top minus
+bottom surface across the thickness t):
+
+```python
+m.add_shell_thermal(1, dT=25.0, case="T")            # uniform expansion
+m.add_shell_thermal(1, dT_grad=15.0, case="T")       # thermal curvature
+```
+
+Imposed strains `ε₀ = α·dT·[1,1,0]`, `κ₀ = α·dT_grad/t·[1,1,0]`
+(Boley & Weiner 1960) and equivalent loads including the
+**membrane–bending coupling B** of eccentric sections (`from_stiffeners`):
+on a stiffened plate restrained in-plane a uniform `dT` produces curvature.
+In stress recovery (`res.shell_forces`, `res.shell_stresses`) the thermal
+part is subtracted: `N = A(ε−ε₀) + B(κ−κ₀)`, etc. Requires `Material.alpha`.

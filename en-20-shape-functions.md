@@ -12,7 +12,7 @@ Euler-Bernoulli 3D beam element, from which the displacement matrix $\mathbf{N}(
 the strain matrix $\mathbf{B}(x)$ and the stiffness matrix are derived.
 
 The references in the code are `BeamElement3D.shape_functions()` and
-`BeamElement3D.strain_matrix()` in `beamfeapy/element.py`.
+`BeamElement3D.strain_matrix()` in `feagent/element.py`.
 
 ---
 
@@ -346,7 +346,7 @@ The nodal properties of the shape functions can be verified directly:
 
 ```python
 import numpy as np
-from beamfeapy import Material, Model, Section
+from feagent import Material, Model, Section
 
 m = Model()
 m.add_node(1, 0, 0, 0); m.add_node(2, 4.0, 0, 0)

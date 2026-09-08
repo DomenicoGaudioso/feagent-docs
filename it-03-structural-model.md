@@ -75,7 +75,7 @@ Parametri opzionali:
 ### Elemento a sezione variabile (tapered)
 
 ```python
-from beamfeapy import VariableSection
+from feagent import VariableSection
 
 # Metodo 1: funzione continua
 vs = VariableSection.rectangular(b=0.30, h=lambda xi: 0.70*(1-0.6*xi))
@@ -112,6 +112,45 @@ m.support(1, ux=True, uy=True, uz=True, rx=True)  # pin 3D (4 GdL)
 m.support(2, uy=True, uz=True, rx=True)             # rulli (3 GdL, ux libero)
 m.support(3, uy=True)                                # solo verticale (carrello)
 ```
+
+### Appoggi inclinati (assi d'appoggio ruotati)
+
+Per un carrello su un piano di scorrimento inclinato si ruota la base dei GdL
+del nodo con una matrice 3×3 (righe = assi locali d'appoggio in coordinate
+globali); i vincoli sul nodo agiscono poi sui GdL **locali**:
+
+```python
+import numpy as np
+c, s = np.cos(np.pi/4), np.sin(np.pi/4)
+R = np.array([[c, s, 0], [-s, c, 0], [0, 0, 1]])   # piano a 45° in X-Y
+m.support(3, axes=R, uy=True)     # blocca la perpendicolare al piano
+# equivalente: m.set_support_axes(3, R); m.support(3, uy=True)
+```
+
+Le reazioni si leggono in assi globali con `res.reactions(n)` e negli assi
+d'appoggio con `res.reactions_support_frame(n)`.
+
+## Vincoli cinematici (link rigidi, equalDOF, diaframmi)
+
+Vincoli multipunto per **eliminazione master–slave** (metodo di
+trasformazione, Cook et al. 2002 cap. 13): esatti, senza penalty, applicati
+anche alla massa (modale) e alla rigidezza geometrica (buckling); percorsi
+denso e sparso coincidenti.
+
+```python
+m.add_rigid_link(master, slave)                  # corpo rigido completo
+m.add_rigid_link(master, slave, dofs=["ux","uy","uz"])   # solo traslazioni
+m.add_equal_dof(a, b, dofs=["ux", "uy"])        # u_b = u_a sui GdL scelti
+m.add_rigid_diaphragm(100, [11, 12, 13], plane="xy")     # piano rigido
+```
+
+- il link rigido impone `u_s = u_m + θ_m × r`, `θ_s = θ_m` con `r = x_s − x_m`;
+- il diaframma lega i 3 GdL di piano (2 traslazioni + rotazione attorno alla
+  normale: `xy` → ux, uy, rz; `xz` → ux, uz, ry; `yz` → uy, uz, rx);
+- le catene slave-di-slave sono risolte automaticamente; doppi-master, cicli
+  e vincoli a terra/cedimenti su GdL slave producono un errore esplicito;
+- se il master di un diaframma è un nodo fittizio, vincolarne i GdL fuori
+  piano con `fix` (es. `m.fix(100, ["uz", "rx", "ry"])` per `plane="xy"`).
 
 ## Soluzione
 

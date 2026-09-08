@@ -13,7 +13,7 @@ composte, genera **stati di sforzo anche in assenza di carichi esterni**. La
 teoria corrente *scorpora* l'effetto del ritiro in due contributi distinti —
 **primario (isostatico)** e **secondario (iperstatico)** — che vanno trattati
 separatamente. Questa pagina spiega la teoria e mostra come modellarla in
-beamfeapy con le deformazioni imposte (analogia termica).
+feagent con le deformazioni imposte (analogia termica).
 
 > Riferimenti: EN 1992-1-1 §3.1.4 (ritiro e viscosità), EN 1994-2 §5.4.2.2
 > (modulo efficace e ritiro), §5.4.2.3 (effetti della fessurazione).
@@ -139,9 +139,9 @@ secondario rispetto all'applicazione su tutta la trave.
 
 ---
 
-## 6. Come si modella in beamfeapy
+## 6. Come si modella in feagent
 
-beamfeapy non ha un materiale "composto" esplicito: la trave composta si
+feagent non ha un materiale "composto" esplicito: la trave composta si
 rappresenta con un elemento avente $EA$ ed $EI$ della **sezione omogeneizzata**
 (con $n_L$ per ritiro/viscosità). Il ritiro si introduce come **deformazione
 iniziale imposta** tramite [`add_thermal_load`](it-04-loads.html), sfruttando
@@ -180,11 +180,11 @@ La decomposizione pratica è:
 ## 7. Esempio svolto: ponte bitrave a tre campate
 
 Lo script
-[`scripts/shrinkage_composite_decomposition.py`](https://github.com/DomenicoGaudioso/beamfeapy/blob/main/scripts/shrinkage_composite_decomposition.py)
+[`scripts/shrinkage_composite_decomposition.py`](https://github.com/DomenicoGaudioso/feagent/blob/main/scripts/shrinkage_composite_decomposition.py)
 modella la trave longitudinale del [ponte bitrave a tre campate](it-32-ponte-bitrave-misto.html)
 (50 + 60 + 50 m). L'impalcato è composto da **conci strutturali diversi**, le
 sezioni definite in
-[`scripts/_bridge_sections.py`](https://github.com/DomenicoGaudioso/beamfeapy/blob/main/scripts/_bridge_sections.py):
+[`scripts/_bridge_sections.py`](https://github.com/DomenicoGaudioso/feagent/blob/main/scripts/_bridge_sections.py):
 
 | Concio | Sezione | $I_{\text{vert}}$ [m⁴] | $e$ [m] | $M_{\text{pri}}$ [kNm] | Stato |
 |--------|---------|------------------------|---------|------------------------|-------|
@@ -272,7 +272,7 @@ Si nota che:
 ### Nucleo del flusso
 
 ```python
-from beamfeapy import Material, Model, Section, postprocess
+from feagent import Material, Model, Section, postprocess
 from scripts._bridge_sections import SEC_END, SEC_MID, SEC_SUPPORT
 
 steel = Material(E=210e9, nu=0.30, alpha=1.0)   # alpha=1 -> dT = deformazione

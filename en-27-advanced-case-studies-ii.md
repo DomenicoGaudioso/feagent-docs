@@ -62,8 +62,8 @@ Modal analysis:
 """Example 29 - Pitched roof with 4 columns (tetto a due falde)."""
 
 import _common  # noqa: F401
-from beamfeapy import Material, Model, Section
-from beamfeapy.plotting import (
+from feagent import Material, Model, Section
+from feagent.plotting import (
     plot_deformed, plot_diagram, plot_loads, plot_model, plot_mode, plot_reactions,
 )
 
@@ -147,7 +147,7 @@ def main():
 
 ## Example 30 — Literature Validation: Portal Frame vs Analytical Solution
 
-Validation of beamfeapy against the classical **portal frame** problem using
+Validation of feagent against the classical **portal frame** problem using
 the **slope-deflection method** (Hibbeler, *Structural Analysis*; Kleinlogel,
 *Rigid Frame Formulas*).
 
@@ -174,7 +174,7 @@ $$H = \frac{M_{base} + M_{top}}{h}, \quad V = \frac{qL}{2}$$
 
 ### Comparison results
 
-| Quantity | Analytical | FEM (beamfeapy) | Error |
+| Quantity | Analytical | FEM (feagent) | Error |
 |----------|-----------|-----------------|-------|
 | H [kN] | 40.00 | 39.62 | 0.95% |
 | V [kN] | 100.00 | 100.00 | 0.00% |
@@ -194,8 +194,8 @@ deformability of columns (included in FEM, neglected in the analytical formula).
 """Example 30 - Literature validation: portal frame vs analytical solution."""
 
 import _common  # noqa: F401
-from beamfeapy import Material, Model, Section, postprocess
-from beamfeapy.plotting import (
+from feagent import Material, Model, Section, postprocess
+from feagent.plotting import (
     plot_deformed, plot_diagram, plot_loads, plot_model, plot_reactions,
 )
 

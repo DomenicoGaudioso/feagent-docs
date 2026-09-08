@@ -8,7 +8,7 @@ nav_order: 23
 # 23 - Il formato HDF5 dei risultati
 
 Questa pagina descrive in dettaglio il **formato binario HDF5** (`.h5`) usato da
-beamfeapy per archiviare i risultati delle analisi, come ispezionarlo e come
+feagent per archiviare i risultati delle analisi, come ispezionarlo e come
 rileggerlo da altri strumenti (Python puro, MATLAB, Julia, C++).
 
 Per l'**uso pratico** (salvare/rileggere dalla libreria) vedi
@@ -30,7 +30,7 @@ complementare e si concentra sul **formato in sé**.
 - **Metadati (attributi)**: ogni gruppo porta con sé le proprie informazioni
   (load case, section group, numero di modi).
 - **Interoperabile**: leggibile da Python, MATLAB, Julia, R, C/C++, Java senza
-  dipendere da beamfeapy.
+  dipendere da feagent.
 - **Accesso parziale**: si può leggere un singolo dataset senza caricare l'intero
   file in memoria (utile per archivi di molte analisi).
 
@@ -44,7 +44,7 @@ modal=modal, buckling=buck)` ha questa struttura (dump reale, modello 4 nodi /
 
 ```
 /                                    [root]
-├── attrs: format = "beamfeapy-results"
+├── attrs: format = "feagent-results"
 │          format_version = 1
 │          created = "2026-06-02T09:32:35+00:00"
 │          ndof = 24, n_nodes = 4, n_elements = 3
@@ -106,7 +106,7 @@ h5dump -a / demo.h5        # attributi della root
 h5dump -d /modal/freq demo.h5   # contenuto di un singolo dataset
 ```
 
-### Da Python con h5py (senza beamfeapy)
+### Da Python con h5py (senza feagent)
 
 ```python
 import h5py
@@ -126,10 +126,10 @@ with h5py.File("demo.h5", "r") as h5:
     cases = h5["/static"].attrs["cases"]  # '{"G": 1.0}'
 ```
 
-### Da beamfeapy (lettura strutturata)
+### Da feagent (lettura strutturata)
 
 ```python
-from beamfeapy import io_hdf5
+from feagent import io_hdf5
 data = io_hdf5.read_results("demo.h5")    # dict di array
 out  = io_hdf5.read_results("demo.h5", model=m)   # oggetti Result
 ```
@@ -157,7 +157,7 @@ significativo. Esempio su palazzo 3D (288 DOF, 12 modi + 6 buckling + diagrammi)
 ## 5. Interoperabilità con altri linguaggi
 
 Il formato è leggibile da qualsiasi linguaggio con supporto HDF5, **senza
-beamfeapy**. I percorsi dei dataset sono stabili.
+feagent**. I percorsi dei dataset sono stabili.
 
 ### MATLAB
 
@@ -189,7 +189,7 @@ end
 
 ### Python puro (NumPy + h5py)
 
-Vedi sezione 3. Nessuna dipendenza da beamfeapy: bastano `h5py` e `numpy`.
+Vedi sezione 3. Nessuna dipendenza da feagent: bastano `h5py` e `numpy`.
 
 ---
 
@@ -200,7 +200,7 @@ del formato mantenendo la retrocompatibilità. Un lettore può controllarlo:
 
 ```python
 with h5py.File(path, "r") as h5:
-    assert h5.attrs["format"] == "beamfeapy-results"
+    assert h5.attrs["format"] == "feagent-results"
     if h5.attrs["format_version"] > 1:
         print("Attenzione: file scritto da una versione più recente.")
 ```

@@ -164,7 +164,7 @@ relies on the classic parabolic-cable theory: **H = w·L²/(8·f)**.
 **Comparison with IBDAS (PS0005, end of construction).** The model forces are of
 the same order but ~12–14% higher:
 
-| Quantity (per cable plane) | beamfeapy | IBDAS | error |
+| Quantity (per cable plane) | feagent | IBDAS | error |
 |----------------------------|----------:|------:|-----:|
 | Cable force at mid-span | 1,334 MN | 1,170 MN | +14% |
 | Cable force at saddle | 1,416 MN | ≈1,260 MN | +12% |
@@ -176,7 +176,7 @@ slightly conservative. For the same load the mechanics is exact (H = wL²/8f wit
 
 The official cable-force chart (ADINA/IBDAS model, PS0005) shows **N ≈ 1,170 MN at
 mid-span** rising to **~1,260 MN at the towers**, with the characteristic peak at
-the saddle: the same trend as the beamfeapy model (1,334 ÷ 1,416 MN), shifted up by
+the saddle: the same trend as the feagent model (1,334 ÷ 1,416 MN), shifted up by
 the higher permanent load.
 
 ![Main cable force — official ADINA/IBDAS model (from PS0005)](images/messina_ibdas_cableforce.png)
@@ -210,7 +210,7 @@ stiffness, proportional to the tension, provides the transverse stiffness). The
 mass comes from the real permanent loads. The first four global modes are
 compared with the IBDAS/ADINA modal parameters from PS0005 (§7.2).
 
-| # | Mode type | IBDAS | ADINA | beamfeapy | T [s] | error |
+| # | Mode type | IBDAS | ADINA | feagent | T [s] | error |
 |---|-----------|------:|------:|----------:|------:|-----:|
 | 1 | transverse (lateral) | 0.0309 | 0.0313 | 0.0322 | 31.0 | +4% |
 | 2 | vertical antisymmetric | 0.0569 | 0.0585 | 0.0598 | 16.7 | +5% |

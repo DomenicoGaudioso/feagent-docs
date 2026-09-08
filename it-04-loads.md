@@ -7,7 +7,7 @@ nav_order: 4
 
 # 04 - Carichi
 
-beamfeapy supporta tutti i principali tipi di carico per l'analisi statica di strutture intelaiate.
+feagent supporta tutti i principali tipi di carico per l'analisi statica di strutture intelaiate.
 
 ## Carichi nodali
 
@@ -86,7 +86,7 @@ m.add_thermal_profile(elem, [(-0.15, 0), (0.05, 2.5), (0.15, 15)],
 
 Per calcolare le tensioni autoequilibrate (eigenstress):
 ```python
-from beamfeapy.loads import ThermalProfile
+from feagent.loads import ThermalProfile
 tp = ThermalProfile(elem, profile, axis="z", width=B)
 sigma = tp.eigenstress(element, s)  # tensione autoequilibrata alla quota s
 ```
@@ -160,3 +160,60 @@ res = m.solve()                     # tutti i carichi
 Galleria completa: [Casi studio](it-16-case-studies-gallery.html).
 
 Vedi [Load Case](it-07-load-cases.html) per dettagli.
+## Peso proprio automatico
+
+`add_self_weight` applica il peso proprio di **tutto il modello** in un load
+case, con vettori di carico consistenti per categoria di elemento:
+
+```python
+mat = Material(E=210e9, nu=0.3, gamma=78.5e3)   # peso specifico [N/m^3]
+W = m.add_self_weight(case="G1", direction=(0, 0, -1))   # ritorna il peso [N]
+```
+
+- **travi** (anche a sezione variabile): carico distribuito `γ·A(x)`
+  registrato come `DistributedLoad` → entra nei diagrammi e in
+  `internal_forces`;
+- **bielle**: metà peso su ciascun nodo;
+- **gusci** Q4/T3: nodali tributari `γ·t·A` più l'eventuale sovrappeso
+  `extra_weight_per_area` (nervature smeared:
+  `ShellSectionOrthotropic.from_stiffeners(gamma_rib=...)`);
+- i **cavi** sono esclusi (peso intrinseco in `solve_nonlinear`).
+
+Se `Material.gamma` manca si usa `rho*g`; se mancano entrambi l'errore è
+esplicito (`gamma=0` esclude volutamente un materiale, es. elementi rigidi
+fittizi). Nei modelli con Y verticale usare `direction=(0, -1, 0)`.
+
+## Carichi di superficie sui gusci
+
+Pressione normale (Q4 e T3) e carico di superficie generico con forze nodali
+equivalenti **consistenti** (per il T3 lineare: `q·A/3` per nodo — risultante
+e baricentro esatti anche su mesh irregolari):
+
+```python
+m.add_shell_pressure(1, -2000.0, case="Q")                # lungo +e3 locale
+m.add_shell_surface_load(1, qz=-2000.0, frame="local")     # equivalente
+m.add_shell_surface_load(1, qx=800.0, case="W")            # globale (vento)
+m.add_shell_surface_load(1, qz=-1200.0, projected=True)    # neve: intensità
+                                                            # su area proiettata
+```
+
+Con `projected=True` (solo frame globale) l'intensità è riferita all'area
+proiettata perpendicolare al carico: sul piano inclinato la risultante è
+`q·A·cosθ`.
+
+## Carichi termici sui gusci
+
+Variazione uniforme `dT` sul piano medio e/o gradiente `dT_grad`
+(superficie superiore − inferiore sullo spessore t):
+
+```python
+m.add_shell_thermal(1, dT=25.0, case="T")            # espansione uniforme
+m.add_shell_thermal(1, dT_grad=15.0, case="T")       # curvatura termica
+```
+
+Deformazioni imposte `ε₀ = α·dT·[1,1,0]`, `κ₀ = α·dT_grad/t·[1,1,0]`
+(Boley & Weiner 1960) e carichi equivalenti con l'**accoppiamento
+membrana–flessione B** delle sezioni eccentriche (`from_stiffeners`): su una
+piastra irrigidita bloccata nel piano il `dT` uniforme genera curvatura.
+Nel recupero (`res.shell_forces`, `res.shell_stresses`) la parte termica
+viene sottratta: `N = A(ε−ε₀) + B(κ−κ₀)`, ecc. Serve `Material.alpha`.

@@ -12,7 +12,7 @@ L'elemento a sezione variabile usa la formulazione **force-based** (Friedman & K
 ## VariationSection
 
 ```python
-from beamfeapy import VariableSection
+from feagent import VariableSection
 
 # Sezione rettangolare con altezza variabile
 vs = VariableSection.rectangular(b=0.30, h=lambda xi: 0.70*(1-0.6*xi))

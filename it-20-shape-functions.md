@@ -13,7 +13,7 @@ spostamenti $\mathbf{N}(x)$, la matrice delle deformazioni $\mathbf{B}(x)$ e la 
 di rigidezza.
 
 I riferimenti nel codice sono `BeamElement3D.shape_functions()` e
-`BeamElement3D.strain_matrix()` in `beamfeapy/element.py`.
+`BeamElement3D.strain_matrix()` in `feagent/element.py`.
 
 ---
 
@@ -348,7 +348,7 @@ Le proprietà nodali delle funzioni di forma si possono verificare direttamente:
 
 ```python
 import numpy as np
-from beamfeapy import Material, Model, Section
+from feagent import Material, Model, Section
 
 m = Model()
 m.add_node(1, 0, 0, 0); m.add_node(2, 4.0, 0, 0)

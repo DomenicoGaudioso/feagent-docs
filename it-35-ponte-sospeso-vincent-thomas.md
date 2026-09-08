@@ -79,7 +79,7 @@ torsionali. Le frequenze verticali misurate da Abdel-Ghaffar & Housner (prove di
 vibrazione ambientale, EERL 77-01, Fig. 18) valgono **0.234 / 0.385 / 0.835 Hz**
 (modi simmetrici).
 
-| Modo | beamfeapy 3D | misurato (1977) | scarto |
+| Modo | feagent 3D | misurato (1977) | scarto |
 |------|-------------:|----------------:|-------:|
 | 1° laterale | 0.141 Hz | — | — |
 | 1° torsionale | 0.182 Hz | — | — |

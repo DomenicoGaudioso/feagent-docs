@@ -8,7 +8,7 @@ has_children: true
 
 # 14 - Usage Examples
 
-The `usage_examples/` directory contains **24 self-contained scripts** covering every beamfeapy feature. For the gallery with rendered charts see [Case Studies](en-16-case-studies-gallery.html). (The `examples/` directory contains a shorter series `ex01..ex10` with the same concepts.)
+The `usage_examples/` directory contains **24 self-contained scripts** covering every feagent feature. For the gallery with rendered charts see [Case Studies](en-16-case-studies-gallery.html). (The `examples/` directory contains a shorter series `ex01..ex10` with the same concepts.)
 
 ## Example Index
 
@@ -51,7 +51,7 @@ HTML output (Plotly charts) is saved to `usage_examples/output/`.
 ## Dependencies for charts and Excel
 
 ```bash
-pip install beamfeapy[plot]     # Plotly charts (plotly + kaleido)
-pip install beamfeapy[excel]    # Excel import/export (pandas + openpyxl)
-pip install beamfeapy[all]      # everything
+pip install feagent[plot]     # Plotly charts (plotly + kaleido)
+pip install feagent[excel]    # Excel import/export (pandas + openpyxl)
+pip install feagent[all]      # everything
 ```

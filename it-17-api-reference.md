@@ -7,15 +7,15 @@ nav_order: 17
 
 # 17 - API Reference
 
-Riferimento completo delle funzioni pubbliche di **beamfeapy**. Per gli esempi
+Riferimento completo delle funzioni pubbliche di **feagent**. Per gli esempi
 illustrati di ciascuna famiglia vedi [Funzioni illustrate](it-18-illustrated-functions.html).
 
 Import tipico:
 
 ```python
-from beamfeapy import Model, Material, Section, VariableSection, read_excel
-from beamfeapy import postprocess
-from beamfeapy.plotting import (plot_model, plot_loads, plot_diagram,
+from feagent import Model, Material, Section, VariableSection, read_excel
+from feagent import postprocess
+from feagent.plotting import (plot_model, plot_loads, plot_diagram,
                                 plot_deformed, plot_reactions, plot_internal_forces)
 ```
 
@@ -143,7 +143,7 @@ linearmente. Mettere nella sorgente i load case gravitazionali (verticali).
 Analisi modale: risolve `K φ = ω² M φ` sui GdL liberi, con masse da `mass_source`
 (l'utente sceglie quali load case trasformare in massa e con quale coefficiente).
 I GdL liberi senza massa sono eliminati per condensazione statica (niente modi
-spuri). Validata vs OpenSees a precisione macchina.
+spuri). Validata per confronto incrociato con solutori FEM indipendenti a precisione macchina.
 
 #### `ModalResult`
 Attributi: `omega` [rad/s], `freq` [Hz], `period` [s], `phi` (ndof × n_modi,
@@ -170,7 +170,7 @@ Attributi: `U` (spostamenti globali), `R` (reazioni globali),
 
 ---
 
-## Post-processing (`beamfeapy.postprocess`)
+## Post-processing (`feagent.postprocess`)
 
 ### `internal_forces(result, elem_id, n=51) -> dict`
 Azioni interne lungo l'elemento. Restituisce `{x, N, Vy, Vz, T, My, Mz}` (array
@@ -185,7 +185,7 @@ Coordinate globali della linea d'asse deformata (amplificata di `scale`).
 
 ---
 
-## Visualizzazione (`beamfeapy.plotting`)
+## Visualizzazione (`feagent.plotting`)
 
 Richiede l'extra `plot` (`plotly`, `kaleido`). Ogni funzione restituisce una
 `plotly.graph_objects.Figure` (`.show()`, `.write_html(...)`, `.write_image(...)`).
@@ -200,9 +200,9 @@ Richiede l'extra `plot` (`plotly`, `kaleido`). Ogni funzione restituisce una
 
 ---
 
-## Import/Export Excel (`beamfeapy.io_excel`)
+## Import/Export Excel (`feagent.io_excel`)
 
-- **`read_model(path)`** (alias `beamfeapy.read_excel`, `Model.from_excel`) — costruisce il modello dai fogli Excel.
+- **`read_model(path)`** (alias `feagent.read_excel`, `Model.from_excel`) — costruisce il modello dai fogli Excel.
 - **`write_results(result, path, n_diagram=0)`** (alias `Result.to_excel`) — esporta i risultati.
 - **`write_template(path)`** — genera un workbook di esempio compilabile.
 

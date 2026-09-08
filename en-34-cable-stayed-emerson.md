@@ -65,7 +65,7 @@ Cable self-weight is included and the stays are linearized about equilibrium. Th
 computed vertical frequencies are compared with the experimentally **identified**
 ones (NExT/ERA) and with the **benchmark FE model**:
 
-| Vertical mode | beamfeapy | identified | FE benchmark |
+| Vertical mode | feagent | identified | FE benchmark |
 |---------------|----------:|-----------:|-------------:|
 | 1st | **0.319 Hz** | 0.323 Hz | 0.290 Hz |
 | 2nd | 0.870 Hz | 0.414 Hz | 0.370 Hz |
@@ -81,7 +81,7 @@ does not reproduce all of them.
 **Mode shapes in 3D.** Releasing the out-of-plane DOFs makes the model 3D, also
 yielding the lateral and torsional modes:
 
-| 3D mode | beamfeapy | reference |
+| 3D mode | feagent | reference |
 |---------|----------:|----------:|
 | 1st vertical | 0.319 Hz | 0.323 Hz (identified) |
 | 1st lateral | 0.515 Hz | 0.649 Hz (benchmark, lat-tors.) |

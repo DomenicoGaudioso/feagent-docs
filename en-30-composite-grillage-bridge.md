@@ -14,7 +14,7 @@ Pages, for a real bridge studied with a grillage model.
 The selected reference is the IABSE-JSCE 2020 paper by **Lu, Barker and Judd**
 on the **Evanston I-80** bridge in Wyoming. The bridge geometry and grillage
 layout are taken from the published case. The truck loads reported in the
-paper are not simulated here because beamfeapy does not yet expose a moving
+paper are not simulated here because feagent does not yet expose a moving
 load API.
 
 Source: [Experimental and Numerical Studies on Post-Facture Behavior of Simple-Span Steel Girder Bridges](https://iabse-bd.org/2020/pdf/50.pdf)
@@ -93,7 +93,7 @@ from scripts.generate_composite_bridge_word_report import (
     build_iabse_evanston_grillage_model,
     solve_bridge_cases,
 )
-from beamfeapy.reporting import create_word_report
+from feagent.reporting import create_word_report
 
 model, groups = build_iabse_evanston_grillage_model()
 results, combinations = solve_bridge_cases(model)

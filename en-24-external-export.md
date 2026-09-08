@@ -7,7 +7,7 @@ nav_order: 24
 
 # 24 - Export to external analysis software
 
-beamfeapy can **export the model** to the main structural analysis
+feagent can **export the model** to the main structural analysis
 software packages, generating importable text files.
 
 | Software | Funzione | Estensione | Stato |
@@ -40,7 +40,7 @@ m.export("modello.txt", fmt="straus7")
 From the `export` module:
 
 ```python
-from beamfeapy import export
+from feagent import export
 
 export.export(m, "modello.tcl", fmt="opensees_tcl")
 export.to_openseespy(m, "modello.py")
@@ -69,7 +69,7 @@ export.to_sap2000_s2k(m, "modello.s2k")
 ## 2. OpenSees (TCL and OpenSeesPy)
 
 The element used is **`elasticBeamColumn`**, a 3D Euler-Bernoulli beam with 12 DOF
-— an **exact** match with beamfeapy.
+— an **exact** match with feagent.
 
 ### Generated TCL example
 
@@ -94,9 +94,9 @@ pattern Plain 1 1 {
 
 ### Local axes: exact match
 
-The delicate point is the orientation of the section. For each element beamfeapy
+The delicate point is the orientation of the section. For each element feagent
 exports the unit vector **`local_z` (ez)** as the `vecxz` vector of the `geomTransf`.
-In OpenSees, `local_y = vecxz × local_x` holds; since in beamfeapy the system is
+In OpenSees, `local_y = vecxz × local_x` holds; since in feagent the system is
 right-handed (`ez = ex × ey`, hence `ez × ex = ey`), the transformation reproduces
 **exactly** the same local axes — whatever orientation is set
 (`ref_vector`, `set_axes`, default). This is verified by the tests.

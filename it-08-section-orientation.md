@@ -15,7 +15,7 @@ l'elemento sotto un dato carico.
 
 ## Assi locali — convenzione standard (SAP2000 / Przemieniecki)
 
-Per un elemento che va dal nodo i al nodo j, beamfeapy usa la **formula di proiezione**:
+Per un elemento che va dal nodo i al nodo j, feagent usa la **formula di proiezione**:
 
 ```
 local_x = normalize(j - i)                                    (asse della trave)
@@ -104,7 +104,7 @@ m.add_beam(5, 9, 10, mat, sec, ref_vector=(0, 1, 0))
 Con la convenzione SAP2000 (`Iz` = asse forte per travi orizzontali):
 
 ```python
-from beamfeapy import Section
+from feagent import Section
 
 # IPE 300 — trave orizzontale, gravita' in local_y='fy'
 # local_z = orizzontale (fuori-piano) → Iy = asse debole
@@ -133,16 +133,16 @@ sec_col = Section(
 )
 ```
 
-> **Tabella di riferimento Eurocodice vs beamfeapy:**
+> **Tabella di riferimento Eurocodice vs feagent:**
 > 
-> | Sezione | I_y EC (forte) | I_z EC (debole) | beamfeapy Iz (forte) | beamfeapy Iy (debole) |
+> | Sezione | I_y EC (forte) | I_z EC (debole) | feagent Iz (forte) | feagent Iy (debole) |
 > |---------|---------------|----------------|---------------------|----------------------|
 > | IPE 300 | 8356 cm⁴ | 604 cm⁴ | 8356e-8 m⁴ | 604e-8 m⁴ |
 > | IPE 240 | 3892 cm⁴ | 284 cm⁴ | 3892e-8 m⁴ | 284e-8 m⁴ |
 > | HEA 240 | 7763 cm⁴ | 2769 cm⁴ | 7763e-8 m⁴ | 2769e-8 m⁴ |
 > 
 > Nel Eurocodice `I_y` e' l'asse forte (asse y-y dei profili standard = bending nel
-> piano delle ali). In beamfeapy con `ref=(0,1,0)`, l'asse forte diventa `Iz`
+> piano delle ali). In feagent con `ref=(0,1,0)`, l'asse forte diventa `Iz`
 > perche' `local_y = Y globale` fa si' che la flessione gravitazionale (fy) avvenga
 > nel piano x-y, governata da `Iz`.
 

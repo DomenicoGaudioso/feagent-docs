@@ -78,7 +78,7 @@ With cable self-weight included and the cables linearized about equilibrium, the
 frequencies measured by Abdel-Ghaffar & Housner (ambient vibration tests, EERL
 77-01, Fig. 18) are **0.234 / 0.385 / 0.835 Hz** (symmetric modes).
 
-| Mode | beamfeapy 3D | measured (1977) | error |
+| Mode | feagent 3D | measured (1977) | error |
 |------|-------------:|----------------:|------:|
 | 1st lateral | 0.141 Hz | — | — |
 | 1st torsional | 0.182 Hz | — | — |

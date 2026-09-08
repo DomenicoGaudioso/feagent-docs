@@ -7,8 +7,8 @@ nav_order: 29
 
 # 29 - Prestazioni e Benchmark
 
-beamfeapy è scritto in Python/NumPy/SciPy, ma adotta tecniche di vettorizzazione
-e algebra sparsa che lo avvicinano ai solutori compilati (OpenSees, C++) e lo
+feagent è scritto in Python/NumPy/SciPy, ma adotta tecniche di vettorizzazione
+e algebra sparsa che lo avvicinano ai solutori compilati (C++ compilati) e lo
 rendono nettamente più rapido degli altri solutori in puro Python.
 
 Tutti i confronti usano lo stesso modello: una **mensola 3D** di `N` elementi
@@ -20,64 +20,64 @@ sulla stessa macchina; i grafici sono prodotti da `benchmark/gen_benchmark_chart
 a partire dagli script `benchmark/benchmark_multi.py` (statica) e
 `benchmark/benchmark_eigen.py` (modale/buckling).
 
-Solutori a confronto: **beamfeapy**, **OpenSeesPy** (FEM C++ di riferimento),
+Solutori a confronto: **feagent**, **openseespy** (motore FEM C++ compilato, nel seguito "riferimento C++"),
 **PyNite** (frame 3D in puro Python), **CALFEM** (`calfem-python`, trave 3D
 `beam3e`, assemblaggio denso), **pystran** (frame 3D in puro Python, denso) e
 **anastruct** (frame 2D). Tutti concordano sulla freccia in punta (errore
 relativo ≤ ~3·10⁻⁵, in genere a precisione macchina), quindi il confronto sui
 tempi è significativo.
 
-> OpenSeesPy si importa su Python 3.10 (problema di DLL su 3.14): i confronti con
-> OpenSees sono eseguiti su Python 3.10. I solutori in puro Python (beamfeapy,
+> il riferimento C++ si importa su Python 3.10 (problema di DLL su 3.14): i confronti
+> sono eseguiti su Python 3.10. I solutori in puro Python (feagent,
 > PyNite, CALFEM, pystran, anastruct) sono confrontati su Python 3.14.
 
-## Analisi statica — beamfeapy vs OpenSees
+## Analisi statica — feagent vs riferimento C++
 
-![Statica: beamfeapy vs OpenSees](images/bench_static_vs_opensees.png)
+![Statica: feagent vs riferimento C++](images/bench_static_ext.png)
 
-| GdL | beamfeapy | OpenSeesPy (C++) | rapporto |
+| GdL | feagent | riferimento C++ | rapporto |
 |----:|----------:|-----------------:|---------:|
 | 306 | 3.3 ms | 0.7 ms | 4.7× |
 | 1 206 | 8.6 ms | 3.1 ms | 2.8× |
 | 4 806 | 32 ms | 13 ms | 2.4× |
 | 19 206 | 122 ms | 59 ms | **2.1×** |
 
-La freccia in punta coincide con OpenSees a precisione macchina sui modelli ben
+La freccia in punta coincide col riferimento C++ a precisione macchina sui modelli ben
 condizionati. Il divario si **riduce al crescere del problema** (l'overhead Python
-si ammortizza): a 19 000 GdL beamfeapy è circa **2× OpenSees**, un risultato
+si ammortizza): a 19 000 GdL feagent è circa **2× il riferimento C++**, un risultato
 notevole per un solutore in puro Python.
 
 ## Analisi statica — solutori in puro Python
 
 ![Statica: solutori in puro Python](images/bench_static_python.png)
 
-| GdL | beamfeapy | PyNite | CALFEM (3D) | pystran (3D) | anastruct (2D) |
+| GdL | feagent | PyNite | CALFEM (3D) | pystran (3D) | anastruct (2D) |
 |----:|----------:|-------:|------------:|-------------:|---------------:|
 | 306 | 2.7 ms | 20 ms | 12 ms | 23 ms | 25 ms |
 | 1 206 | 6.9 ms | 84 ms | 73 ms | 117 ms | 264 ms |
 | 4 806 | 28 ms | 461 ms | 775 ms | 1 087 ms | 4 765 ms |
 | 19 206 | 116 ms | 3 773 ms | fuori scala | fuori scala | fuori scala |
 
-beamfeapy è di gran lunga il più rapido fra i solutori in puro Python: **~16× più
+feagent è di gran lunga il più rapido fra i solutori in puro Python: **~16× più
 veloce di PyNite**, **~28× di CALFEM**, **~39× di pystran** e **~170× di anastruct**
 a 4806 GdL. CALFEM, pystran e anastruct usano assemblaggio/soluzione densi
-(O(n³), memoria O(n²)): oltre ~5000 GdL diventano impraticabili, mentre beamfeapy
+(O(n³), memoria O(n²)): oltre ~5000 GdL diventano impraticabili, mentre feagent
 (sparso) sale a decine di migliaia di GdL. Tutti danno la stessa freccia
 (errore relativo ≤ ~3·10⁻⁵).
 
 ## Analisi modale (6 modi)
 
-![Modale: beamfeapy vs OpenSees](images/bench_modal.png)
+![Modale: feagent vs riferimento C++](images/bench_modal.png)
 
 Eigensolver sparso ARPACK (shift-invert a σ=0):
 
-| GdL | beamfeapy | OpenSeesPy | errore f₁ |
+| GdL | feagent | riferimento C++ | errore f₁ |
 |----:|----------:|-----------:|----------:|
 | 1 206 | 9.8 ms | 2.3 ms | 7·10⁻⁹ |
 | 4 806 | 30 ms | 10 ms | 5·10⁻⁷ |
 | 19 206 | 116 ms | 44 ms | 2·10⁻⁵ |
 
-Circa **2.6–4× OpenSees**, con le prime frequenze coincidenti. Prima del percorso
+Circa **2.6–4× il riferimento C++**, con le prime frequenze coincidenti. Prima del percorso
 sparso la modale usava un `eigh` denso con condensazione di Guyan, oltre 100× più
 lenta su modelli grandi.
 
@@ -87,7 +87,7 @@ lenta su modelli grandi.
 
 Eigensolver sparso generalizzato `(−K_g) φ = μ K φ`, μ = 1/λ:
 
-| GdL | beamfeapy (sparso) | beamfeapy (denso, vecchio `eig`) | speed-up |
+| GdL | feagent (sparso) | feagent (denso, vecchio `eig`) | speed-up |
 |----:|-------------------:|---------------------------------:|---------:|
 | 1 206 | 25 ms | 286 ms | 11× |
 | 4 806 | 92 ms | 14 676 ms | **160×** |
@@ -106,7 +106,7 @@ dall'`eig` non-simmetrico denso all'`eigsh` sparso porta a uno **speed-up fino a
 - **Indice dei carichi per elemento** calcolato in una passata e riusato.
 - **Eigensolver sparsi** (ARPACK) per modale e buckling.
 - **`solve_many`**: più combinazioni con una sola fattorizzazione.
-- **pypardiso** opzionale (MKL) come solutore sparso (`pip install beamfeapy[fast]`).
+- **pypardiso** opzionale (MKL) come solutore sparso (`pip install feagent[fast]`).
 
 ## Riproducibilità
 
@@ -114,9 +114,9 @@ dall'`eig` non-simmetrico denso all'`eigsh` sparso porta a uno **speed-up fino a
 # i solutori extra si installano con:
 pip install calfem-python pystran anastruct PyNiteFEA
 
-python   benchmark/benchmark_multi.py    # statica: beamfeapy, PyNite, CALFEM, pystran, anastruct
-py -3.10 benchmark/benchmark_multi.py    # aggiunge OpenSeesPy (DLL su Python 3.10)
-py -3.10 benchmark/benchmark_eigen.py    # modale + buckling vs OpenSeesPy
+python   benchmark/benchmark_multi.py    # statica: feagent, PyNite, CALFEM, pystran, anastruct
+py -3.10 benchmark/benchmark_multi.py    # aggiunge il riferimento C++ (openseespy, Python 3.10)
+py -3.10 benchmark/benchmark_eigen.py    # modale + buckling vs riferimento C++
 python   benchmark/gen_benchmark_charts.py   # rigenera i grafici di questa pagina
 ```
 

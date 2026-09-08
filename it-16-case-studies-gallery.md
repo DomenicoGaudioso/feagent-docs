@@ -9,8 +9,8 @@ nav_order: 1
 # 16 - Galleria degli esempi (con grafici)
 
 Questa pagina raccoglie **tutti i 24 esempi** di `usage_examples/` con i grafici
-generati da beamfeapy. Le immagini sono prodotte eseguendo gli esempi reali
-(`python scripts/_gen_example_images.py`, richiede `beamfeapy[plot]`); gli esempi
+generati da feagent. Le immagini sono prodotte eseguendo gli esempi reali
+(`python scripts/_gen_example_images.py`, richiede `feagent[plot]`); gli esempi
 01, 10, 16, 17, 18, 20, 21 hanno solo output testuale e non producono grafici.
 
 > Convenzione europea nei diagrammi del momento: **momento negativo
@@ -136,7 +136,7 @@ Calcolo e accesso a N, Vy, Vz, T, My, Mz lungo gli elementi. *(solo output
 testuale; vedi [Post-processing](it-09-post-processing.html))*
 
 ### 19 — Tutte le funzioni di visualizzazione
-Dimostra ogni funzione di `beamfeapy.plotting`.
+Dimostra ogni funzione di `feagent.plotting`.
 
 | Modello | Carichi G | Carichi Q |
 |---|---|---|

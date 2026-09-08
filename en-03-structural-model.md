@@ -75,7 +75,7 @@ Optional parameters:
 ### Tapered element (variable section)
 
 ```python
-from beamfeapy import VariableSection
+from feagent import VariableSection
 
 # Method 1: continuous function
 vs = VariableSection.rectangular(b=0.30, h=lambda xi: 0.70*(1-0.6*xi))
@@ -112,6 +112,46 @@ m.support(1, ux=True, uy=True, uz=True, rx=True)  # 3D pin (4 DOFs)
 m.support(2, uy=True, uz=True, rx=True)             # roller (3 DOFs, ux free)
 m.support(3, uy=True)                                # vertical only (slider)
 ```
+
+### Inclined supports (rotated support axes)
+
+For a roller on an inclined sliding plane, rotate the nodal DOF basis with a
+3×3 matrix (rows = local support axes in global coordinates); restraints on
+that node then act on the **local** DOFs:
+
+```python
+import numpy as np
+c, s = np.cos(np.pi/4), np.sin(np.pi/4)
+R = np.array([[c, s, 0], [-s, c, 0], [0, 0, 1]])   # 45° plane in X-Y
+m.support(3, axes=R, uy=True)     # restrain the direction normal to the plane
+# equivalent: m.set_support_axes(3, R); m.support(3, uy=True)
+```
+
+Reactions are available in global axes via `res.reactions(n)` and in the
+support axes via `res.reactions_support_frame(n)`.
+
+## Kinematic constraints (rigid links, equalDOF, diaphragms)
+
+Multipoint constraints via **master–slave elimination** (transformation
+method, Cook et al. 2002 ch. 13): exact, no penalty parameters, applied to
+the mass matrix (modal) and geometric stiffness (buckling) as well; dense
+and sparse paths coincide.
+
+```python
+m.add_rigid_link(master, slave)                  # full rigid-body kinematics
+m.add_rigid_link(master, slave, dofs=["ux","uy","uz"])   # translations only
+m.add_equal_dof(a, b, dofs=["ux", "uy"])        # u_b = u_a on chosen DOFs
+m.add_rigid_diaphragm(100, [11, 12, 13], plane="xy")     # rigid floor
+```
+
+- the rigid link enforces `u_s = u_m + θ_m × r`, `θ_s = θ_m` with `r = x_s − x_m`;
+- the diaphragm ties the 3 in-plane DOFs (2 translations + rotation about
+  the normal: `xy` → ux, uy, rz; `xz` → ux, uz, ry; `yz` → uy, uz, rx);
+- slave-of-slave chains are resolved automatically; duplicated slaves,
+  cycles and ground restraints/settlements on slave DOFs raise explicit
+  errors;
+- if a diaphragm master is a fictitious node, restrain its out-of-plane
+  DOFs with `fix` (e.g. `m.fix(100, ["uz", "rx", "ry"])` for `plane="xy"`).
 
 ## Solution
 

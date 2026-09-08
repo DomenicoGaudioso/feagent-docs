@@ -62,8 +62,8 @@ Modal analysis:
 """Example 29 - Pitched roof with 4 columns (tetto a due falde)."""
 
 import _common  # noqa: F401
-from beamfeapy import Material, Model, Section
-from beamfeapy.plotting import (
+from feagent import Material, Model, Section
+from feagent.plotting import (
     plot_deformed, plot_diagram, plot_loads, plot_model, plot_mode, plot_reactions,
 )
 
@@ -147,7 +147,7 @@ def main():
 
 ## Esempio 30 — Validazione con la letteratura: telaio a portale vs soluzione analitica
 
-Validazione di beamfeapy rispetto al classico problema del **telaio a portale**
+Validazione di feagent rispetto al classico problema del **telaio a portale**
 utilizzando il **metodo degli spostamenti (slope-deflection)** (Hibbeler, *Structural Analysis*; Kleinlogel,
 *Rigid Frame Formulas*).
 
@@ -174,7 +174,7 @@ $$H = \frac{M_{base} + M_{top}}{h}, \quad V = \frac{qL}{2}$$
 
 ### Risultati del confronto
 
-| Grandezza | Analitica | FEM (beamfeapy) | Errore |
+| Grandezza | Analitica | FEM (feagent) | Errore |
 |----------|-----------|-----------------|-------|
 | H [kN] | 40.00 | 39.62 | 0.95% |
 | V [kN] | 100.00 | 100.00 | 0.00% |
@@ -194,8 +194,8 @@ deformabilità assiale delle colonne (inclusa nel FEM, trascurata nella formula 
 """Example 30 - Literature validation: portal frame vs analytical solution."""
 
 import _common  # noqa: F401
-from beamfeapy import Material, Model, Section, postprocess
-from beamfeapy.plotting import (
+from feagent import Material, Model, Section, postprocess
+from feagent.plotting import (
     plot_deformed, plot_diagram, plot_loads, plot_model, plot_reactions,
 )
 

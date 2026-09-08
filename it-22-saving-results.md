@@ -7,7 +7,7 @@ nav_order: 22
 
 # 22 - Salvataggio dei risultati (Excel e HDF5)
 
-beamfeapy offre **due formati** per salvare e rileggere i risultati delle analisi:
+feagent offre **due formati** per salvare e rileggere i risultati delle analisi:
 
 | Formato | Estensione | Uso tipico | Dipendenza |
 |---------|-----------|------------|------------|
@@ -15,9 +15,9 @@ beamfeapy offre **due formati** per salvare e rileggere i risultati delle analis
 | **HDF5** | `.h5` | Big data: tante analisi, forme modali e diagrammi, accesso rapido | `h5py` |
 
 ```bash
-pip install beamfeapy[excel]   # per Excel
-pip install beamfeapy[hdf5]    # per HDF5
-pip install beamfeapy[all]     # entrambi + plot
+pip install feagent[excel]   # per Excel
+pip install feagent[hdf5]    # per HDF5
+pip install feagent[all]     # entrambi + plot
 ```
 
 L'Excel è ideale per i **risultati statici** in forma tabellare; l'HDF5 (formato
@@ -48,7 +48,7 @@ Fogli generati:
 ### Rileggere i risultati statici
 
 ```python
-from beamfeapy import read_results_excel
+from feagent import read_results_excel
 
 data = read_results_excel("risultati.xlsx")
 data["displacements"][3]      # array(6,) spostamenti nodo 3
@@ -74,7 +74,7 @@ buck  = m.buckling(n_modes=6, cases="G")
 res.to_hdf5("out.h5", n_diagram=21, modal=modal, buckling=buck)
 
 # Metodo 2: dal modulo
-from beamfeapy import io_hdf5
+from feagent import io_hdf5
 io_hdf5.write_results(res, "out.h5", n_diagram=21,
                       modal=modal, buckling=buck)
 ```
@@ -89,7 +89,7 @@ buck.to_hdf5("solo_buckling.h5")
 ### Rileggere
 
 ```python
-from beamfeapy import io_hdf5
+from feagent import io_hdf5
 
 # (a) array grezzi — non serve il modello
 data = io_hdf5.read_results("out.h5")
@@ -109,7 +109,7 @@ modal2.mass_participation()
 buck2.mode_shape(0, node=13)
 ```
 
-La funzione è anche esposta come `beamfeapy.read_results_hdf5`.
+La funzione è anche esposta come `feagent.read_results_hdf5`.
 
 ### Struttura del file HDF5
 
@@ -160,7 +160,7 @@ per archiviare l'intera analisi (statica + modale + buckling) o per modelli gran
 ## 4. Esempio completo: palazzo 3D
 
 ```python
-from beamfeapy import Material, Model, Section, io_hdf5
+from feagent import Material, Model, Section, io_hdf5
 
 # ... costruzione del palazzo 3D (vedi pagina 20) ...
 

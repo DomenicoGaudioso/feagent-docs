@@ -27,7 +27,7 @@ res.element_forces[elem_id]       # 12×1 vector in local coordinates
 ## Internal forces along the element
 
 ```python
-from beamfeapy import postprocess
+from feagent import postprocess
 
 di = postprocess.internal_forces(res, elem_id, n=101)
 # Returns dict: x, N, Vy, Vz, T, My, Mz
@@ -75,3 +75,44 @@ print(f"Mz at mid = {di['Mz'][50]:.1f} Nm")
 # Axial force
 print(f"N range: [{di['N'].min():.0f}, {di['N'].max():.0f}] N")
 ```
+
+## Combined beam stresses
+
+`Result.beam_stresses` computes normal stresses with Navier's formula
+`σ = N/A + My·z/Iy − Mz·y/Iz` at the section recovery points (sign
+convention consistent with `internal_forces`: `Mz > 0` puts fibres at
+`y < 0` in tension, `My > 0` those at `z > 0`):
+
+```python
+sec = Section.rectangular(0.1, 0.3)   # corner points + automatic Wy/Wz
+# other helpers: Section.box, Section.tube, Section.double_t
+st = res.beam_stresses(1, n=21)
+st["sigma"]       # (n, n_points) stresses at the labelled points
+st["sigma_max"]   # per-abscissa envelope (also from Wy/Wz moduli alone)
+st = res.beam_stresses(1, tau=True)   # + mean shear V/As and T/Wt,
+st["svm_max"]                          #   indicative von Mises
+```
+
+Points can be defined manually (`section.stress_points = [(y, z, label),
+...]` or `points=` at call time); with only the `Wy`/`Wz` moduli you get the
+envelope `N/A ± |My|/Wy ± |Mz|/Wz`. Tapered sections are supported
+(properties evaluated at each abscissa).
+
+## Shell stresses: principals and nodal map
+
+Shell surface stresses (`res.shell_stresses(id)`) include the **principal
+stresses** per surface: `s1_top`/`s2_top`/`angle_top` (and `_bot`), with
+`angle` the inclination of principal axis 1 relative to local x (Mohr).
+
+For a **continuous** stress map use the patch-averaged nodal recovery, in
+global coordinates:
+
+```python
+ns = res.shell_nodal_stresses(side="top")   # or "bot"
+ns[node]["sigma"]   # averaged 3x3 global tensor at the node
+ns[node]["s1"], ns[node]["s2"], ns[node]["s3"]   # principals (descending)
+ns[node]["svm"]     # von Mises
+```
+
+Each element contributes its stress (area-weighted) to the nodes it shares;
+the nodal principals are the eigenvalues of the averaged tensor.

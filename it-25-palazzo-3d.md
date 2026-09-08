@@ -43,7 +43,7 @@ Colori: **grigio scuro** = colonne HEA 240 · **blu** = travi X IPE 300 · **ros
 ## Costruzione del modello
 
 ```python
-from beamfeapy import Material, Model, Section
+from feagent import Material, Model, Section
 
 NX, NZ, NF = 4, 3, 3         # nodi in X, Z; n. piani
 LX, LZ, H  = 5.0, 4.0, 3.5   # interassi [m]; altezza piano [m]
@@ -94,7 +94,7 @@ La funzione `plot_local_axes()` permette di verificare visivamente l'orientament
 della sezione prima dell'analisi.
 
 ```python
-from beamfeapy import plot_local_axes
+from feagent import plot_local_axes
 fig = plot_local_axes(m, scale=0.65)
 fig.show()
 ```
@@ -235,7 +235,7 @@ mp    = modal.mass_participation()
 ### Forme proprie (prime 6)
 
 ```python
-from beamfeapy.plotting import plot_mode
+from feagent.plotting import plot_mode
 fig = plot_mode(modal, mode=0)   # 1° modo
 fig.show()
 ```
@@ -278,7 +278,7 @@ buck = m.buckling(n_modes=6, cases='G')
 ### Forme di instabilità (6 modi)
 
 ```python
-from beamfeapy.plotting import plot_buckling_mode
+from feagent.plotting import plot_buckling_mode
 fig = plot_buckling_mode(buck, mode=0)
 fig.show()
 ```

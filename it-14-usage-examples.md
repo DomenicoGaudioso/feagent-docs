@@ -9,7 +9,7 @@ has_children: true
 # 14 - Esempi d'Uso
 
 La cartella `usage_examples/` contiene **24 script** autocontenuti che coprono
-ogni funzionalità di beamfeapy. Per la galleria con i grafici renderizzati vedi
+ogni funzionalità di feagent. Per la galleria con i grafici renderizzati vedi
 [Casi studio](it-16-case-studies-gallery.html). (La cartella `examples/` contiene una serie
 più breve `ex01..ex10` con gli stessi concetti.)
 
@@ -60,7 +60,7 @@ Gli output HTML (grafici Plotly) vengono salvati in `usage_examples/output/`.
 ## Dipendenze per i grafici e per Excel
 
 ```bash
-pip install beamfeapy[plot]     # grafici Plotly (plotly + kaleido)
-pip install beamfeapy[excel]    # import/export Excel (pandas + openpyxl)
-pip install beamfeapy[all]      # tutto
+pip install feagent[plot]     # grafici Plotly (plotly + kaleido)
+pip install feagent[excel]    # import/export Excel (pandas + openpyxl)
+pip install feagent[all]      # tutto
 ```

@@ -8,7 +8,7 @@ nav_order: 8
 
 # 33 - Cavi: ponti strallati e sospesi
 
-beamfeapy include **elementi cavo** a sola trazione e grandi spostamenti, adatti
+feagent include **elementi cavo** a sola trazione e grandi spostamenti, adatti
 a modellare **stralli** (ponti strallati) e **cavi di sospensione** (ponti
 sospesi). I cavi rendono il problema **non lineare** (la rigidezza dipende dal
 tiro e dalla configurazione) e si risolvono con `solve_nonlinear`
@@ -83,7 +83,7 @@ rigidezza materiale residua minima per evitare la singolarità.
 ## 2. Modulo equivalente di Ernst
 
 Uno strallo inclinato modellato con **un solo elemento** ha una rigidezza
-assiale apparente ridotta dalla freccia del peso proprio. beamfeapy usa il
+assiale apparente ridotta dalla freccia del peso proprio. feagent usa il
 modulo di Ernst (`ernst=True`):
 
 $$
@@ -103,8 +103,8 @@ ai nodi dell'impalcato; gli stralli usano il modulo di Ernst.
 ![Ponte strallato: schema e deformata](images/ex33_ponte_strallato.png)
 
 **Validazioni** (script
-[`scripts/generate_cable_bridges_figures.py`](https://github.com/DomenicoGaudioso/beamfeapy/blob/main/scripts/generate_cable_bridges_figures.py),
-e l'esempio [`usage_examples/37_ponte_strallato.py`](https://github.com/DomenicoGaudioso/beamfeapy/blob/main/usage_examples/37_ponte_strallato.py)):
+[`scripts/generate_cable_bridges_figures.py`](https://github.com/DomenicoGaudioso/feagent/blob/main/scripts/generate_cable_bridges_figures.py),
+e l'esempio [`usage_examples/37_ponte_strallato.py`](https://github.com/DomenicoGaudioso/feagent/blob/main/usage_examples/37_ponte_strallato.py)):
 
 - **singolo strallo**: l'equilibrio del nodo dà $T = P/\sin\theta$; il FEM lo
   riproduce **esattamente** (errore 0.00 %);
@@ -114,7 +114,7 @@ e l'esempio [`usage_examples/37_ponte_strallato.py`](https://github.com/Domenico
 
 ```python
 import math
-from beamfeapy import Material, Model, Section
+from feagent import Material, Model, Section
 
 m = Model()
 m.add_node(1, 0.0, 55.0, 0.0)     # sommita' antenna
@@ -148,7 +148,7 @@ Il tiro nel cavo principale varia da ~52.8 MN (mezzeria) a ~56.7 MN (sommità
 delle torri), dove $T_{\max} = \sqrt{H^2 + V^2}$.
 
 ```python
-from beamfeapy import Material, Model, Section
+from feagent import Material, Model, Section
 
 m = Model()
 # cavo principale: un elemento a CATENARIA per pannello (peso proprio esatto)

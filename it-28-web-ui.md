@@ -7,7 +7,7 @@ nav_order: 28
 
 # 28 - Interfaccia Streamlit (UI)
 
-`beamfeapy` include una **interfaccia grafica web** scritta in
+`feagent` include una **interfaccia grafica web** scritta in
 [Streamlit](https://streamlit.io/) (`app.py` nella radice del repository) che
 permette di costruire, analizzare e visualizzare modelli FEM di travi 3D
 **senza scrivere codice**.
@@ -24,7 +24,7 @@ L'app è organizzata secondo un flusso lineare:
 Dalla cartella del repository:
 
 ```bash
-pip install beamfeapy streamlit plotly openpyxl
+pip install feagent streamlit plotly openpyxl
 streamlit run app.py
 ```
 
@@ -32,7 +32,7 @@ Il browser si apre automaticamente su `http://localhost:8501`.
 
 > 💡 **Modalità demo** — per esplorare l'app con un modello già pronto (un
 > telaio 3D con statica e modale già calcolate) avvia con la variabile
-> d'ambiente `BEAMFEAPY_DEMO=1` **oppure** apri l'URL con il parametro
+> d'ambiente `FEAGENT_DEMO=1` **oppure** apri l'URL con il parametro
 > `?demo=1` (es. `http://localhost:8501/?demo=1`). Tutte le immagini di questa
 > guida usano la modalità demo.
 

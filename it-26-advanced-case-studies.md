@@ -9,7 +9,7 @@ nav_order: 3
 # 26 - Casi Studio Avanzati
 
 Questa pagina presenta tre esempi complessi tratti da casi reali che dimostrano le
-piene capacità di **beamfeapy**: un edificio multipiano, un grigliato di travi 3D e
+piene capacità di **feagent**: un edificio multipiano, un grigliato di travi 3D e
 un grattacielo con benchmark prestazionale.
 
 ---
@@ -61,8 +61,8 @@ Modal analysis: 0.284 s
 
 import _common  # noqa: F401
 import time
-from beamfeapy import Material, Model, Section
-from beamfeapy.plotting import (
+from feagent import Material, Model, Section
+from feagent.plotting import (
     plot_deformed, plot_diagram, plot_loads, plot_model, plot_mode, plot_reactions,
 )
 
@@ -185,7 +185,7 @@ python scripts/generate_palazzina_word_report.py
 Il nucleo del flusso e':
 
 ```python
-from beamfeapy.reporting import create_word_report
+from feagent.reporting import create_word_report
 
 m = build_palazzina_model()
 combinations = {
@@ -259,8 +259,8 @@ Modal analysis: 0.158 s
 
 import _common  # noqa: F401
 import time
-from beamfeapy import Material, Model, Section
-from beamfeapy.plotting import (
+from feagent import Material, Model, Section
+from feagent.plotting import (
     plot_deformed, plot_diagram, plot_internal_forces, plot_loads, plot_model,
     plot_mode, plot_reactions,
 )
@@ -418,8 +418,8 @@ Modal analysis: 3.567 s
 import _common  # noqa: F401
 import time
 import numpy as np
-from beamfeapy import Material, Model, Section
-from beamfeapy.plotting import (
+from feagent import Material, Model, Section
+from feagent.plotting import (
     plot_deformed, plot_diagram, plot_loads, plot_model, plot_mode, plot_reactions,
 )
 

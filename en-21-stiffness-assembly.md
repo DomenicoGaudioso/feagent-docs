@@ -7,7 +7,7 @@ nav_order: 21
 
 # 21 - Stiffness Matrix Assembly
 
-This page explains how beamfeapy builds the stiffness matrix, from the single
+This page explains how feagent builds the stiffness matrix, from the single
 element up to the global system, and how it applies the constraints to solve.
 
 The complete path is:
@@ -485,7 +485,7 @@ Independent translational and rotational stiffnesses can thus be assigned to the
 
 {: .warning }
 **Not yet implemented.** This section describes the planned theoretical
-formulation for `beamfeapy`. The API (`Model.add_equal_dof`,
+formulation for `feagent`. The API (`Model.add_equal_dof`,
 `Model.add_rigid_link`) is a proposal and may change. Currently the available
 constraints are rigid restraints (`fix`), prescribed displacements, and elastic
 supports (`add_elastic_support`).
@@ -557,7 +557,7 @@ constraint can be enforced in three ways:
 | **Penalty** | adds $\alpha\,\mathbf{C}^{\mathsf T}\mathbf{C}$ to $\mathbf{K}$ | simple; approximate constraint, sensitive to $\alpha$ |
 | **Lagrange multipliers** | augmented system $\begin{bmatrix}\mathbf{K} & \mathbf{C}^{\mathsf T}\\ \mathbf{C} & \mathbf{0}\end{bmatrix}\begin{bmatrix}\mathbf{U}\\ \boldsymbol{\lambda}\end{bmatrix} = \begin{bmatrix}\mathbf{F}\\ \mathbf{Q}\end{bmatrix}$ | exact; increases size and loses positive definiteness |
 
-The approach planned for `beamfeapy` is **master-slave elimination**, consistent
+The approach planned for `feagent` is **master-slave elimination**, consistent
 with the static condensation already used for releases (§1).
 
 {: .note }
@@ -576,7 +576,7 @@ m.add_rigid_link(master=3, slave=7)
 
 ```python
 import numpy as np
-from beamfeapy import Material, Model, Section
+from feagent import Material, Model, Section
 
 m = Model()
 m.add_node(1, 0, 0, 0); m.add_node(2, 4, 0, 0); m.add_node(3, 8, 0, 0)

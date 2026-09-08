@@ -45,7 +45,7 @@ This avoids both the allocation of the dense `ndof × ndof` matrix and the eleme
 
 ## Solver optimizations
 
-beamfeapy uses several techniques to approach the speed of compiled solvers
+feagent uses several techniques to approach the speed of compiled solvers
 (see [29 - Performance & Benchmarks](en-29-performance.html)):
 
 - **Closed-form distributed loads**: equivalent nodal forces of uniform/trapezoidal
@@ -61,7 +61,7 @@ beamfeapy uses several techniques to approach the speed of compiled solvers
   results = m.solve_many({"ULS": {"G": 1.35, "Q": 1.5}, "SLS": {"G": 1, "Q": 1}})
   ```
 
-- **Optional pypardiso** (MKL Pardiso): if installed (`pip install beamfeapy[fast]`)
+- **Optional pypardiso** (MKL Pardiso): if installed (`pip install feagent[fast]`)
   it is used automatically as the sparse solver instead of SuperLU.
 
 ## Sparse modal and buckling analysis
