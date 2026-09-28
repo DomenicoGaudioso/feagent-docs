@@ -11,7 +11,7 @@ feagent include un **connettore** con cui gli assistenti AI pilotano il
 solutore: validare un workbook, costruire un modello da una descrizione,
 eseguire analisi statiche, modali e di buckling, risolvere tutte le
 combinazioni con gli inviluppi, guardare la deformata, scrivere la relazione
-Word. Un unico registro di **27 tool** (`feagent.agent_api`) alimenta tre
+Word. Un unico registro di **28 tool** (`feagent.agent_api`) alimenta tre
 canali, cosi' ogni assistente parla con lo stesso feagent:
 
 | Canale | Comando | Chi lo usa |
@@ -93,9 +93,10 @@ compare subito nella finestra dell'utente ed e' annullabile con Ctrl+Z.
 | `gui_model` | fogli del modello aperto |
 | `gui_edit` | operazioni sui fogli: `upsert`, `delete` (a cascata su nodi e travi), `replace_sheet`, `rename`, `set_meta` |
 | `gui_replace_model` | sostituisce il modello con una specifica JSON (come `build_model`) |
-| `gui_run` | statica per casi o combinazione, combinazioni, modale, buckling; i risultati compaiono nella finestra |
+| `gui_run` | statica per casi o combinazione, combinazioni, modale, buckling, P-Delta, non lineare, spettro, carichi mobili, analisi dinamiche (con gruppo di sezioni); i risultati compaiono nella finestra |
 | `gui_results` | spostamenti, reazioni e diagrammi di nodi e travi scelti |
 | `gui_show` | mostra un risultato, una vista, una selezione, una tabella o un messaggio all'utente |
+| `gui_history` | storia temporale di un nodo (spostamento, velocita', accelerazione, reazione) o curva armonica di un'analisi dinamica |
 | `gui_screenshot` | immagine della vista come la vede l'utente |
 | `gui_check` | validazione del modello aperto |
 

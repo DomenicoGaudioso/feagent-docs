@@ -194,14 +194,14 @@ normalizzato prima di usarlo (`feagent convert tabelle_sap.xlsx modello.xlsx --A
 | Node | Node, X, Y, Z |
 | Material | Material, E, [nu], [alpha], [G], [rho], [gamma] |
 | Section | Section, A, Iy, Iz, J, [Asy], [Asz], [Shape, h, b, tw, tf, t, d] (forma, solo per la vista estrusa) |
-| Element | Element, NodeI, NodeJ, Material, Section, [shear], [RefX, RefY, RefZ], [ReleasesI], [ReleasesJ], [SectionJ], [Stations] - `SectionJ` e `Stations` (`0.5:SEZ2`) rendono la trave a sezione variabile |
+| Element | Element, NodeI, NodeJ, Material, Section, [shear], [RefX, RefY, RefZ], [ReleasesI], [ReleasesJ], [SectionJ], [Stations], [Roll], [OffsetYI, OffsetZI, OffsetYJ, OffsetZJ] - `SectionJ` e `Stations` (`0.5:SEZ2`) rendono la trave a sezione variabile; `Roll` ruota la sezione attorno a x locale (gradi, con Ref vuoto); gli offset spostano l'asse della trave rispetto ai nodi (assi locali) |
 | Support | Node, Dx, Dy, Dz, Rx, Ry, Rz (1 = vincolato, assi globali) |
 | NodalLoad | Node, Fx, Fy, Fz, Mx, My, Mz, [Case] |
 | DistributedLoad | Element, Component, qi, [qj], [a], [b], [frame], [Case] - `a`, `b` normalizzati in [0, 1] |
 | ConcentratedLoad | Element, xi, Fx, Fy, Fz, Mx, My, Mz, [frame], [Case] - `xi` normalizzato in [0, 1] |
 | Thermal | Element, [dT_axial], [dT_grad_y], [h_y], [dT_grad_z], [h_z], [Case] |
 | Settlement | Node, Dof, Value (sempre attivo, senza caso di carico) |
-| Prestress | Element, P, [e_i], [e_j], [plane], [sag], [Case] |
+| Prestress | Element, P, [e_i], [e_j], [plane], [sag], [Profile], [Case] - `Profile` (`0:0; 0.5:-0.3; 1:0`) e' il tracciato e(xi) poligonale al posto di e_i, e_j, sag |
 | Combination | Name, Case, Coef (opzionale, vedi sopra) |
 | ShellSection | Section, t, [kappa] - sezione di guscio o piastra |
 | Shell | Shell, N1, N2, N3, [N4], Material, Section, [Formulation] - 4 nodi = Q4, 3 nodi = triangolo (`cst` o `thin`) |
@@ -216,7 +216,16 @@ normalizzato prima di usarlo (`feagent convert tabelle_sap.xlsx modello.xlsx --A
 | SelfWeight | Case, [g], [DirX], [DirY], [DirZ] - peso proprio automatico di travi, bielle e gusci |
 | Vehicle | Vehicle, Offset, Load, [Gauge] - veicolo, una riga per asse (Load = peso dell'asse, positivo) |
 | Lane | Lane, Elements (`1:20` o `1,2,3`), [StartNode], [Ecc], [Skew], [Deck] - corsia su una catena di travi |
-| MovingLoad | MovingLoad, Lane, Vehicle, [Positions], [Axis] (`-z`), [Factor], [Static] - caso di carico mobile |
+| MovingLoad | MovingLoad, Lane, Vehicle, [Positions], [Axis] (`-z`), [Factor], [Static], [UDL], [Width] - caso di carico mobile; `UDL` [N/m2] per `Width` (default 3 m) e' il carico distribuito di corsia applicato a scacchiera |
+| SupportAxis | Node, xX, xY, xZ, yX, yY, yZ - appoggio ruotato: x locale e un vettore del piano x-y; i GdL di Support e Settlement del nodo diventano locali |
+| SectionGroup | Group, [Elements], Section, [Cases] - sezioni alternative (fessurata, lungo termine); `Elements` vuoto = tutte le travi; `Cases` lega il gruppo ai casi di carico |
+| ThermalProfile | Element (`3` o `1:10`), Axis (`y`, `z`), h, Profile (`-0.25:0; 0.2:4; 0.25:13`), [Width], [n_section], [Case] - profilo termico non lineare sull'altezza |
+| Tendon | Tendon, P, [Elements], [Case] - cavo di precompressione definito dal tracciato |
+| TendonPoint | Tendon, X, Y, Z - vertici del tracciato in ordine |
+| Accelerogram | Accelerogram, Time, Acc - accelerogramma o funzione del tempo, una riga per campione |
+| Device | Device, NodeI, [NodeJ], Type (`bilinear`, `fps`, `viscous`, `gap`), [Axes], parametri (k1 k2 Fy; W R mu mu_slow a u_y; c alpha; k gap sign), [coupled] - dispositivo non lineare, NodeJ vuoto = suolo |
+| DynamicAnalysis | Analysis, Type, [Accelerogram], [Direction], [Scale], [dt], [t_end], [Damping], [DampingType], [F1], [F2], [Modes], [MassSource], [Method], [FreqMin], [FreqMax], [NFreq], [MovingLoad], [Speed], [SectionGroup] - analisi dinamica |
+| DynamicLoad | Analysis, Node, Dof, Amplitude, [History], [Phase] - forza dinamica nodale |
 | README | testo libero, ignorato |
 
 Le unita' sono SI (N, m, Pa, kg, K) o qualsiasi sistema coerente. I carichi
@@ -226,3 +235,59 @@ negativo (`y` locale = `Y` globale di default); vedi
 [08 - Orientazione della sezione](it-08-section-orientation.html). La
 descrizione programmatica di ogni colonna (`feagent.io_excel.SHEET_DOCS`) e'
 quella che il template scrive nel foglio `README`.
+
+## Fogli avanzati: appoggi ruotati, gruppi di sezioni, profili termici, cavi
+
+Ogni funzione della libreria ha il suo foglio, cosi' il modello si salva e si
+rilegge senza perdite:
+
+| In Python | Nel workbook |
+|---|---|
+| `add_beam(..., roll=...)`, `set_element_axes(...)` | colonne `Roll` (gradi) oppure `RefX, RefY, RefZ` (la y locale effettiva) di `Element` |
+| `add_beam(..., offset_i=(oy, oz), offset_j=...)` | colonne `OffsetYI, OffsetZI, OffsetYJ, OffsetZJ` |
+| `support(node, axes=R, ...)`, `set_support_axes(node, R)` | foglio `SupportAxis` (righe x e y di `R`) |
+| `add_section_group(g, ...)`, `link_section_to_cases(g, ...)` | foglio `SectionGroup` |
+| `add_thermal_profile(elem, punti, axis, h, width)` | foglio `ThermalProfile` |
+| `add_prestress(elem, P, profile=...)` | colonna `Profile` di `Prestress` |
+| `add_cable_prestress(P, punti, elements, name=...)` | fogli `Tendon` e `TendonPoint` |
+
+I profili si scrivono come punti `ascissa:valore` separati da `;` e sono
+lineari a tratti. Un profilo di precompressione dato come funzione Python si
+salva campionato in 41 punti, gli stessi con cui la libreria costruisce il
+cavo poligonale equivalente, quindi la rilettura restituisce gli stessi
+carichi. I carichi generati da `add_cable_prestress` sono marcati
+`origin="cable_prestress"` e non si riscrivono in `ConcentratedLoad`.
+
+```python
+m = Model()
+...
+m.support(9, axes=R, uy=True, uz=True)          # carrello su piano inclinato
+m.add_section_group("FESS", "CRK")
+m.link_section_to_cases("FESS", "G2")
+m.add_thermal_profile(3, [(-0.25, 0), (0.2, 4), (0.25, 13)], axis="y", h=0.5, case="T")
+m.add_cable_prestress(1.2e6, [(0, -0.1, 0), (6, -0.2, 0), (12, -0.1, 0)], case="P", name="C1")
+m.to_excel("modello.xlsx")                       # tutto torna con read_model
+```
+
+## Analisi dinamiche nel workbook
+
+`Accelerogram`, `Device`, `DynamicAnalysis` e `DynamicLoad` descrivono le
+analisi dinamiche; `feagent.dynamic_cases.run_dynamic(model,
+model.dynamic_defs, nome)` le esegue con la libreria:
+
+| Type | Funzione |
+|---|---|
+| `time_history` | `Model.solve_time_history` (Newmark, integrazione diretta) |
+| `modal_time_history` | `Model.solve_time_history_modal` (`Modes` modi, `Method` exact o newmark) |
+| `nonlinear_time_history` | `nl_dynamics.solve_time_history_nl` con i dispositivi del foglio `Device` |
+| `harmonic` | `Model.solve_harmonic` da `FreqMin` a `FreqMax` [Hz] in `NFreq` passi |
+| `moving_dynamic` | `moving_dynamics.moving_load_dynamic_analysis` con il caso `MovingLoad` alla velocita' `Speed` [m/s], piu' il coefficiente di amplificazione dinamica rispetto alla scansione quasi statica |
+
+L'eccitazione e' un accelerogramma alla base (`Accelerogram`, `Direction`,
+`Scale`; piu' componenti separate da virgola) oppure le forze nodali di
+`DynamicLoad` (`Amplitude` per la funzione del tempo `History`; senza
+`History` la forza e' un gradino). Lo smorzamento e' di Rayleigh con rapporto
+`Damping` alle frequenze `F1` e `F2` (vuote = primi due modi), modale nella
+sovrapposizione modale, oppure assente (`DampingType = none`). `MassSource`
+elenca i casi convertiti in massa (`G1=1 G2=1`); vuoto usa la densita' dei
+materiali. `dt` e `t_end` vuoti prendono passo e durata dell'accelerogramma.

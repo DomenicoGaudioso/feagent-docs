@@ -293,6 +293,85 @@ percorrenza guardando dall'alto (normale = verticale × tangente).
 La relazione di calcolo riporta veicoli, corsie, casi mobili, figure degli
 inviluppi, il convoglio in mezzeria e le tabelle degli inviluppi.
 
+Il **carico distribuito di corsia** (colonne `UDL` e `Width` del caso mobile,
+per esempio 9 kN/m² su 3 m per la corsia 1 dello schema LM1) si applica **a
+scacchiera**: per ogni grandezza, in ogni stazione, si caricano solo i tratti
+in cui la linea di influenza ha segno sfavorevole, e il contributo si somma a
+quello del veicolo (per due campate uguali, il massimo momento positivo vale
+0,0957 qL², quello sull'appoggio qL²/8). Se una ruota cade oltre gli estremi
+dei traversi di ripartizione, il messaggio lo segnala con il numero di casi e
+la distanza massima: di solito eccentricità o carreggiata sono sbagliate.
+
+## Travi ruotate ed eccentriche, appoggi ruotati, gruppi di sezioni
+
+* **Rotazione della sezione** attorno all'asse locale x (colonna `Roll`, in
+  gradi, con il vettore di riferimento vuoto) ed **eccentricità dell'asse**
+  rispetto ai nodi (`OffsetYI`, `OffsetZI`, `OffsetYJ`, `OffsetZJ`, assi
+  locali), come l'offset di sezione dei programmi commerciali: dal pannello
+  delle proprietà o da **Proprietà degli elementi**. Nella vista l'asse
+  eccentrico si disegna con i bracci rigidi tratteggiati, e la vista estrusa
+  sposta la sezione.
+* **Assi d'appoggio ruotati** (**Modello > Assi d'appoggio ruotati**, foglio
+  `SupportAxis`): per esempio un carrello su un piano inclinato; i vincoli e i
+  cedimenti del nodo diventano locali, la vista disegna gli assi x′ e y′ e i
+  risultati riportano anche le reazioni negli assi locali.
+* **Gruppi di sezioni** (**Modello > Gruppo di sezioni**, foglio
+  `SectionGroup`): sezioni alternative (fessurata, lungo termine) per alcune
+  travi o per tutte. Se tutti i casi di un'analisi sono legati allo stesso
+  gruppo, il gruppo si applica da solo; altrimenti si sceglie nella finestra
+  delle analisi statica, modale e di buckling.
+
+## Profili termici e cavi di precompressione
+
+* **Profilo termico non lineare** (**Carichi > Profilo termico**): punti
+  quota:temperatura sull'altezza della sezione, con un modello di partenza del
+  riscaldamento dell'estradosso; nell'analisi entrano la parte uniforme e
+  quella lineare del profilo, pesate sulla larghezza della sezione.
+* **Cavo di precompressione a tracciato** (**Carichi > Cavo di
+  precompressione**): vertici X Y Z del cavo (anche dai nodi selezionati,
+  spostati dell'eccentricità), tiro e travi candidate. Le forze di ancoraggio
+  e di deviazione vanno sulle travi più vicine con il momento
+  dell'eccentricità; la vista disegna il tracciato tratteggiato.
+* La precompressione per trave accetta anche un **profilo** `xi:e` al posto di
+  eccentricità e freccia: il cavo è la poligonale per quei punti.
+
+![Ponte con cavo a tracciato, appoggio di riva ruotato e trave con asse eccentrico](images/gui_advanced.png)
+
+## Analisi dinamiche
+
+Il gruppo **Dinamica** dell'albero e **Analisi > Dinamica** raccolgono:
+
+| Oggetto | Contenuto |
+|---|---|
+| Accelerogrammi | da file di testo (una o due colonne, fattore di scala), artificiali compatibili con lo spettro EC8 / NTC 2018 (Gasparini e Vanmarcke), sinusoidi, impulsi; il grafico mostra la storia e lo spettro di risposta elastico |
+| Dispositivi | isolatori a pendolo (FPS), elastomerici o bilineari, dissipatori viscosi, ritegni con gioco; fra due nodi o fra un nodo e il suolo |
+| Analisi dinamiche | time history lineare (Newmark) o modale, time history non lineare con i dispositivi, risposta armonica, convoglio in movimento |
+| Forze dinamiche | forze nodali per una funzione del tempo o armoniche con fase |
+
+Ogni analisi ha la sua sorgente di massa, lo smorzamento (Rayleigh tarato su
+due frequenze, modale, nessuno) e l'eventuale gruppo di sezioni.
+**Analisi > Analisi dinamiche** le esegue e per ciascuna restituisce:
+
+* la **deformata nel tempo** (o per frequenza nell'armonica): cursore e
+  pulsante di riproduzione nella barra;
+* gli **inviluppi** di N, V, T e M e delle reazioni (per l'armonica le
+  ampiezze);
+* la **storia temporale di un nodo qualsiasi** (spostamento, velocità,
+  accelerazione relativa o assoluta, reazione) o la **curva di risposta**
+  armonica, calcolate a richiesta, esportabili in CSV e PNG;
+* il **taglio alla base** nel tempo (vincoli più dispositivi verso il suolo);
+* il **ciclo forza-spostamento** e l'energia dissipata di ogni dispositivo;
+* per il convoglio in movimento, il **coefficiente di amplificazione
+  dinamica** rispetto alla scansione quasi statica dello stesso convoglio.
+
+![Telaio su isolatori a pendolo: deformata durante il sisma](images/gui_dynamic.png)
+
+![Ciclo forza-spostamento di un isolatore a pendolo](images/gui_device.png)
+
+La relazione di calcolo aggiunge il capitolo delle analisi dinamiche:
+equazione del moto, smorzamento, accelerogrammi, dispositivi, sintesi dei
+picchi, storie, taglio alla base, cicli dei dispositivi e inviluppi.
+
 ## Pilotare l'interfaccia con un'IA
 
 Il modello di ogni sessione vive sul server: la finestra, gli assistenti IA
@@ -327,6 +406,7 @@ L'IA dispone di tre canali, tutti sulla stessa API:
 | `live/results` | spostamenti, reazioni, diagrammi |
 | `live/show` | risultato, vista, selezione, tabella o messaggio da mostrare |
 | `live/screenshot` | immagine della vista |
+| `live/history` | storia temporale di un nodo o curva armonica di un'analisi dinamica |
 | `live/check`, `live/export` | validazione, file esportato |
 
 **Strumenti > Collega un'IA** (o il pulsante **IA** della barra) mostra

@@ -10,7 +10,7 @@ nav_order: 38
 feagent ships a **connector** that lets AI assistants drive the solver:
 validate a workbook, build a model from a description, run static, modal and
 buckling analyses, solve every combination with envelopes, look at the
-deformed shape, write the Word report. One registry of **27 tools**
+deformed shape, write the Word report. One registry of **28 tools**
 (`feagent.agent_api`) feeds three channels, so every assistant talks to the
 same feagent:
 
@@ -104,9 +104,10 @@ once in the user's window and can be undone with Ctrl+Z.
 | `gui_model` | sheets of the open model |
 | `gui_edit` | sheet operations: `upsert`, `delete` (cascading on nodes and beams), `replace_sheet`, `rename`, `set_meta` |
 | `gui_replace_model` | replace the model with a JSON spec (as `build_model`) |
-| `gui_run` | static per load case or combination, combinations, modal, buckling; results appear in the window |
+| `gui_run` | static per load case or combination, combinations, modal, buckling, P-Delta, nonlinear, spectrum, moving loads, dynamic analyses (with a section group); results appear in the window |
 | `gui_results` | displacements, reactions and diagrams of chosen nodes and beams |
 | `gui_show` | show a result, a view, a selection, a table or a message to the user |
+| `gui_history` | time history of a node (displacement, velocity, acceleration, reaction) or harmonic curve of a dynamic analysis |
 | `gui_screenshot` | image of the view as the user sees it |
 | `gui_check` | validation of the open model |
 

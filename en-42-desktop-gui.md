@@ -285,6 +285,83 @@ vertical × tangent).
 The calculation report lists vehicles, lanes, moving cases, envelope figures,
 the vehicle at midspan and the envelope tables.
 
+The **lane distributed load** (`UDL` and `Width` columns of the moving case,
+for example 9 kN/m² over 3 m for lane 1 of load model LM1) is applied **in a
+checkerboard pattern**: for every quantity, at every station, only the
+stretches where the influence line has an adverse sign are loaded, and the
+contribution adds to the vehicle's (for two equal spans the largest positive
+moment is 0.0957 qL², the one over the support qL²/8). When a wheel falls
+beyond the ends of the distributing cross beams the log says so, with the
+number of cases and the largest distance: usually eccentricity or gauge are
+wrong.
+
+## Rotated and offset beams, rotated supports, section groups
+
+* **Section roll** about the local x axis (`Roll` column, degrees, with an
+  empty reference vector) and **axis offsets** from the nodes (`OffsetYI`,
+  `OffsetZI`, `OffsetYJ`, `OffsetZJ`, local axes), like the section offset of
+  commercial programs: from the properties panel or **Element properties**.
+  The view draws the offset axis with dashed rigid arms, and the extruded view
+  shifts the section.
+* **Rotated support axes** (**Model > Rotated support axes**, `SupportAxis`
+  sheet): for example a roller on an inclined plane; the node's restraints and
+  settlements become local, the view draws the x′ and y′ axes and the results
+  also list the reactions in the local axes.
+* **Section groups** (**Model > Section group**, `SectionGroup` sheet):
+  alternative sections (cracked, long term) for some beams or all of them.
+  When all the cases of an analysis are linked to the same group it applies by
+  itself; otherwise it is chosen in the static, modal and buckling dialogs.
+
+## Thermal profiles and prestressing tendons
+
+* **Nonlinear thermal profile** (**Loads > Thermal profile**): depth:temperature
+  points over the section depth, with a starting model for top-surface
+  heating; the analysis takes the uniform and linear parts of the profile,
+  weighted on the section width.
+* **Tendon by path** (**Loads > Prestressing tendon**): X Y Z vertices of the
+  tendon (also from the selected nodes, shifted by the eccentricity), force
+  and candidate beams. Anchor and deviation forces go to the nearest beams
+  with the eccentricity moment; the view draws the dashed path.
+* Beam prestress also accepts a **profile** `xi:e` instead of eccentricities
+  and sag: the tendon is the polygon through those points.
+
+![Bridge with a tendon path, rotated abutment support and offset beam](images/gui_advanced.png)
+
+## Dynamic analyses
+
+The **Dynamics** group of the tree and **Analysis > Dynamics** hold:
+
+| Object | Content |
+|---|---|
+| Accelerograms | from a text file (one or two columns, scale factor), artificial ones compatible with the EC8 / NTC 2018 spectrum (Gasparini and Vanmarcke), sines, pulses; the chart shows the record and its elastic response spectrum |
+| Devices | friction pendulum (FPS), elastomeric or bilinear isolators, viscous dampers, gap restrainers; between two nodes or a node and the ground |
+| Dynamic analyses | linear (Newmark) or modal time history, nonlinear time history with the devices, harmonic response, moving train |
+| Dynamic forces | nodal forces times a time function, or harmonic with a phase |
+
+Each analysis has its mass source, damping (Rayleigh at two frequencies,
+modal, none) and optional section group. **Analysis > Dynamic analyses** runs
+them and returns for each one:
+
+* the **deformed shape in time** (or per frequency for the harmonic one):
+  slider and play button in the toolbar;
+* the **envelopes** of N, V, T and M and of the reactions (amplitudes for the
+  harmonic one);
+* the **time history of any node** (displacement, velocity, relative or
+  absolute acceleration, reaction) or the harmonic **response curve**,
+  computed on request, exportable as CSV and PNG;
+* the **base shear** in time (restraints plus ground devices);
+* the **force-displacement loop** and the dissipated energy of every device;
+* for the moving train, the **dynamic amplification factor** against the
+  quasi static scan of the same train.
+
+![Frame on friction pendulum isolators: deformed shape during the earthquake](images/gui_dynamic.png)
+
+![Force-displacement loop of a friction pendulum isolator](images/gui_device.png)
+
+The calculation report adds the dynamic analyses chapter: equation of motion,
+damping, accelerograms, devices, peak summary, histories, base shear, device
+loops and envelopes.
+
 ## Driving the interface with an AI
 
 Each session's model lives on the server: the window, AI assistants and other
@@ -318,6 +395,7 @@ The AI has three channels, all on the same API:
 | `live/results` | displacements, reactions, diagrams |
 | `live/show` | result, view, selection, table or message to show |
 | `live/screenshot` | image of the view |
+| `live/history` | time history of a node or harmonic curve of a dynamic analysis |
 | `live/check`, `live/export` | validation, exported file |
 
 **Strumenti > Collega un'IA** (Tools > Connect an AI, or the **IA** toolbar

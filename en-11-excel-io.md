@@ -192,14 +192,14 @@ use (`feagent convert sap_tables.xlsx model.xlsx --A ... --Iy ...`).
 | Node | Node, X, Y, Z |
 | Material | Material, E, [nu], [alpha], [G], [rho], [gamma] |
 | Section | Section, A, Iy, Iz, J, [Asy], [Asz], [Shape, h, b, tw, tf, t, d] (shape, extruded view only) |
-| Element | Element, NodeI, NodeJ, Material, Section, [shear], [RefX, RefY, RefZ], [ReleasesI], [ReleasesJ], [SectionJ], [Stations] - `SectionJ` and `Stations` (`0.5:SEC2`) make the beam tapered |
+| Element | Element, NodeI, NodeJ, Material, Section, [shear], [RefX, RefY, RefZ], [ReleasesI], [ReleasesJ], [SectionJ], [Stations], [Roll], [OffsetYI, OffsetZI, OffsetYJ, OffsetZJ] - `SectionJ` and `Stations` (`0.5:SEC2`) make the beam tapered; `Roll` rotates the section about local x (degrees, with an empty Ref); the offsets move the beam axis away from the nodes (local axes) |
 | Support | Node, Dx, Dy, Dz, Rx, Ry, Rz (1 = restrained, global axes) |
 | NodalLoad | Node, Fx, Fy, Fz, Mx, My, Mz, [Case] |
 | DistributedLoad | Element, Component, qi, [qj], [a], [b], [frame], [Case] - `a`, `b` normalized in [0, 1] |
 | ConcentratedLoad | Element, xi, Fx, Fy, Fz, Mx, My, Mz, [frame], [Case] - `xi` normalized in [0, 1] |
 | Thermal | Element, [dT_axial], [dT_grad_y], [h_y], [dT_grad_z], [h_z], [Case] |
 | Settlement | Node, Dof, Value (always active, no load case) |
-| Prestress | Element, P, [e_i], [e_j], [plane], [sag], [Case] |
+| Prestress | Element, P, [e_i], [e_j], [plane], [sag], [Profile], [Case] - `Profile` (`0:0; 0.5:-0.3; 1:0`) is the polygonal tendon path e(xi) replacing e_i, e_j, sag |
 | Combination | Name, Case, Coef (optional, see above) |
 | ShellSection | Section, t, [kappa] - shell or plate section |
 | Shell | Shell, N1, N2, N3, [N4], Material, Section, [Formulation] - 4 nodes = Q4, 3 nodes = triangle (`cst` or `thin`) |
@@ -214,7 +214,16 @@ use (`feagent convert sap_tables.xlsx model.xlsx --A ... --Iy ...`).
 | SelfWeight | Case, [g], [DirX], [DirY], [DirZ] - automatic self weight of beams, trusses and shells |
 | Vehicle | Vehicle, Offset, Load, [Gauge] - vehicle, one row per axle (Load = axle weight, positive) |
 | Lane | Lane, Elements (`1:20` or `1,2,3`), [StartNode], [Ecc], [Skew], [Deck] - lane on a chain of beams |
-| MovingLoad | MovingLoad, Lane, Vehicle, [Positions], [Axis] (`-z`), [Factor], [Static] - moving load case |
+| MovingLoad | MovingLoad, Lane, Vehicle, [Positions], [Axis] (`-z`), [Factor], [Static], [UDL], [Width] - moving load case; `UDL` [N/m2] times `Width` (default 3 m) is the lane distributed load, applied on the adverse stretches |
+| SupportAxis | Node, xX, xY, xZ, yX, yY, yZ - rotated support: local x and a vector of the local x-y plane; the node's Support and Settlement DOFs become local |
+| SectionGroup | Group, [Elements], Section, [Cases] - alternative sections (cracked, long term); empty `Elements` = all beams; `Cases` links the group to load cases |
+| ThermalProfile | Element (`3` or `1:10`), Axis (`y`, `z`), h, Profile (`-0.25:0; 0.2:4; 0.25:13`), [Width], [n_section], [Case] - nonlinear temperature profile over the depth |
+| Tendon | Tendon, P, [Elements], [Case] - prestressing tendon defined by its path |
+| TendonPoint | Tendon, X, Y, Z - path vertices in order |
+| Accelerogram | Accelerogram, Time, Acc - ground motion or time function, one row per sample |
+| Device | Device, NodeI, [NodeJ], Type (`bilinear`, `fps`, `viscous`, `gap`), [Axes], parameters (k1 k2 Fy; W R mu mu_slow a u_y; c alpha; k gap sign), [coupled] - nonlinear device, empty NodeJ = ground |
+| DynamicAnalysis | Analysis, Type, [Accelerogram], [Direction], [Scale], [dt], [t_end], [Damping], [DampingType], [F1], [F2], [Modes], [MassSource], [Method], [FreqMin], [FreqMax], [NFreq], [MovingLoad], [Speed], [SectionGroup] - dynamic analysis |
+| DynamicLoad | Analysis, Node, Dof, Amplitude, [History], [Phase] - nodal dynamic force |
 | README | free text, ignored |
 
 Units are SI (N, m, Pa, kg, K) or any consistent system. Gravity loads on
@@ -223,3 +232,59 @@ horizontal beams are `fy` components with a negative sign (local `y` = global
 [08 - Section Orientation](en-08-section-orientation.html). The programmatic
 description of every column (`feagent.io_excel.SHEET_DOCS`) is what the
 template writes in its `README` sheet.
+
+## Advanced sheets: rotated supports, section groups, thermal profiles, tendons
+
+Every library feature has its sheet, so a model saves and reads back without
+losses:
+
+| In Python | In the workbook |
+|---|---|
+| `add_beam(..., roll=...)`, `set_element_axes(...)` | `Roll` (degrees) or `RefX, RefY, RefZ` (the actual local y) columns of `Element` |
+| `add_beam(..., offset_i=(oy, oz), offset_j=...)` | `OffsetYI, OffsetZI, OffsetYJ, OffsetZJ` columns |
+| `support(node, axes=R, ...)`, `set_support_axes(node, R)` | `SupportAxis` sheet (rows x and y of `R`) |
+| `add_section_group(g, ...)`, `link_section_to_cases(g, ...)` | `SectionGroup` sheet |
+| `add_thermal_profile(elem, points, axis, h, width)` | `ThermalProfile` sheet |
+| `add_prestress(elem, P, profile=...)` | `Profile` column of `Prestress` |
+| `add_cable_prestress(P, points, elements, name=...)` | `Tendon` and `TendonPoint` sheets |
+
+Profiles are written as `abscissa:value` points separated by `;` and are
+piecewise linear. A prestress profile given as a Python function is saved
+sampled at 41 points, the same the library uses to build the equivalent
+polygonal tendon, so reading it back gives the same loads. Loads generated by
+`add_cable_prestress` are tagged `origin="cable_prestress"` and are not
+written again in `ConcentratedLoad`.
+
+```python
+m = Model()
+...
+m.support(9, axes=R, uy=True, uz=True)          # roller on an inclined plane
+m.add_section_group("CRACKED", "CRK")
+m.link_section_to_cases("CRACKED", "G2")
+m.add_thermal_profile(3, [(-0.25, 0), (0.2, 4), (0.25, 13)], axis="y", h=0.5, case="T")
+m.add_cable_prestress(1.2e6, [(0, -0.1, 0), (6, -0.2, 0), (12, -0.1, 0)], case="P", name="C1")
+m.to_excel("model.xlsx")                         # everything comes back with read_model
+```
+
+## Dynamic analyses in the workbook
+
+`Accelerogram`, `Device`, `DynamicAnalysis` and `DynamicLoad` describe the
+dynamic analyses; `feagent.dynamic_cases.run_dynamic(model,
+model.dynamic_defs, name)` runs them with the library:
+
+| Type | Function |
+|---|---|
+| `time_history` | `Model.solve_time_history` (Newmark, direct integration) |
+| `modal_time_history` | `Model.solve_time_history_modal` (`Modes` modes, `Method` exact or newmark) |
+| `nonlinear_time_history` | `nl_dynamics.solve_time_history_nl` with the devices of the `Device` sheet |
+| `harmonic` | `Model.solve_harmonic` from `FreqMin` to `FreqMax` [Hz] in `NFreq` steps |
+| `moving_dynamic` | `moving_dynamics.moving_load_dynamic_analysis` with the `MovingLoad` case at speed `Speed` [m/s], plus the dynamic amplification factor against the quasi static scan |
+
+The excitation is a base acceleration record (`Accelerogram`, `Direction`,
+`Scale`; several components separated by commas) or the nodal forces of
+`DynamicLoad` (`Amplitude` times the time function `History`; without
+`History` the force is a step). Damping is Rayleigh with ratio `Damping` at
+frequencies `F1` and `F2` (empty = first two modes), modal in the modal
+superposition, or none (`DampingType = none`). `MassSource` lists the load
+cases turned into mass (`G1=1 G2=1`); empty uses the material density. Empty
+`dt` and `t_end` take the step and duration of the record.
