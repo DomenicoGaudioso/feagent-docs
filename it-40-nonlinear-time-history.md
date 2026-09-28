@@ -44,7 +44,7 @@ li' sta la massa dell'impalcato).
 | Legge | Forza | Uso tipico |
 |---|---|---|
 | `Bilinear(k1, k2, Fy, coupled=True)` | elasto-plastico con incrudimento cinematico in parallelo a `k2`: rigidezza iniziale `k1`, post-snervamento `k2`, forza di snervamento `Fy` | isolatori elastomerici con nucleo in piombo, HDRB (bilineare equivalente), dissipatori isteretici |
-| `FrictionPendulum(W, R, mu, mu_slow=None, a=50, u_y=5e-4)` | `F = (W/R) d + mu W sign(v)` con rigidezza di aderenza `mu W / u_y`; attrito dipendente dalla velocita' opzionale `mu(v) = mu_fast - (mu_fast - mu_slow) exp(-a|v|)` (Constantinou et al. 1990) | pendolo a scorrimento singolo; il periodo `2π√(R/g)` non dipende dalla massa |
+| `FrictionPendulum(W, R, mu, mu_slow=None, a=50, u_y=5e-4)` | `F = (W/R) d + mu W z`, `|z| <= 1`: richiamo sullo spostamento totale in parallelo all'attrito di soglia esattamente `mu W` e rigidezza di aderenza `mu W / u_y` (rigidezza iniziale complessiva `mu W / u_y + W/R`, come `singleFPBearing` di OpenSees); attrito dipendente dalla velocita' opzionale `mu(v) = mu_fast - (mu_fast - mu_slow) exp(-a|v|)` (Constantinou et al. 1990); `R = inf` per l'appoggio a scorrimento piano | pendolo a scorrimento singolo; il periodo `2π√(R/g)` non dipende dalla massa |
 | `ViscousDamper(c, alpha)` | `F = c |v|^alpha sign(v)` (regolarizzata vicino a `v = 0` per `alpha < 1`) | dissipatori fluido-viscosi (EN 15129 par. 7) |
 | `Gap(k, gap, sign)` | rigidezza di contatto `k` oltre il gioco `gap` | ritegni sismici, martellamento sulle spalle |
 
@@ -91,6 +91,11 @@ chiusa; le tabelle complete sono in [39 - Report dei benchmark](it-39-benchmark-
 
 - isolatore bilineare e pendolo a scorrimento sotto accelerogramma EC8-compatibile
   contro `zeroLength + Steel01`: storie di spostamento e forza entro lo 0,03 % del picco;
+- pendolo a scorrimento bidirezionale sotto due componenti simultanee, con la
+  gravita' applicata prima del sisma, contro l'elemento `singleFPBearing`
+  (attrito di Coulomb sulla forza assiale): spostamenti entro lo 0,2 %, forze
+  entro lo 0,5 % (lo scarto residuo e' il termine geometrico dei grandi
+  spostamenti di OpenSees);
 - isolatore bidirezionale accoppiato sotto due componenti simultanee contro
   `elastomericBearingPlasticity`: entro lo 0,003 %;
 - dissipatore viscoso non lineare contro il materiale `Viscous`: entro lo 0,003 %;

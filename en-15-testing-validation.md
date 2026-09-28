@@ -90,7 +90,7 @@ same cases run under pytest in `tests/test_benchmarks_simis.py`.
 | NAFEMS FV2 | pin-ended cross | first 8 in-plane frequencies (11.336, 17.709 x3, 45.345, 57.390 x3 Hz) | 1 % |
 | NAFEMS FV4 | cantilever with off-centre point masses | 6 coupled flexural-torsional frequencies with close eigenvalues (1.723, 1.727, 7.413, 9.972, 18.155, 26.957 Hz); masses on rigid links | 1 % |
 | NAFEMS FV5 | deep simply-supported beam | 9 frequencies (flexural, torsional, extensional) with Timoshenko shear and rotary inertia (`mass="consistent-rotary"`) | 2 % |
-| Nonlinear solver | isolators and dampers vs OpenSees | bilinear, friction pendulum, coupled bidirectional isolator, nonlinear viscous damper under EC8-compatible records; energy balance of an isolated deck — see [40 - Nonlinear time history](en-40-nonlinear-time-history.html) | 0.5-1 % |
+| Nonlinear solver | isolators and dampers vs OpenSees | bilinear, friction pendulum (also bidirectional against `singleFPBearing`), coupled bidirectional isolator, nonlinear viscous damper under EC8-compatible records; energy balance of an isolated deck — see [40 - Nonlinear time history](en-40-nonlinear-time-history.html) | 0.5-1 % |
 
 The full table of results is written to `validation/output/simis_benchmarks.md` and published as
 [39 - Benchmark report](en-39-benchmark-report.html). Two details worth

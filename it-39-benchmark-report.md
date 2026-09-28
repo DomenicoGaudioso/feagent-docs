@@ -7,7 +7,7 @@ nav_order: 39
 
 # 39 - Report dei benchmark
 
-Report completo dei benchmark pubblicati risolti con feagent (esecuzione del 2026-09-08): **275 confronti su 275 entro la tolleranza del test originale**. Ogni riga riporta il valore feagent, il riferimento, l'errore e la tolleranza; l'ultima colonna la fonte e le eventuali note. I gruppi seguono [15 - Testing e Validazione](it-15-testing-validation.html); i gruppi del solutore non lineare sono descritti in [40 - Time-history non lineare](it-40-nonlinear-time-history.html). Si rigenera con `python validation/simis_benchmarks.py --docs`.
+Report completo dei benchmark pubblicati risolti con feagent (esecuzione del 2026-09-12): **285 confronti su 285 entro la tolleranza del test originale**. Ogni riga riporta il valore feagent, il riferimento, l'errore e la tolleranza; l'ultima colonna la fonte e le eventuali note. I gruppi seguono [15 - Testing e Validazione](it-15-testing-validation.html); i gruppi del solutore non lineare sono descritti in [40 - Time-history non lineare](it-40-nonlinear-time-history.html). Si rigenera con `python validation/simis_benchmarks.py --docs`.
 
 ## Riepilogo
 
@@ -31,10 +31,11 @@ Report completo dei benchmark pubblicati risolti con feagent (esecuzione del 202
 | simis.io - torre sotto sisma vs OpenSees | 33 | 33 | 0.1631 |
 | simis.io - tiro in testa alla torre vs OpenSees | 48 | 48 | 0.0004 |
 | Solutore non lineare - limite elastico | 2 | 2 | 0.0000 |
-| Solutore non lineare - isolatore bilineare vs OpenSees | 5 | 5 | 0.0024 |
-| Solutore non lineare - pendolo a scorrimento vs OpenSees | 5 | 5 | 0.0279 |
-| Solutore non lineare - isolatore bidirezionale vs OpenSees | 9 | 9 | 0.0022 |
-| Solutore non lineare - dissipatore viscoso vs OpenSees | 3 | 3 | 0.0028 |
+| Solutore non lineare - isolatore bilineare vs OpenSees | 5 | 5 | 0.0032 |
+| Solutore non lineare - pendolo a scorrimento vs OpenSees | 5 | 5 | 0.0208 |
+| Solutore non lineare - isolatore bidirezionale vs OpenSees | 9 | 9 | 0.0058 |
+| Solutore non lineare - pendolo bidirezionale vs singleFPBearing di OpenSees | 10 | 10 | 0.4542 |
+| Solutore non lineare - dissipatore viscoso vs OpenSees | 3 | 3 | 0.0032 |
 | Solutore non lineare - impalcato isolato, bilancio energetico | 4 | 4 | 0.0000 |
 
 ## Risultati di dettaglio
@@ -203,7 +204,7 @@ Report completo dei benchmark pubblicati risolti con feagent (esecuzione del 202
 | 2 massa (xi1 = 1 %) | u_max [m] | 0.487393 | 0.487393 | 0.0000 | 1 | OK | simis.io 'Decay test tower' (Biggs 1964, oscillatore smorzato); xi = 1.00 % |
 | 2 massa (xi1 = 1 %) | periodo [s] | 3.11077 | 3.11074 | 0.0008 | 1 | OK | simis.io 'Decay test tower' (Biggs 1964, oscillatore smorzato); analitico 2 pi / w_d = 3.1107 |
 | 3 rigidezza (xi1 = 1 %) | u_max [m] | 0.487393 | 0.487393 | 0.0000 | 1 | OK | simis.io 'Decay test tower' (Biggs 1964, oscillatore smorzato); xi = 1.00 % |
-| 3 rigidezza (xi1 = 1 %) | periodo [s] | 3.11077 | 3.11074 | 0.0009 | 1 | OK | simis.io 'Decay test tower' (Biggs 1964, oscillatore smorzato); analitico 2 pi / w_d = 3.1107 |
+| 3 rigidezza (xi1 = 1 %) | periodo [s] | 3.11077 | 3.11074 | 0.0008 | 1 | OK | simis.io 'Decay test tower' (Biggs 1964, oscillatore smorzato); analitico 2 pi / w_d = 3.1107 |
 | 4 massa, 2o modo (xi2 = 0.49 %) | u_max [m] | 0.242543 | 0.242543 | 0.0001 | 1 | OK | simis.io 'Decay test tower' (Biggs 1964, oscillatore smorzato); xi = 0.49 % |
 | 4 massa, 2o modo (xi2 = 0.49 %) | periodo [s] | 1.53591 | 1.53585 | 0.0035 | 1 | OK | simis.io 'Decay test tower' (Biggs 1964, oscillatore smorzato); analitico 2 pi / w_d = 1.5359 |
 | 5 rigidezza, 2o modo (xi2 = 2.0 %) | u_max [m] | 0.236876 | 0.236875 | 0.0002 | 1 | OK | simis.io 'Decay test tower' (Biggs 1964, oscillatore smorzato); xi = 2.03 % |
@@ -375,57 +376,72 @@ Report completo dei benchmark pubblicati risolti con feagent (esecuzione del 202
 
 | Caso | Grandezza | feagent | Riferimento | Errore [%] | Toll. [%] | Esito | Fonte / nota |
 |---|---|---|---|---|---|---|---|
-| Fy = 1e15 N | max |u_nl - u_lin| / u_max [%] | 2.97829e-10 | 0 | 0.0000 | 1e-08 | OK | feagent lineare (solve_time_history) con appoggio elastico k1 |
+| Fy = 1e15 N | max |u_nl - u_lin| / u_max [%] | 3.09134e-10 | 0 | 0.0000 | 1e-08 | OK | feagent lineare (solve_time_history) con appoggio elastico k1 |
 | Fy = 1e15 N | iterazioni max | 2 | 2 | 0.0000 | 0 | OK | feagent lineare (solve_time_history) con appoggio elastico k1; Newton converge al 2o passaggio (residuo nullo) |
 
 ### Solutore non lineare - isolatore bilineare vs OpenSees
 
 | Caso | Grandezza | feagent | Riferimento | Errore [%] | Toll. [%] | Esito | Fonte / nota |
 |---|---|---|---|---|---|---|---|
-| LRB bilineare, EC8 suolo C | u [m] max | 0.0898048 | 0.0898039 | 0.0010 | 0.5 | OK | OpenSees zeroLength + Steel01 (incrudimento cinematico) |
-| LRB bilineare, EC8 suolo C | u [m] RMS/max [%] | 0.000814065 | 0 | 0.0008 | 0.5 | OK | OpenSees zeroLength + Steel01 (incrudimento cinematico); errore RMS normalizzato al picco |
-| LRB bilineare, EC8 suolo C | F [N] max | 89902.4 | 89902 | 0.0004 | 0.5 | OK | OpenSees zeroLength + Steel01 (incrudimento cinematico) |
-| LRB bilineare, EC8 suolo C | F [N] RMS/max [%] | 0.0023684 | 0 | 0.0024 | 0.5 | OK | OpenSees zeroLength + Steel01 (incrudimento cinematico); errore RMS normalizzato al picco |
+| LRB bilineare, EC8 suolo C | u [m] max | 0.0897754 | 0.0897742 | 0.0013 | 0.5 | OK | OpenSees zeroLength + Steel01 (incrudimento cinematico) |
+| LRB bilineare, EC8 suolo C | u [m] RMS/max [%] | 0.00109889 | 0 | 0.0011 | 0.5 | OK | OpenSees zeroLength + Steel01 (incrudimento cinematico); errore RMS normalizzato al picco |
+| LRB bilineare, EC8 suolo C | F [N] max | 89887.7 | 89887.1 | 0.0007 | 0.5 | OK | OpenSees zeroLength + Steel01 (incrudimento cinematico) |
+| LRB bilineare, EC8 suolo C | F [N] RMS/max [%] | 0.00319569 | 0 | 0.0032 | 0.5 | OK | OpenSees zeroLength + Steel01 (incrudimento cinematico); errore RMS normalizzato al picco |
 | LRB bilineare, EC8 suolo C | iterazioni max | 3 | 3 | 0.0000 | 0 | OK | OpenSees zeroLength + Steel01 (incrudimento cinematico); convergenza OK; u_max = 0.0898 m |
 
 ### Solutore non lineare - pendolo a scorrimento vs OpenSees
 
 | Caso | Grandezza | feagent | Riferimento | Errore [%] | Toll. [%] | Esito | Fonte / nota |
 |---|---|---|---|---|---|---|---|
-| FPS R = 3 m, mu = 5 % | u [m] max | 0.091937 | 0.0919368 | 0.0002 | 0.5 | OK | OpenSees zeroLength + Steel01 (FPS come bilineare rigido-plastico) |
-| FPS R = 3 m, mu = 5 % | u [m] RMS/max [%] | 0.000308074 | 0 | 0.0003 | 0.5 | OK | OpenSees zeroLength + Steel01 (FPS come bilineare rigido-plastico); errore RMS normalizzato al picco |
-| FPS R = 3 m, mu = 5 % | F [N] max | 78949.9 | 78949.8 | 0.0001 | 0.5 | OK | OpenSees zeroLength + Steel01 (FPS come bilineare rigido-plastico) |
-| FPS R = 3 m, mu = 5 % | F [N] RMS/max [%] | 0.0278756 | 0 | 0.0279 | 0.5 | OK | OpenSees zeroLength + Steel01 (FPS come bilineare rigido-plastico); errore RMS normalizzato al picco |
-| FPS R = 3 m, mu = 5 % | periodo pendolo [s] | 3.47461 | 3.47461 | 0.0000 | 0.01 | OK | OpenSees zeroLength + Steel01 (FPS come bilineare rigido-plastico); u_max = 0.0919 m, E_diss = 34234 J |
+| FPS R = 3 m, mu = 5 % | u [m] max | 0.0922191 | 0.0922192 | 0.0001 | 0.5 | OK | OpenSees zeroLength + Steel01 (FPS come bilineare rigido-plastico) |
+| FPS R = 3 m, mu = 5 % | u [m] RMS/max [%] | 0.000189671 | 0 | 0.0002 | 0.5 | OK | OpenSees zeroLength + Steel01 (FPS come bilineare rigido-plastico); errore RMS normalizzato al picco |
+| FPS R = 3 m, mu = 5 % | F [N] max | 79205.7 | 79205.7 | 0.0001 | 0.5 | OK | OpenSees zeroLength + Steel01 (FPS come bilineare rigido-plastico) |
+| FPS R = 3 m, mu = 5 % | F [N] RMS/max [%] | 0.0208047 | 0 | 0.0208 | 0.5 | OK | OpenSees zeroLength + Steel01 (FPS come bilineare rigido-plastico); errore RMS normalizzato al picco |
+| FPS R = 3 m, mu = 5 % | periodo pendolo [s] | 3.47461 | 3.47461 | 0.0000 | 0.01 | OK | OpenSees zeroLength + Steel01 (FPS come bilineare rigido-plastico); u_max = 0.0922 m, E_diss = 34303 J |
 
 ### Solutore non lineare - isolatore bidirezionale vs OpenSees
 
 | Caso | Grandezza | feagent | Riferimento | Errore [%] | Toll. [%] | Esito | Fonte / nota |
 |---|---|---|---|---|---|---|---|
-| isolatore accoppiato, 2 componenti | u_x [m] max | 0.0964465 | 0.0964457 | 0.0009 | 0.5 | OK | OpenSees elastomericBearingPlasticity (Park-Wen-Ang bidirezionale) |
-| isolatore accoppiato, 2 componenti | u_x [m] RMS/max [%] | 0.000527572 | 0 | 0.0005 | 0.5 | OK | OpenSees elastomericBearingPlasticity (Park-Wen-Ang bidirezionale); errore RMS normalizzato al picco |
-| isolatore accoppiato, 2 componenti | u_y [m] max | 0.0697774 | 0.0697774 | 0.0000 | 0.5 | OK | OpenSees elastomericBearingPlasticity (Park-Wen-Ang bidirezionale) |
-| isolatore accoppiato, 2 componenti | u_y [m] RMS/max [%] | 0.00123837 | 0 | 0.0012 | 0.5 | OK | OpenSees elastomericBearingPlasticity (Park-Wen-Ang bidirezionale); errore RMS normalizzato al picco |
-| isolatore accoppiato, 2 componenti | F_x [N] max | 85646.2 | 85645.8 | 0.0004 | 0.5 | OK | OpenSees elastomericBearingPlasticity (Park-Wen-Ang bidirezionale) |
-| isolatore accoppiato, 2 componenti | F_x [N] RMS/max [%] | 0.00151261 | 0 | 0.0015 | 0.5 | OK | OpenSees elastomericBearingPlasticity (Park-Wen-Ang bidirezionale); errore RMS normalizzato al picco |
-| isolatore accoppiato, 2 componenti | F_y [N] max | 78143.4 | 78143.4 | 0.0001 | 0.5 | OK | OpenSees elastomericBearingPlasticity (Park-Wen-Ang bidirezionale) |
-| isolatore accoppiato, 2 componenti | F_y [N] RMS/max [%] | 0.00223023 | 0 | 0.0022 | 0.5 | OK | OpenSees elastomericBearingPlasticity (Park-Wen-Ang bidirezionale); errore RMS normalizzato al picco |
-| isolatore accoppiato, 2 componenti | iterazioni max | 3 | 3 | 0.0000 | 0 | OK | OpenSees elastomericBearingPlasticity (Park-Wen-Ang bidirezionale); convergenza OK; d_max = 0.1113 m |
+| isolatore accoppiato, 2 componenti | u_x [m] max | 0.0978125 | 0.0978121 | 0.0004 | 0.5 | OK | OpenSees elastomericBearingPlasticity (Park-Wen-Ang bidirezionale) |
+| isolatore accoppiato, 2 componenti | u_x [m] RMS/max [%] | 0.00132255 | 0 | 0.0013 | 0.5 | OK | OpenSees elastomericBearingPlasticity (Park-Wen-Ang bidirezionale); errore RMS normalizzato al picco |
+| isolatore accoppiato, 2 componenti | u_y [m] max | 0.0695519 | 0.0695519 | 0.0001 | 0.5 | OK | OpenSees elastomericBearingPlasticity (Park-Wen-Ang bidirezionale) |
+| isolatore accoppiato, 2 componenti | u_y [m] RMS/max [%] | 0.00115002 | 0 | 0.0012 | 0.5 | OK | OpenSees elastomericBearingPlasticity (Park-Wen-Ang bidirezionale); errore RMS normalizzato al picco |
+| isolatore accoppiato, 2 componenti | F_x [N] max | 85103.2 | 85103 | 0.0002 | 0.5 | OK | OpenSees elastomericBearingPlasticity (Park-Wen-Ang bidirezionale) |
+| isolatore accoppiato, 2 componenti | F_x [N] RMS/max [%] | 0.00575796 | 0 | 0.0058 | 0.5 | OK | OpenSees elastomericBearingPlasticity (Park-Wen-Ang bidirezionale); errore RMS normalizzato al picco |
+| isolatore accoppiato, 2 componenti | F_y [N] max | 78062 | 78062 | 0.0000 | 0.5 | OK | OpenSees elastomericBearingPlasticity (Park-Wen-Ang bidirezionale) |
+| isolatore accoppiato, 2 componenti | F_y [N] RMS/max [%] | 0.00142403 | 0 | 0.0014 | 0.5 | OK | OpenSees elastomericBearingPlasticity (Park-Wen-Ang bidirezionale); errore RMS normalizzato al picco |
+| isolatore accoppiato, 2 componenti | iterazioni max | 3 | 3 | 0.0000 | 0 | OK | OpenSees elastomericBearingPlasticity (Park-Wen-Ang bidirezionale); convergenza OK; d_max = 0.1126 m |
+
+### Solutore non lineare - pendolo bidirezionale vs singleFPBearing di OpenSees
+
+| Caso | Grandezza | feagent | Riferimento | Errore [%] | Toll. [%] | Esito | Fonte / nota |
+|---|---|---|---|---|---|---|---|
+| FPS R = 3,7 m, mu = 3 %, 2 componenti | u_x [m] max | 0.223462 | 0.223364 | 0.0440 | 1 | OK | OpenSees singleFPBearing (attrito di Coulomb mu N, richiamo N/R) |
+| FPS R = 3,7 m, mu = 3 %, 2 componenti | u_x [m] RMS/max [%] | 0.114008 | 0 | 0.1140 | 1 | OK | OpenSees singleFPBearing (attrito di Coulomb mu N, richiamo N/R); errore RMS normalizzato al picco |
+| FPS R = 3,7 m, mu = 3 %, 2 componenti | u_y [m] max | 0.225366 | 0.224945 | 0.1869 | 1 | OK | OpenSees singleFPBearing (attrito di Coulomb mu N, richiamo N/R) |
+| FPS R = 3,7 m, mu = 3 %, 2 componenti | u_y [m] RMS/max [%] | 0.172334 | 0 | 0.1723 | 1 | OK | OpenSees singleFPBearing (attrito di Coulomb mu N, richiamo N/R); errore RMS normalizzato al picco |
+| FPS R = 3,7 m, mu = 3 %, 2 componenti | F_x [N] max | 73345.1 | 73679.7 | 0.4542 | 1 | OK | OpenSees singleFPBearing (attrito di Coulomb mu N, richiamo N/R) |
+| FPS R = 3,7 m, mu = 3 %, 2 componenti | F_x [N] RMS/max [%] | 0.131406 | 0 | 0.1314 | 1 | OK | OpenSees singleFPBearing (attrito di Coulomb mu N, richiamo N/R); errore RMS normalizzato al picco |
+| FPS R = 3,7 m, mu = 3 %, 2 componenti | F_y [N] max | 72726 | 72944.5 | 0.2995 | 1 | OK | OpenSees singleFPBearing (attrito di Coulomb mu N, richiamo N/R) |
+| FPS R = 3,7 m, mu = 3 %, 2 componenti | F_y [N] RMS/max [%] | 0.187913 | 0 | 0.1879 | 1 | OK | OpenSees singleFPBearing (attrito di Coulomb mu N, richiamo N/R); errore RMS normalizzato al picco |
+| FPS R = 3,7 m, mu = 3 %, 2 componenti | forza assiale OpenSees [N] | 981000 | 981000 | 0.0000 | 0.01 | OK | OpenSees singleFPBearing (attrito di Coulomb mu N, richiamo N/R); gravita' applicata prima del sisma |
+| FPS R = 3,7 m, mu = 3 %, 2 componenti | iterazioni max | 3 | 3 | 0.0000 | 0 | OK | OpenSees singleFPBearing (attrito di Coulomb mu N, richiamo N/R); convergenza OK; d_max = 0.2546 m |
 
 ### Solutore non lineare - dissipatore viscoso vs OpenSees
 
 | Caso | Grandezza | feagent | Riferimento | Errore [%] | Toll. [%] | Esito | Fonte / nota |
 |---|---|---|---|---|---|---|---|
-| molla + dissipatore alpha = 0.5 | u [m] max | 0.0352362 | 0.0352362 | 0.0000 | 1 | OK | OpenSees zeroLength + Viscous (F = c |v|^alpha); OpenSees regolarizza |v|^alpha a modo suo vicino a v = 0 |
-| molla + dissipatore alpha = 0.5 | u [m] RMS/max [%] | 0.00281641 | 0 | 0.0028 | 1 | OK | OpenSees zeroLength + Viscous (F = c |v|^alpha); errore RMS normalizzato al picco |
+| molla + dissipatore alpha = 0.5 | u [m] max | 0.0352704 | 0.0352704 | 0.0001 | 1 | OK | OpenSees zeroLength + Viscous (F = c |v|^alpha); OpenSees regolarizza |v|^alpha a modo suo vicino a v = 0 |
+| molla + dissipatore alpha = 0.5 | u [m] RMS/max [%] | 0.00320068 | 0 | 0.0032 | 1 | OK | OpenSees zeroLength + Viscous (F = c |v|^alpha); errore RMS normalizzato al picco |
 | molla + dissipatore alpha = 0.5 | iterazioni max | 5 | 5 | 0.0000 | 0 | OK | OpenSees zeroLength + Viscous (F = c |v|^alpha); convergenza OK |
 
 ### Solutore non lineare - impalcato isolato, bilancio energetico
 
 | Caso | Grandezza | feagent | Riferimento | Errore [%] | Toll. [%] | Esito | Fonte / nota |
 |---|---|---|---|---|---|---|---|
-| 2 pendoli, 2 componenti EC8 | bilancio energetico [%] | 2.87222e-12 | 0 | 0.0000 | 1 | OK | bilancio energetico (Uang & Bertero 1990) e equilibrio dinamico; E_in = 336411 J: E_k 57, E_s 16, E_d 809, E_h 335529 |
-| 2 pendoli, 2 componenti EC8 | iterazioni max | 4 | 4 | 0.0000 | 0 | OK | bilancio energetico (Uang & Bertero 1990) e equilibrio dinamico; convergenza OK; d_max pendoli = 0.1305 m |
-| 2 pendoli, 2 componenti EC8 | F_x pendoli vs -M a_abs [N] max | 446966 | 446966 | 0.0000 | 2 | OK | bilancio energetico (Uang & Bertero 1990) e equilibrio dinamico; impalcato rigido in direzione assiale |
-| 2 pendoli, 2 componenti EC8 | F_x pendoli vs -M a_abs [N] RMS/max [%] | 6.50086e-11 | 0 | 0.0000 | 2 | OK | bilancio energetico (Uang & Bertero 1990) e equilibrio dinamico; errore RMS normalizzato al picco |
+| 2 pendoli, 2 componenti EC8 | bilancio energetico [%] | 3.51838e-12 | 0 | 0.0000 | 1 | OK | bilancio energetico (Uang & Bertero 1990) e equilibrio dinamico; E_in = 337495 J: E_k 55, E_s 16, E_d 813, E_h 336611 |
+| 2 pendoli, 2 componenti EC8 | iterazioni max | 4 | 4 | 0.0000 | 0 | OK | bilancio energetico (Uang & Bertero 1990) e equilibrio dinamico; convergenza OK; d_max pendoli = 0.1290 m |
+| 2 pendoli, 2 componenti EC8 | F_x pendoli vs -M a_abs [N] max | 443739 | 443739 | 0.0000 | 2 | OK | bilancio energetico (Uang & Bertero 1990) e equilibrio dinamico; impalcato rigido in direzione assiale |
+| 2 pendoli, 2 componenti EC8 | F_x pendoli vs -M a_abs [N] RMS/max [%] | 6.4467e-11 | 0 | 0.0000 | 2 | OK | bilancio energetico (Uang & Bertero 1990) e equilibrio dinamico; errore RMS normalizzato al picco |
 

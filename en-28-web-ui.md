@@ -7,6 +7,8 @@ nav_order: 28
 
 # 28 - Web UI (Streamlit)
 
+> For everyday work there is now the [desktop GUI](en-42-desktop-gui.html) (`feagent gui`): drawing in the view, tables with copy and paste, undo and redo.
+
 `feagent` ships with a **web user interface** built with
 [Streamlit](https://streamlit.io/) (`app.py` in the repository root). It lets you
 build, analyze and visualize 3D frame models **without writing code**.

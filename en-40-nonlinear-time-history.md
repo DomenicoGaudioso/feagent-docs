@@ -43,7 +43,7 @@ The nodes of a link must carry mass (they usually do: the deck mass sits there).
 | Law | Force | Typical use |
 |---|---|---|
 | `Bilinear(k1, k2, Fy, coupled=True)` | elasto-plastic with kinematic hardening in parallel with `k2`: initial stiffness `k1`, post-yield `k2`, yield force `Fy` | lead-rubber bearings, high-damping rubber bearings (equivalent bilinear), hysteretic dampers |
-| `FrictionPendulum(W, R, mu, mu_slow=None, a=50, u_y=5e-4)` | `F = (W/R) d + mu W sign(v)` with a stick stiffness `mu W / u_y`; optional velocity-dependent friction `mu(v) = mu_fast - (mu_fast - mu_slow) exp(-a|v|)` (Constantinou et al. 1990) | single friction pendulum; the period `2π√(R/g)` does not depend on the mass |
+| `FrictionPendulum(W, R, mu, mu_slow=None, a=50, u_y=5e-4)` | `F = (W/R) d + mu W z`, `|z| <= 1`: restoring force on the total displacement in parallel with a friction component of threshold exactly `mu W` and stick stiffness `mu W / u_y` (total initial stiffness `mu W / u_y + W/R`, as OpenSees `singleFPBearing`); optional velocity-dependent friction `mu(v) = mu_fast - (mu_fast - mu_slow) exp(-a|v|)` (Constantinou et al. 1990); `R = inf` for a flat sliding bearing | single friction pendulum; the period `2π√(R/g)` does not depend on the mass |
 | `ViscousDamper(c, alpha)` | `F = c |v|^alpha sign(v)` (regularised near `v = 0` for `alpha < 1`) | fluid viscous dampers (EN 15129 §7) |
 | `Gap(k, gap, sign)` | contact stiffness `k` once the relative displacement exceeds `gap` | seismic restrainers, abutment pounding |
 
@@ -89,6 +89,11 @@ the full tables are in [39 - Benchmark report](en-39-benchmark-report.html):
 
 - bilinear isolator and friction pendulum under an EC8-compatible record against
   `zeroLength + Steel01`: displacement and force histories within 0.03 % of the peak;
+- bidirectional friction pendulum under two simultaneous components, with
+  gravity applied before the earthquake, against the `singleFPBearing`
+  element (Coulomb friction on the axial force): displacements within 0.2 %,
+  forces within 0.5 % (the residual is the large-displacement geometric term
+  of OpenSees);
 - coupled bidirectional isolator under two simultaneous components against
   `elastomericBearingPlasticity`: within 0.003 %;
 - nonlinear viscous damper against the `Viscous` material: within 0.003 %;

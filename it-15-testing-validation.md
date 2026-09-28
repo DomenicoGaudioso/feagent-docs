@@ -90,7 +90,7 @@ pytest in `tests/test_benchmarks_simis.py`.
 | NAFEMS FV2 | croce incernierata | prime 8 frequenze nel piano (11,336; 17,709 x3; 45,345; 57,390 x3 Hz) | 1 % |
 | NAFEMS FV4 | mensola con masse eccentriche | 6 frequenze flesso-torsionali accoppiate e ravvicinate (1,723; 1,727; 7,413; 9,972; 18,155; 26,957 Hz); masse su bracci rigidi | 1 % |
 | NAFEMS FV5 | trave tozza appoggiata | 9 frequenze (flessione, torsione, assiale) con taglio di Timoshenko e inerzia rotazionale (`mass="consistent-rotary"`) | 2 % |
-| Solutore non lineare | isolatori e dissipatori vs OpenSees | bilineare, pendolo a scorrimento, isolatore bidirezionale accoppiato, dissipatore viscoso non lineare sotto accelerogrammi EC8-compatibili; bilancio energetico di un impalcato isolato, vedi [40 - Time-history non lineare](it-40-nonlinear-time-history.html) | 0,5-1 % |
+| Solutore non lineare | isolatori e dissipatori vs OpenSees | bilineare, pendolo a scorrimento (anche bidirezionale contro `singleFPBearing`), isolatore bidirezionale accoppiato, dissipatore viscoso non lineare sotto accelerogrammi EC8-compatibili; bilancio energetico di un impalcato isolato, vedi [40 - Time-history non lineare](it-40-nonlinear-time-history.html) | 0,5-1 % |
 
 La tabella completa dei risultati viene scritta in `validation/output/simis_benchmarks.md` ed e'
 pubblicata come [39 - Report dei benchmark](it-39-benchmark-report.html). Due

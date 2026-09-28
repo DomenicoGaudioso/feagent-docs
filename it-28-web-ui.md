@@ -7,6 +7,8 @@ nav_order: 28
 
 # 28 - Interfaccia Streamlit (UI)
 
+> Per il lavoro quotidiano c'è ora l'[interfaccia desktop](it-42-desktop-gui.html) (`feagent gui`): disegno nella vista, tabelle con copia e incolla, annulla e ripeti.
+
 `feagent` include una **interfaccia grafica web** scritta in
 [Streamlit](https://streamlit.io/) (`app.py` nella radice del repository) che
 permette di costruire, analizzare e visualizzare modelli FEM di travi 3D
