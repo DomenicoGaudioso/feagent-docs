@@ -210,6 +210,7 @@ wizard; otherwise the rectangle equivalent to `A`, `Iy`, `Iz` is used.
 | P-Delta | second order with the updated geometric stiffness |
 | Nonlinear | Newton-Raphson with load steps; cables and tension-only or compression-only members |
 | Modal, buckling | as before, with shells, trusses and cables (cable pretension included) |
+| Moving loads | axle trains on lanes: envelopes, travelling vehicle, influence lines (see below) |
 | Response spectrum | EC8 / NTC 2018 type 1 spectrum (a<sub>g</sub>, soil, q, ξ), CQC or SRSS, one result per direction (unsigned envelopes) and base shear |
 
 Results add **colour maps on shells** (Mx, My, Mxy, Nx, Ny, Nxy, Qx, Qy at the
@@ -235,6 +236,54 @@ diagrams, shell maps, axial forces, reactions, extremes per beam) with the
 **global equilibrium check** between applied loads and reactions, modal
 analysis. The same data without figures are available to an AI through
 `live/export` with format `report`.
+
+## Tapered beams
+
+A beam becomes tapered by setting the **section at node J** (column
+`SectionJ`) and optional **inner stations** (`Stations`, e.g.
+`0.3:SEC2; 0.7:SEC3`), from the properties panel or **Element properties**.
+The stiffness is exact (integration of the section flexibility along the
+axis), so one beam per span is enough.
+
+When the sections at the stations share the same shape with dimensions (those
+created with **New parametric section** do), the **dimensions** are
+interpolated: for a linearly varying depth the inertia then varies with the
+cube of the depth, as it should. Otherwise A, I and J are interpolated. The
+extruded view follows the taper.
+
+![Grillage with variable depth main girders, extruded view](images/gui_tapered.png)
+
+## Moving loads
+
+Three sheets describe moving loads (**Loads > Moving loads**):
+
+| Sheet | Content |
+|---|---|
+| Vehicle | one vehicle per name, one row per axle: position, weight, gauge (presets LM1 lanes 1, 2, 3, LM2, single axle, train of equal axles) |
+| Lane | lane on a chain of beams (from the selected beams), start node, eccentricity, axle skew, distributing cross beams |
+| MovingLoad | moving case: lane, vehicle, number of positions, load direction, factor, superposed static combination |
+
+The vehicle travels the whole lane; each position is a static solution (one
+stiffness factorisation for all positions). With eccentricity, gauge or skewed
+axles the wheels are spread over the grillage cross beams; the eccentricity is
+positive to the left of the travel direction seen from above (normal =
+vertical × tangent).
+
+**Analysis > Moving loads** returns for each case:
+
+* **envelopes** of N, V, T and M (maximum in blue, minimum in red), with the
+  superposed static combination and the factor on the moving load, and the
+  reaction envelope;
+* the **travelling vehicle**: a position slider and a play button in the
+  toolbar, with the deformed shape at each position and the wheels drawn
+  where the solver applies them;
+* tables of envelopes per beam, of minimum and maximum displacements and
+  reactions, and of the **reaction influence lines**.
+
+![Moment envelope under the LM1 tandem](images/gui_moving.png)
+
+The calculation report lists vehicles, lanes, moving cases, envelope figures,
+the vehicle at midspan and the envelope tables.
 
 ## Driving the interface with an AI
 

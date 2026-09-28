@@ -194,7 +194,7 @@ normalizzato prima di usarlo (`feagent convert tabelle_sap.xlsx modello.xlsx --A
 | Node | Node, X, Y, Z |
 | Material | Material, E, [nu], [alpha], [G], [rho], [gamma] |
 | Section | Section, A, Iy, Iz, J, [Asy], [Asz], [Shape, h, b, tw, tf, t, d] (forma, solo per la vista estrusa) |
-| Element | Element, NodeI, NodeJ, Material, Section, [shear], [RefX, RefY, RefZ], [ReleasesI], [ReleasesJ] |
+| Element | Element, NodeI, NodeJ, Material, Section, [shear], [RefX, RefY, RefZ], [ReleasesI], [ReleasesJ], [SectionJ], [Stations] - `SectionJ` e `Stations` (`0.5:SEZ2`) rendono la trave a sezione variabile |
 | Support | Node, Dx, Dy, Dz, Rx, Ry, Rz (1 = vincolato, assi globali) |
 | NodalLoad | Node, Fx, Fy, Fz, Mx, My, Mz, [Case] |
 | DistributedLoad | Element, Component, qi, [qj], [a], [b], [frame], [Case] - `a`, `b` normalizzati in [0, 1] |
@@ -214,6 +214,9 @@ normalizzato prima di usarlo (`feagent convert tabelle_sap.xlsx modello.xlsx --A
 | ShellLoad | Shell, qx, qy, qz, [frame], [projected], [Case] |
 | ShellThermal | Shell, dT, [dT_grad], [Case] |
 | SelfWeight | Case, [g], [DirX], [DirY], [DirZ] - peso proprio automatico di travi, bielle e gusci |
+| Vehicle | Vehicle, Offset, Load, [Gauge] - veicolo, una riga per asse (Load = peso dell'asse, positivo) |
+| Lane | Lane, Elements (`1:20` o `1,2,3`), [StartNode], [Ecc], [Skew], [Deck] - corsia su una catena di travi |
+| MovingLoad | MovingLoad, Lane, Vehicle, [Positions], [Axis] (`-z`), [Factor], [Static] - caso di carico mobile |
 | README | testo libero, ignorato |
 
 Le unita' sono SI (N, m, Pa, kg, K) o qualsiasi sistema coerente. I carichi

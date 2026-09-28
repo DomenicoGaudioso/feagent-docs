@@ -218,6 +218,7 @@ ad `A`, `Iy`, `Iz`.
 | P-Delta | secondo ordine con la rigidezza geometrica aggiornata |
 | Non lineare | Newton-Raphson, con passi di carico; cavi ed elementi solo trazione o solo compressione |
 | Modale, buckling | come prima, con gusci, bielle e cavi (precarico dei cavi incluso) |
+| Carichi mobili | convogli di assi sulle corsie: inviluppi, convoglio che scorre, linee d'influenza (vedi sotto) |
 | Spettro di risposta | spettro EC8 / NTC 2018 di tipo 1 (a<sub>g</sub>, suolo, q, ξ), CQC o SRSS, un risultato per direzione (inviluppi senza segno) e tagli alla base |
 
 Ai risultati si aggiungono le **mappe a colori dei gusci** (Mx, My, Mxy, Nx,
@@ -243,6 +244,54 @@ mappe dei gusci, sforzi assiali, reazioni, estremi per trave) con il
 **controllo dell'equilibrio globale** fra carichi applicati e reazioni, analisi
 modale. Gli stessi dati, senza figure, si ottengono dall'IA con
 `live/export` in formato `report`.
+
+## Travi a sezione variabile
+
+Una trave diventa a sezione variabile indicando la **sezione al nodo J**
+(colonna `SectionJ`) ed eventuali **stazioni intermedie** (`Stations`, per
+esempio `0.3:SEZ2; 0.7:SEZ3`), dal pannello delle proprietà o da **Proprietà
+degli elementi**. La rigidezza è esatta (integrazione della flessibilità di
+sezione lungo l'asse), quindi basta una sola trave per campata.
+
+Se le sezioni alle stazioni hanno la stessa forma con le dimensioni (quelle
+create con **Nuova sezione parametrica** le hanno), si interpolano le
+**dimensioni**: per una trave ad altezza lineare l'inerzia varia allora con il
+cubo dell'altezza, come deve. Altrimenti si interpolano le proprietà A, I, J.
+La vista estrusa segue la rastremazione.
+
+![Graticcio con travi principali ad altezza variabile, vista estrusa](images/gui_tapered.png)
+
+## Carichi mobili
+
+Tre fogli descrivono i carichi mobili (**Carichi > Carichi mobili**):
+
+| Foglio | Contenuto |
+|---|---|
+| Vehicle | un veicolo per nome, una riga per asse: posizione, peso, carreggiata (preset LM1 per le corsie 1, 2, 3, LM2, asse singolo, convoglio di assi uguali) |
+| Lane | corsia su una catena di travi (dalle travi selezionate), nodo di partenza, eccentricità, inclinazione degli assali, traversi di ripartizione |
+| MovingLoad | caso mobile: corsia, veicolo, numero di posizioni, direzione del carico, coefficiente, combinazione statica sovrapposta |
+
+Il convoglio percorre tutta la corsia; per ogni posizione si risolve la statica
+(una sola fattorizzazione della rigidezza per tutte le posizioni). Con
+eccentricità, carreggiata o assali inclinati le ruote si ripartiscono sui
+traversi del graticcio; l'eccentricità è positiva a sinistra nel verso di
+percorrenza guardando dall'alto (normale = verticale × tangente).
+
+**Analisi > Carichi mobili** restituisce per ogni caso:
+
+* **inviluppi** di N, V, T e M (massimo in blu, minimo in rosso), con la
+  combinazione statica sovrapposta e il coefficiente applicato al carico
+  mobile, e l'inviluppo delle reazioni;
+* il **convoglio che scorre**: cursore della posizione e pulsante di
+  riproduzione nella barra, con la deformata a ogni posizione e le ruote
+  disegnate dove le applica il solutore;
+* le tabelle degli inviluppi per trave, degli spostamenti e delle reazioni
+  minimi e massimi e delle **linee d'influenza delle reazioni**.
+
+![Inviluppo del momento sotto il tandem LM1](images/gui_moving.png)
+
+La relazione di calcolo riporta veicoli, corsie, casi mobili, figure degli
+inviluppi, il convoglio in mezzeria e le tabelle degli inviluppi.
 
 ## Pilotare l'interfaccia con un'IA
 

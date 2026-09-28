@@ -192,7 +192,7 @@ use (`feagent convert sap_tables.xlsx model.xlsx --A ... --Iy ...`).
 | Node | Node, X, Y, Z |
 | Material | Material, E, [nu], [alpha], [G], [rho], [gamma] |
 | Section | Section, A, Iy, Iz, J, [Asy], [Asz], [Shape, h, b, tw, tf, t, d] (shape, extruded view only) |
-| Element | Element, NodeI, NodeJ, Material, Section, [shear], [RefX, RefY, RefZ], [ReleasesI], [ReleasesJ] |
+| Element | Element, NodeI, NodeJ, Material, Section, [shear], [RefX, RefY, RefZ], [ReleasesI], [ReleasesJ], [SectionJ], [Stations] - `SectionJ` and `Stations` (`0.5:SEC2`) make the beam tapered |
 | Support | Node, Dx, Dy, Dz, Rx, Ry, Rz (1 = restrained, global axes) |
 | NodalLoad | Node, Fx, Fy, Fz, Mx, My, Mz, [Case] |
 | DistributedLoad | Element, Component, qi, [qj], [a], [b], [frame], [Case] - `a`, `b` normalized in [0, 1] |
@@ -212,6 +212,9 @@ use (`feagent convert sap_tables.xlsx model.xlsx --A ... --Iy ...`).
 | ShellLoad | Shell, qx, qy, qz, [frame], [projected], [Case] |
 | ShellThermal | Shell, dT, [dT_grad], [Case] |
 | SelfWeight | Case, [g], [DirX], [DirY], [DirZ] - automatic self weight of beams, trusses and shells |
+| Vehicle | Vehicle, Offset, Load, [Gauge] - vehicle, one row per axle (Load = axle weight, positive) |
+| Lane | Lane, Elements (`1:20` or `1,2,3`), [StartNode], [Ecc], [Skew], [Deck] - lane on a chain of beams |
+| MovingLoad | MovingLoad, Lane, Vehicle, [Positions], [Axis] (`-z`), [Factor], [Static] - moving load case |
 | README | free text, ignored |
 
 Units are SI (N, m, Pa, kg, K) or any consistent system. Gravity loads on
