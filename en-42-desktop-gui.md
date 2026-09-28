@@ -269,6 +269,14 @@ axles the wheels are spread over the grillage cross beams; the eccentricity is
 positive to the left of the travel direction seen from above (normal =
 vertical × tangent).
 
+The view draws every lane where the loads actually travel: the **carriageway**
+at its eccentricity, as wide as set in the moving case (`Width`, otherwise the
+vehicle gauge plus a margin, at least 3 m), with the dashed centre line, the
+arrows of the travel direction and the reference path on the beams. It also
+shows in the extruded view and, faded, in the envelopes and in the travelling
+vehicle: a lane running off the deck is obvious at a glance (**View > Moving
+load lanes** hides it).
+
 **Analysis > Moving loads** returns for each case:
 
 * **envelopes** of N, V, T and M (maximum in blue, minimum in red), with the

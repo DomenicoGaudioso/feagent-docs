@@ -277,6 +277,15 @@ eccentricità, carreggiata o assali inclinati le ruote si ripartiscono sui
 traversi del graticcio; l'eccentricità è positiva a sinistra nel verso di
 percorrenza guardando dall'alto (normale = verticale × tangente).
 
+La vista disegna ogni corsia dove viaggiano davvero i carichi: la
+**carreggiata** alla sua eccentricità, larga quanto indicato nel caso mobile
+(`Width`, altrimenti la carreggiata dei veicoli più un franco, almeno 3 m),
+con la linea d'asse tratteggiata, le frecce del verso di marcia e il tracciato
+di riferimento sulle travi. Si vede anche nella vista estrusa e, attenuata,
+negli inviluppi e nel convoglio che scorre: una corsia che esce
+dall'impalcato salta subito all'occhio (**Vista > Corsie dei carichi mobili**
+la nasconde).
+
 **Analisi > Carichi mobili** restituisce per ogni caso:
 
 * **inviluppi** di N, V, T e M (massimo in blu, minimo in rosso), con la
