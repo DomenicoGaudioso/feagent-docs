@@ -119,9 +119,23 @@ cases (with their loads by type) and combinations, then analyses and results.
 | crossing selection | drag to the left (elements touched) |
 | views | keys 1 (3D), 2 (plan), 3 (front), 4 (side), F (fit) |
 
-The vertical axis (Y or Z) is inferred from the load directions and can be
-fixed in **View > Options**. The loads drawn are those of the **active load
-case**, chosen in the toolbar or in the tree.
+As in reality, **Z is the vertical axis** pointing up and **XY is the main
+plane**: the 3D view and the plan draw on the XY plane, non-vertical beams are
+created with local y pointing up (section depth and strong axis vertical, Mz
+and Iz for gravity loads), and self weight, rollers and moving loads use Z.
+
+Models built with **Y vertical** (the convention of the library's planar
+models) are recognised from their loads: on opening the interface offers to
+**convert them to Z vertical**, the examples open already converted, and
+**Model > Convert to Z vertical** does it at any time. It is a rigid rotation
+about X, (x, y, z) → (x, −z, y): coordinates, beam local axes (written
+explicitly), global loads, restraints, ground springs, settlements, support
+axes, tendons, lanes, devices and dynamic analyses are transformed together,
+so internal forces and reactions stay identical. Whoever prefers Y vertical
+picks "Keep Y vertical" (or **View > Options**).
+
+The loads drawn are those of the **active load case**, chosen in the toolbar
+or in the tree.
 
 ### Drawing
 

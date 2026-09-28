@@ -123,9 +123,24 @@ carico (con i carichi per tipo) e combinazioni, poi le analisi e i risultati.
 | selezione per intersezione | trascina verso sinistra (elementi toccati) |
 | viste | tasti 1 (3D), 2 (pianta), 3 (prospetto), 4 (laterale), F (adatta) |
 
-L'asse verticale (Y o Z) si deduce dalla direzione dei carichi e si può
-fissare in **Vista > Opzioni**. I carichi disegnati sono quelli del **caso
-attivo**, scelto nella barra strumenti o nell'albero.
+Come nella realtà, **Z è l'asse verticale** verso l'alto e **XY è il piano
+principale**: la vista 3D e la pianta disegnano sul piano XY, le travi non
+verticali nascono con la y locale verso l'alto (altezza della sezione e asse
+forte verticali, momento Mz e inerzia Iz per i carichi gravitazionali), il
+peso proprio, i vincoli a carrello e i carichi mobili usano Z.
+
+I modelli costruiti con **Y verticale** (la convenzione dei modelli piani
+della libreria) si riconoscono dai carichi: all'apertura l'interfaccia propone
+di **convertirli a Z verticale**, gli esempi si aprono già convertiti, e
+**Modello > Converti a Z verticale** lo fa in ogni momento. È una rotazione
+rigida attorno a X, (x, y, z) → (x, −z, y): coordinate, assi locali delle
+travi (scritti espliciti), carichi globali, vincoli, molle a terra, cedimenti,
+assi d'appoggio, cavi, corsie, dispositivi e analisi dinamiche si trasformano
+insieme, quindi sollecitazioni e reazioni restano identiche. Chi preferisce
+tenere Y verticale sceglie "Lascia Y verticale" (o **Vista > Opzioni**).
+
+I carichi disegnati sono quelli del **caso attivo**, scelto nella barra
+strumenti o nell'albero.
 
 ### Disegnare
 
@@ -139,7 +154,7 @@ attivo**, scelto nella barra strumenti o nell'albero.
   **Vista > Opzioni**, con quota e passo della griglia.
 
 Per le geometrie regolari **Modello > Genera griglia strutturale** crea travi
-continue, telai piani e telai 3D da elenchi di luci (`3*6 4.5` significa tre
+continue, telai piani e spaziali da elenchi di luci (`3*6 4.5` significa tre
 luci da 6 e una da 4,5), con incastri o cerniere alla base.
 
 ![Deformata di un telaio 3D con scala dei colori](images/gui_deformed.png)
