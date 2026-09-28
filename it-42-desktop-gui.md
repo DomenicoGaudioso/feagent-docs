@@ -286,6 +286,14 @@ negli inviluppi e nel convoglio che scorre: una corsia che esce
 dall'impalcato salta subito all'occhio (**Vista > Corsie dei carichi mobili**
 la nasconde).
 
+Con i carichi visibili, la vista del modello mette anche il **veicolo di ogni
+caso mobile sulla sua corsia**: una freccia per ruota nella posizione in cui
+il solutore la applica (eccentricità più o meno metà carreggiata, assali
+inclinati compresi), la sagoma tratteggiata, l'etichetta con veicolo, numero
+di assi e carico totale (con il coefficiente) e, se c'è, il carico
+distribuito di corsia come frecce sulla carreggiata. I casi che usano la
+stessa corsia sono distribuiti lungo il tracciato.
+
 **Analisi > Carichi mobili** restituisce per ogni caso:
 
 * **inviluppi** di N, V, T e M (massimo in blu, minimo in rosso), con la

@@ -277,6 +277,13 @@ shows in the extruded view and, faded, in the envelopes and in the travelling
 vehicle: a lane running off the deck is obvious at a glance (**View > Moving
 load lanes** hides it).
 
+With the loads shown, the model view also places the **vehicle of every
+moving case on its lane**: one arrow per wheel where the solver applies it
+(eccentricity plus or minus half the gauge, skewed axles included), the
+dashed footprint, a label with vehicle, number of axles and total load (with
+the factor) and, when present, the lane distributed load as arrows over the
+carriageway. Cases on the same lane are spread along the path.
+
 **Analysis > Moving loads** returns for each case:
 
 * **envelopes** of N, V, T and M (maximum in blue, minimum in red), with the
