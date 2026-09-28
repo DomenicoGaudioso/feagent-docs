@@ -1,11 +1,11 @@
 ---
 layout: default
-title: "42 - Desktop GUI (feagent gui)"
+title: "42 - Desktop and online GUI (feagent gui)"
 parent: English
 nav_order: 42
 ---
 
-# 42 - Desktop GUI
+# 42 - Desktop and online GUI
 
 `feagent gui` starts the solver's **graphical interface**: a local server
 (on your PC only, address `127.0.0.1`) and an application window in the
@@ -39,6 +39,7 @@ window in application mode, or in the default browser if neither is found.
 | `--port 8777` | preferred port (a free one is picked if it is busy) |
 | `--no-browser` | do not open the window: print the address instead |
 | `--keep-alive` | keep the server running after the window is closed |
+| `--online` | multi-user server (see [Online use](#online-use)) |
 
 The server stops with **File > Exit**, when the window is closed (after about
 45 seconds without signals from the interface) or with Ctrl+C in the
@@ -69,6 +70,7 @@ lists load cases that have no loads yet; the library ignores it.
 | Loads | load cases, nodal, distributed, concentrated and thermal loads, self weight, combinations |
 | Analysis | model check (codes E01-E63 of `feagent check`), static per load case, custom combination, combinations, modal, buckling |
 | Results | deformed shape, N, Vy, Vz, T, My, Mz, reactions, modes, tables |
+| Tools (Strumenti) | connect an AI (address, token, ready-made configurations), options |
 
 **Export** writes the model for OpenSees (Tcl and Python), SAP2000, MIDAS,
 Robot and Straus7, the results to Excel, the calculation printout and the
@@ -165,6 +167,93 @@ mode), the quantity and the scale.
 
 When the model changes after an analysis, the tree and the view flag the
 results as out of date (F5 to rerun).
+
+## Driving the interface with an AI
+
+Each session's model lives on the server: the window, AI assistants and other
+windows open on the same session read and change it, and an event channel
+notifies everyone at once. While an AI works, the screen updates by itself:
+tree, view, tables and results. The status bar shows **IA al lavoro** (AI at
+work) and its messages appear in purple; every AI change is one undo step
+(Ctrl+Z removes it, and the AI sees the undone state).
+
+![Frame built, analysed and shown by an AI](images/gui_ai_live.png)
+
+The AI has three channels, all on the same API:
+
+* **MCP** (Claude Desktop, Claude Code, Codex, Cursor, ...): the connector's
+  `gui_*` tools ([page 38](en-38-mcp-server.html)). Locally the configured
+  connector is enough (`feagent connect claude-desktop --write`): `feagent
+  gui` writes address and token to `~/.feagent/gui_session.json` and the tools
+  find them.
+* **REST/OpenAPI**: `POST /api/live/<action>` with `Authorization: Bearer
+  <token>`; the spec is at `/api/live/openapi.json` (Custom GPT Actions, n8n,
+  scripts).
+* **Python**: `agent_api.call("gui_state")` and the other tools.
+
+| Action | Effect |
+|---|---|
+| `live/state` | model summary, user selection and view, results |
+| `live/model` | model sheets |
+| `live/edit` | sheet operations (upsert, delete, replace_sheet, rename, set_meta) |
+| `live/replace` | new model from a JSON spec |
+| `live/run` | analysis; results appear in the window |
+| `live/results` | displacements, reactions, diagrams |
+| `live/show` | result, view, selection, table or message to show |
+| `live/screenshot` | image of the view |
+| `live/check`, `live/export` | validation, exported file |
+
+**Strumenti > Collega un'IA** (Tools > Connect an AI, or the **IA** toolbar
+button) shows the session address and token with the MCP configuration, a
+`curl` example and Python lines ready to copy. The token opens **only that
+session**.
+
+![Connect an AI dialog](images/gui_ai_connect.png)
+
+Example of `gui_edit` operations:
+
+```json
+[{"op": "upsert", "sheet": "nodes", "rows": [{"id": 5, "x": 12, "y": 4, "z": 0}]},
+ {"op": "upsert", "sheet": "elements", "rows": [{"id": 4, "i": 3, "j": 5, "material": "S355", "section": "IPE400"}]},
+ {"op": "delete", "sheet": "NodalLoad", "where": {"Case": "W"}}]
+```
+
+## Online use
+
+The same program runs as a multi-user web service:
+
+```bash
+export FEAGENT_GUI_KEY="a-long-key"
+feagent gui --online --port 8777 --public-url https://fem.example.com
+```
+
+* opening the page asks for the **access key**; every login opens a
+  **separate session** (own model, results and token), kept for 12 hours of
+  inactivity;
+* the server **never touches its own file system**: models are uploaded and
+  downloaded through the browser (File > Open, Save, Export);
+* without a key the server refuses to start, unless `--no-auth` is given for
+  trusted networks; `--max-sessions` caps concurrent sessions and at most two
+  analyses run at the same time;
+* expose it **only behind HTTPS** (a reverse proxy such as Caddy or nginx, or
+  a tunnel); `--public-url` is the public address shown in the AI dialog.
+  With nginx the event channel must pass unbuffered (the server already sends
+  `X-Accel-Buffering: no`).
+
+Example with Caddy, which obtains the certificate by itself:
+
+```text
+fem.example.com {
+    reverse_proxy 127.0.0.1:8777
+}
+```
+
+In a container, from the repository root:
+
+```bash
+docker build -f deploy/Dockerfile -t feagent-gui .
+docker run -d -p 127.0.0.1:8777:8777 -e FEAGENT_GUI_KEY=a-long-key feagent-gui
+```
 
 ## Shortcuts
 

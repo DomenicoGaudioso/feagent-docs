@@ -11,7 +11,7 @@ feagent include un **connettore** con cui gli assistenti AI pilotano il
 solutore: validare un workbook, costruire un modello da una descrizione,
 eseguire analisi statiche, modali e di buckling, risolvere tutte le
 combinazioni con gli inviluppi, guardare la deformata, scrivere la relazione
-Word. Un unico registro di **17 tool** (`feagent.agent_api`) alimenta tre
+Word. Un unico registro di **27 tool** (`feagent.agent_api`) alimenta tre
 canali, cosi' ogni assistente parla con lo stesso feagent:
 
 | Canale | Comando | Chi lo usa |
@@ -79,6 +79,25 @@ restituisce gli stessi dati per gli script.
 | `plot_model` | PNG di modello, carichi, deformata, diagramma di un'azione interna o reazioni; ai client MCP arriva **come immagine** | si' |
 | `export_model` | OpenSees, SAP2000, MIDAS, Robot, Straus7 | si' |
 | `create_report` | relazione di calcolo Word (una combinazione o tutte) | si' |
+
+### Tool dell'interfaccia aperta (`gui_*`)
+
+Questi tool lavorano sul modello **aperto nell'interfaccia** (`feagent gui`,
+[pagina 42](it-42-desktop-gui.html)) invece che su un file: ogni modifica
+compare subito nella finestra dell'utente ed e' annullabile con Ctrl+Z.
+
+| Tool | Scopo |
+|---|---|
+| `gui_connect` | collega una sessione remota o online (indirizzo e token da *Strumenti > Collega un'IA*); in locale non serve |
+| `gui_state` | riepilogo del modello, selezione e vista dell'utente, estremi dei risultati, operazioni ammesse |
+| `gui_model` | fogli del modello aperto |
+| `gui_edit` | operazioni sui fogli: `upsert`, `delete` (a cascata su nodi e travi), `replace_sheet`, `rename`, `set_meta` |
+| `gui_replace_model` | sostituisce il modello con una specifica JSON (come `build_model`) |
+| `gui_run` | statica per casi o combinazione, combinazioni, modale, buckling; i risultati compaiono nella finestra |
+| `gui_results` | spostamenti, reazioni e diagrammi di nodi e travi scelti |
+| `gui_show` | mostra un risultato, una vista, una selezione, una tabella o un messaggio all'utente |
+| `gui_screenshot` | immagine della vista come la vede l'utente |
+| `gui_check` | validazione del modello aperto |
 
 Le combinazioni si scrivono come nella CLI: `"G=1.35 Q=1.5"` (coefficienti)
 o `"G Q"` (coefficiente 1). I risultati sono JSON; `plot_model` restituisce il

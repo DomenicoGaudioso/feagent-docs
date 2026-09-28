@@ -1,11 +1,11 @@
 ---
 layout: default
-title: "42 - Interfaccia desktop (feagent gui)"
+title: "42 - Interfaccia desktop e online (feagent gui)"
 parent: Italiano
 nav_order: 42
 ---
 
-# 42 - Interfaccia desktop
+# 42 - Interfaccia desktop e online
 
 `feagent gui` avvia l'**interfaccia grafica** del solutore: un server locale
 (solo sul tuo PC, indirizzo `127.0.0.1`) e una finestra applicazione nel
@@ -40,6 +40,7 @@ browser predefinito.
 | `--port 8777` | porta preferita (se occupata se ne sceglie una libera) |
 | `--no-browser` | non apre la finestra: stampa l'indirizzo da aprire |
 | `--keep-alive` | il server resta attivo anche a finestra chiusa |
+| `--online` | server multiutente (vedi [Uso online](#uso-online)) |
 
 Il server si ferma con **File > Esci**, chiudendo la finestra (dopo circa 45
 secondi senza segnali dall'interfaccia) o con Ctrl+C nel terminale. Ascolta
@@ -71,6 +72,7 @@ carico ancora senza carichi; la libreria lo ignora.
 | Carichi | casi di carico, carichi nodali, distribuiti, concentrati, termici, peso proprio, combinazioni |
 | Analisi | controllo del modello (codici E01-E63 di `feagent check`), statica per casi, combinazione libera, combinazioni, modale, buckling |
 | Risultati | deformata, N, Vy, Vz, T, My, Mz, reazioni, modi, tabelle |
+| Strumenti | collega un'IA (indirizzo, token, configurazioni pronte), opzioni |
 
 **Esporta** scrive il modello per OpenSees (Tcl e Python), SAP2000, MIDAS,
 Robot e Straus7, i risultati in Excel, il tabulato di calcolo e la relazione
@@ -171,6 +173,94 @@ modo), la grandezza e la scala.
 
 Se il modello cambia dopo l'analisi, l'albero e la vista segnalano che i
 risultati vanno aggiornati (F5).
+
+## Pilotare l'interfaccia con un'IA
+
+Il modello di ogni sessione vive sul server: la finestra, gli assistenti IA
+e le altre finestre aperte sulla stessa sessione lo leggono e lo modificano,
+e un canale di eventi avvisa subito tutti. Mentre un'IA lavora, la schermata
+si aggiorna da sola: albero, vista, tabelle e risultati. Nella barra di stato
+compare **IA al lavoro** e i suoi messaggi escono in viola; ogni modifica
+dell'IA e' un passo di annulla (Ctrl+Z la toglie, e l'IA vede lo stato
+annullato).
+
+![Telaio costruito, analizzato e mostrato da un'IA](images/gui_ai_live.png)
+
+L'IA dispone di tre canali, tutti sulla stessa API:
+
+* **MCP** (Claude Desktop, Claude Code, Codex, Cursor, ...): i tool `gui_*`
+  del connettore ([pagina 38](it-38-mcp-server.html)). In locale basta avere il
+  connettore configurato (`feagent connect claude-desktop --write`): `feagent
+  gui` scrive indirizzo e token in `~/.feagent/gui_session.json` e i tool li
+  trovano da soli.
+* **REST/OpenAPI**: `POST /api/live/<azione>` con `Authorization: Bearer
+  <token>`; la specifica e' in `/api/live/openapi.json` (Custom GPT Actions,
+  n8n, script).
+* **Python**: `agent_api.call("gui_state")` e gli altri tool.
+
+| Azione | Effetto |
+|---|---|
+| `live/state` | riepilogo del modello, selezione e vista dell'utente, risultati |
+| `live/model` | fogli del modello |
+| `live/edit` | operazioni sui fogli (upsert, delete, replace_sheet, rename, set_meta) |
+| `live/replace` | nuovo modello da specifica JSON |
+| `live/run` | analisi; i risultati compaiono nella finestra |
+| `live/results` | spostamenti, reazioni, diagrammi |
+| `live/show` | risultato, vista, selezione, tabella o messaggio da mostrare |
+| `live/screenshot` | immagine della vista |
+| `live/check`, `live/export` | validazione, file esportato |
+
+**Strumenti > Collega un'IA** (o il pulsante **IA** della barra) mostra
+indirizzo e token della sessione con la configurazione MCP, un esempio
+`curl` e le righe Python pronte da copiare. Il token apre **solo quella
+sessione**.
+
+![Dialogo Collega un'IA](images/gui_ai_connect.png)
+
+Esempio di operazioni `gui_edit`:
+
+```json
+[{"op": "upsert", "sheet": "nodes", "rows": [{"id": 5, "x": 12, "y": 4, "z": 0}]},
+ {"op": "upsert", "sheet": "elements", "rows": [{"id": 4, "i": 3, "j": 5, "material": "S355", "section": "IPE400"}]},
+ {"op": "delete", "sheet": "NodalLoad", "where": {"Case": "W"}}]
+```
+
+## Uso online
+
+Lo stesso programma funziona come servizio web multiutente:
+
+```bash
+export FEAGENT_GUI_KEY="una-chiave-lunga"
+feagent gui --online --port 8777 --public-url https://fem.esempio.it
+```
+
+* all'apertura della pagina si chiede la **chiave di accesso**; ogni accesso
+  apre una **sessione separata** (modello, risultati, token propri), che resta
+  attiva 12 ore senza uso;
+* il server **non tocca il proprio file system**: i modelli si caricano e si
+  scaricano dal browser (File > Apri, Salva, Esporta);
+* senza chiave il server non parte, salvo `--no-auth` esplicito per reti
+  fidate; `--max-sessions` limita le sessioni contemporanee e al massimo due
+  analisi girano insieme;
+* va esposto **solo dietro HTTPS** (proxy inverso come Caddy o nginx, oppure
+  un tunnel); `--public-url` e' l'indirizzo pubblico mostrato nel dialogo
+  dell'IA. Con nginx va lasciato passare il canale di eventi senza buffer
+  (il server invia gia' `X-Accel-Buffering: no`).
+
+Esempio con Caddy, che ottiene da solo il certificato:
+
+```text
+fem.esempio.it {
+    reverse_proxy 127.0.0.1:8777
+}
+```
+
+In container, dalla radice del repository:
+
+```bash
+docker build -f deploy/Dockerfile -t feagent-gui .
+docker run -d -p 127.0.0.1:8777:8777 -e FEAGENT_GUI_KEY=una-chiave-lunga feagent-gui
+```
 
 ## Scorciatoie
 
