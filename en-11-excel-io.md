@@ -190,8 +190,8 @@ use (`feagent convert sap_tables.xlsx model.xlsx --A ... --Iy ...`).
 | Sheet | Columns (optional ones in brackets) |
 |-------|-------------|
 | Node | Node, X, Y, Z |
-| Material | Material, E, [nu], [alpha], [G], [rho] |
-| Section | Section, A, Iy, Iz, J, [Asy], [Asz] |
+| Material | Material, E, [nu], [alpha], [G], [rho], [gamma] |
+| Section | Section, A, Iy, Iz, J, [Asy], [Asz], [Shape, h, b, tw, tf, t, d] (shape, extruded view only) |
 | Element | Element, NodeI, NodeJ, Material, Section, [shear], [RefX, RefY, RefZ], [ReleasesI], [ReleasesJ] |
 | Support | Node, Dx, Dy, Dz, Rx, Ry, Rz (1 = restrained, global axes) |
 | NodalLoad | Node, Fx, Fy, Fz, Mx, My, Mz, [Case] |
@@ -201,6 +201,17 @@ use (`feagent convert sap_tables.xlsx model.xlsx --A ... --Iy ...`).
 | Settlement | Node, Dof, Value (always active, no load case) |
 | Prestress | Element, P, [e_i], [e_j], [plane], [sag], [Case] |
 | Combination | Name, Case, Coef (optional, see above) |
+| ShellSection | Section, t, [kappa] - shell or plate section |
+| Shell | Shell, N1, N2, N3, [N4], Material, Section, [Formulation] - 4 nodes = Q4, 3 nodes = triangle (`cst` or `thin`) |
+| Truss | Truss, NodeI, NodeJ, Material, A or Section, [behavior] - truss bar (`both`, `tension`, `compression`) |
+| Spring | Spring, NodeI, NodeJ, k, [behavior] - axial spring (ids shared with Truss) |
+| Cable | Cable, NodeI, NodeJ, Type (`bar` or `catenary`), E, A, [w], [L0], [N0], [ernst], [tension_only] |
+| ElasticSupport | Node, [kx], [ky], [kz], [krx], [kry], [krz] - springs to ground, global axes |
+| Constraint | Type (`rigid_link`, `equal_dof`, `diaphragm`), Master, Slave (also `2,3,4`), [Dofs], [Plane] |
+| ShellPressure | Shell, p, [Case] - pressure along the normal (node order, right-hand rule) |
+| ShellLoad | Shell, qx, qy, qz, [frame], [projected], [Case] |
+| ShellThermal | Shell, dT, [dT_grad], [Case] |
+| SelfWeight | Case, [g], [DirX], [DirY], [DirZ] - automatic self weight of beams, trusses and shells |
 | README | free text, ignored |
 
 Units are SI (N, m, Pa, kg, K) or any consistent system. Gravity loads on

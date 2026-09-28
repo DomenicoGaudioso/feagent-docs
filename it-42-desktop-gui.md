@@ -174,6 +174,76 @@ modo), la grandezza e la scala.
 Se il modello cambia dopo l'analisi, l'albero e la vista segnalano che i
 risultati vanno aggiornati (F5).
 
+## Gusci, piastre, bielle, molle e cavi
+
+Oltre alle travi il modello accetta tutti gli elementi del solutore, ciascuno
+con il proprio foglio (vedi [Excel I/O](it-11-excel-io.html)) e il proprio
+gruppo nell'albero:
+
+| Elemento | Foglio | Come si crea |
+|---|---|---|
+| Guscio o piastra (Q4, triangolo) | Shell, ShellSection | strumento **P** (3 o 4 vertici in ordine), **Modello > Genera piastra a maglia**, tabella |
+| Biella | Truss | strumento Bielle (area e comportamento chiesti all'inizio), tabella |
+| Molla assiale | Spring | strumento Molle, tabella |
+| Cavo (asta o catenaria) | Cable | strumento Cavi, tabella |
+| Vincolo elastico a terra | ElasticSupport | nodi selezionati, **Modello > Vincoli elastici** |
+| Collegamento rigido, equalDOF, diaframma | Constraint | due o più nodi selezionati, **Modello > Vincolo cinematico** (il primo è il master) |
+| Pressione, carico di superficie, termico sui gusci | ShellPressure, ShellLoad, ShellThermal | gusci selezionati, **Carichi > Carico sui gusci** |
+| Peso proprio automatico | SelfWeight | **Carichi > Peso proprio** |
+
+![Telaio in acciaio con solaio a gusci, biella, molla e vincoli](images/gui_mixed.png)
+
+Il **peso proprio** non è più un elenco di carichi generati: è una
+definizione che il solutore ricalcola a ogni analisi da peso specifico (γ, o
+ρ·g) per area di travi e bielle e per spessore dei gusci, quindi resta giusto
+anche se cambiano sezioni e spessori. Con i **cavi** l'analisi statica diventa
+automaticamente non lineare (Newton-Raphson) e il messaggio lo segnala.
+
+## Vista estrusa
+
+**Vista > Vista estrusa** (tasto **E**, o il cubo della barra) disegna le
+travi con la sezione reale e i gusci con il loro spessore, colorati per
+materiale (acciaio, calcestruzzo, legno). La forma si prende dalle colonne
+`Shape`, `h`, `b`, `tw`, `tf`, `t`, `d` del foglio Section, che le sezioni
+parametriche compilano da sole; in mancanza si usa il rettangolo equivalente
+ad `A`, `Iy`, `Iz`.
+
+![Vista estrusa: doppio T dei pilastri e spessore del solaio](images/gui_extruded.png)
+
+## Analisi e risultati degli elementi speciali
+
+| Analisi | Note |
+|---|---|
+| Statica per casi, combinazione, combinazioni | lineare; non lineare in automatico se ci sono cavi |
+| P-Delta | secondo ordine con la rigidezza geometrica aggiornata |
+| Non lineare | Newton-Raphson, con passi di carico; cavi ed elementi solo trazione o solo compressione |
+| Modale, buckling | come prima, con gusci, bielle e cavi (precarico dei cavi incluso) |
+| Spettro di risposta | spettro EC8 / NTC 2018 di tipo 1 (a<sub>g</sub>, suolo, q, ξ), CQC o SRSS, un risultato per direzione (inviluppi senza segno) e tagli alla base |
+
+Ai risultati si aggiungono le **mappe a colori dei gusci** (Mx, My, Mxy, Nx,
+Ny, Nxy, Qx, Qy al centro dell'elemento, assi locali), lo **sforzo assiale di
+bielle, molle e cavi** (blu trazione, rosso compressione, spessore
+proporzionale), le reazioni dei vincoli elastici e le relative tabelle.
+
+![Piastra appoggiata sul contorno sotto pressione: momento My](images/gui_plate.png)
+
+## Relazione di calcolo
+
+**File > Esporta > Relazione di calcolo Word** esegue le analisi scelte (casi,
+combinazioni, modale) e scrive una relazione nello stile aziendale: Calibri
+11, titoli neri, tabelle native con intestazione su fondo azzurro chiaro,
+figure centrate con didascalia «Figura N — …», nessun nome di software nel
+testo. Le figure sono quelle della vista, quindi con gusci, cavi, vista estrusa
+per il modello e momenti dalla parte delle fibre tese.
+
+Contenuto: premessa, normativa, unità e convenzioni, materiali, sezioni di
+travi e gusci, modello con figura e tabelle di input, carichi per caso con
+figure e combinazioni, risultati per caso e combinazione (deformata, diagrammi,
+mappe dei gusci, sforzi assiali, reazioni, estremi per trave) con il
+**controllo dell'equilibrio globale** fra carichi applicati e reazioni, analisi
+modale. Gli stessi dati, senza figure, si ottengono dall'IA con
+`live/export` in formato `report`.
+
 ## Pilotare l'interfaccia con un'IA
 
 Il modello di ogni sessione vive sul server: la finestra, gli assistenti IA
@@ -270,7 +340,9 @@ docker run -d -p 127.0.0.1:8777:8777 -e FEAGENT_GUI_KEY=una-chiave-lunga feagent
 | Ctrl+Z, Ctrl+Y | annulla, ripeti |
 | F5 | statica per casi |
 | F6 | combinazioni |
-| S, N, B | seleziona, disegna nodi, disegna travi |
+| S, N, B, P | seleziona, disegna nodi, travi, gusci |
+| E | vista estrusa |
+| Invio | chiude il guscio in disegno come triangolo |
 | Canc | elimina la selezione |
 | Esc | chiude la catena di travi, torna alla selezione, deseleziona |
 

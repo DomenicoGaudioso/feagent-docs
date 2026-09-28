@@ -168,6 +168,74 @@ mode), the quantity and the scale.
 When the model changes after an analysis, the tree and the view flag the
 results as out of date (F5 to rerun).
 
+## Shells, plates, trusses, springs and cables
+
+Besides beams the model accepts every element of the solver, each with its own
+sheet (see [Excel I/O](en-11-excel-io.html)) and tree group:
+
+| Element | Sheet | How to create it |
+|---|---|---|
+| Shell or plate (Q4, triangle) | Shell, ShellSection | tool **P** (3 or 4 vertices in order), **Model > Plate mesh generator**, table |
+| Truss bar | Truss | Truss tool (area and behaviour asked first), table |
+| Axial spring | Spring | Spring tool, table |
+| Cable (bar or catenary) | Cable | Cable tool, table |
+| Elastic support to ground | ElasticSupport | selected nodes, **Model > Elastic supports** |
+| Rigid link, equalDOF, diaphragm | Constraint | two or more selected nodes, **Model > Kinematic constraint** (the first is the master) |
+| Pressure, surface and thermal loads on shells | ShellPressure, ShellLoad, ShellThermal | selected shells, **Loads > Shell load** |
+| Automatic self weight | SelfWeight | **Loads > Self weight** |
+
+![Steel frame with shell slab, truss bar, spring and constraints](images/gui_mixed.png)
+
+**Self weight** is no longer a list of generated loads: it is a definition the
+solver recomputes at every analysis from the unit weight (γ, or ρ·g) times the
+area of beams and trusses and the thickness of shells, so it stays right when
+sections change. With **cables** the static analysis becomes nonlinear
+(Newton-Raphson) automatically and the message log says so.
+
+## Extruded view
+
+**View > Extruded view** (key **E**, or the cube in the toolbar) draws beams
+with their real section and shells with their thickness, coloured by material
+(steel, concrete, timber). The shape comes from the `Shape`, `h`, `b`, `tw`,
+`tf`, `t`, `d` columns of the Section sheet, filled by the parametric section
+wizard; otherwise the rectangle equivalent to `A`, `Iy`, `Iz` is used.
+
+![Extruded view: I-section columns and slab thickness](images/gui_extruded.png)
+
+## Analyses and results of the special elements
+
+| Analysis | Notes |
+|---|---|
+| Static per case, combination, combinations | linear; nonlinear automatically when cables are present |
+| P-Delta | second order with the updated geometric stiffness |
+| Nonlinear | Newton-Raphson with load steps; cables and tension-only or compression-only members |
+| Modal, buckling | as before, with shells, trusses and cables (cable pretension included) |
+| Response spectrum | EC8 / NTC 2018 type 1 spectrum (a<sub>g</sub>, soil, q, ξ), CQC or SRSS, one result per direction (unsigned envelopes) and base shear |
+
+Results add **colour maps on shells** (Mx, My, Mxy, Nx, Ny, Nxy, Qx, Qy at the
+element centre, local axes), the **axial force of trusses, springs and
+cables** (blue tension, red compression, width proportional), elastic support
+reactions and the related tables.
+
+![Plate supported on its edges under pressure: moment My](images/gui_plate.png)
+
+## Calculation report
+
+**File > Export > Word calculation report** runs the selected analyses (load
+cases, combinations, modal) and writes a report in the house style: Calibri
+11, black headings, native tables with a light blue header, centred figures
+captioned "Figura N — …", no software names in the text. Figures are taken
+from the view, so they include shells, cables, the extruded model view and
+moments on the tension side.
+
+Contents: introduction, codes, units and conventions, materials, beam and
+shell sections, model with figure and input tables, loads per case with
+figures and combinations, results per case and combination (deformed shape,
+diagrams, shell maps, axial forces, reactions, extremes per beam) with the
+**global equilibrium check** between applied loads and reactions, modal
+analysis. The same data without figures are available to an AI through
+`live/export` with format `report`.
+
 ## Driving the interface with an AI
 
 Each session's model lives on the server: the window, AI assistants and other
@@ -263,7 +331,9 @@ docker run -d -p 127.0.0.1:8777:8777 -e FEAGENT_GUI_KEY=a-long-key feagent-gui
 | Ctrl+Z, Ctrl+Y | undo, redo |
 | F5 | static per load case |
 | F6 | combinations |
-| S, N, B | select, draw nodes, draw beams |
+| S, N, B, P | select, draw nodes, beams, shells |
+| E | extruded view |
+| Enter | close the shell being drawn as a triangle |
 | Del | delete the selection |
 | Esc | end the beam chain, back to selection, clear selection |
 

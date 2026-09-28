@@ -192,8 +192,8 @@ normalizzato prima di usarlo (`feagent convert tabelle_sap.xlsx modello.xlsx --A
 | Foglio | Colonne (tra parentesi quelle opzionali) |
 |--------|-------------------|
 | Node | Node, X, Y, Z |
-| Material | Material, E, [nu], [alpha], [G], [rho] |
-| Section | Section, A, Iy, Iz, J, [Asy], [Asz] |
+| Material | Material, E, [nu], [alpha], [G], [rho], [gamma] |
+| Section | Section, A, Iy, Iz, J, [Asy], [Asz], [Shape, h, b, tw, tf, t, d] (forma, solo per la vista estrusa) |
 | Element | Element, NodeI, NodeJ, Material, Section, [shear], [RefX, RefY, RefZ], [ReleasesI], [ReleasesJ] |
 | Support | Node, Dx, Dy, Dz, Rx, Ry, Rz (1 = vincolato, assi globali) |
 | NodalLoad | Node, Fx, Fy, Fz, Mx, My, Mz, [Case] |
@@ -203,6 +203,17 @@ normalizzato prima di usarlo (`feagent convert tabelle_sap.xlsx modello.xlsx --A
 | Settlement | Node, Dof, Value (sempre attivo, senza caso di carico) |
 | Prestress | Element, P, [e_i], [e_j], [plane], [sag], [Case] |
 | Combination | Name, Case, Coef (opzionale, vedi sopra) |
+| ShellSection | Section, t, [kappa] - sezione di guscio o piastra |
+| Shell | Shell, N1, N2, N3, [N4], Material, Section, [Formulation] - 4 nodi = Q4, 3 nodi = triangolo (`cst` o `thin`) |
+| Truss | Truss, NodeI, NodeJ, Material, A oppure Section, [behavior] - biella (`both`, `tension`, `compression`) |
+| Spring | Spring, NodeI, NodeJ, k, [behavior] - molla assiale (id condivisi con Truss) |
+| Cable | Cable, NodeI, NodeJ, Type (`bar` o `catenary`), E, A, [w], [L0], [N0], [ernst], [tension_only] |
+| ElasticSupport | Node, [kx], [ky], [kz], [krx], [kry], [krz] - molle a terra, assi globali |
+| Constraint | Type (`rigid_link`, `equal_dof`, `diaphragm`), Master, Slave (anche `2,3,4`), [Dofs], [Plane] |
+| ShellPressure | Shell, p, [Case] - pressione lungo la normale (ordine dei nodi, mano destra) |
+| ShellLoad | Shell, qx, qy, qz, [frame], [projected], [Case] |
+| ShellThermal | Shell, dT, [dT_grad], [Case] |
+| SelfWeight | Case, [g], [DirX], [DirY], [DirZ] - peso proprio automatico di travi, bielle e gusci |
 | README | testo libero, ignorato |
 
 Le unita' sono SI (N, m, Pa, kg, K) o qualsiasi sistema coerente. I carichi
