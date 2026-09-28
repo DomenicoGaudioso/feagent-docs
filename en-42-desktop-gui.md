@@ -47,6 +47,25 @@ terminal. It listens locally only and every call needs the session token
 created at start-up, so no web page open in the browser can read or change
 your files.
 
+### Without Python: single-file executable
+
+For users without Python there is **`feagent-gui.exe`** (Windows; for macOS
+and Linux `feagent-gui-macos` and `feagent-gui-linux`): one file of about
+95 MB bundling Python, numpy, scipy, pandas and python-docx. Double-click it
+and the interface opens in the browser; a model can be dropped on the
+executable or opened with "Open with". It accepts `--port`, `--no-browser`
+and `--keep-alive`; start-up errors go to
+`%LOCALAPPDATA%\feagent\feagent-gui.log`.
+
+The executables are attached to the GitHub release (built and tested by the
+`Eseguibili` workflow) or can be built locally:
+
+```bash
+pip install pyinstaller pillow
+python scripts/build_exe.py             # dist/feagent-gui.exe
+python packaging/smoke_exe.py dist/feagent-gui.exe
+```
+
 ## The model document
 
 What the tree and the tables show is the **feagent Excel format** (sheets
@@ -354,7 +373,19 @@ The **Dynamics** group of the tree and **Analysis > Dynamics** hold:
 | Dynamic forces | nodal forces times a time function, or harmonic with a phase |
 
 Each analysis has its mass source, damping (Rayleigh at two frequencies,
-modal, none) and optional section group. **Analysis > Dynamic analyses** runs
+modal, none) and optional section group.
+
+The **devices** follow their nonlinear law in the nonlinear time history; in
+every other analysis (static, combinations, modal, buckling, moving loads,
+linear time history, harmonic) they enter with their **initial stiffness**:
+μ·W/u_y + W/R for the pendulum, k1 for the bilinear isolator, k for a closed
+gap, none for the viscous damper. A deck resting only on isolators is thus
+solvable in statics too, and the result tables list the device forces.
+
+In the **moving train** the wheels travel as in the static scan: lane
+eccentricity, gauge and skewed axles, spread over the cross beams. The lane
+distributed load is not a travelling load: it is added statically, in the
+checkerboard pattern, to the dynamic envelopes. **Analysis > Dynamic analyses** runs
 them and returns for each one:
 
 * the **deformed shape in time** (or per frequency for the harmonic one):
@@ -463,7 +494,14 @@ In a container, from the repository root:
 ```bash
 docker build -f deploy/Dockerfile -t feagent-gui .
 docker run -d -p 127.0.0.1:8777:8777 -e FEAGENT_GUI_KEY=a-long-key feagent-gui
+python deploy/smoke_test.py http://127.0.0.1:8777 a-long-key
 ```
+
+The image runs as an unprivileged user and refuses to start without a key.
+The repository `Docker` workflow builds and tests it on every change with
+`deploy/smoke_test.py`: page and scripts, wrong key rejected, isolated
+sessions, static and dynamic analyses, Excel and Word export, no access to
+the server file system.
 
 ## Shortcuts
 

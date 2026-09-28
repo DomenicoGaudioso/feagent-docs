@@ -288,3 +288,10 @@ frequencies `F1` and `F2` (empty = first two modes), modal in the modal
 superposition, or none (`DampingType = none`). `MassSource` lists the load
 cases turned into mass (`G1=1 G2=1`); empty uses the material density. Empty
 `dt` and `t_end` take the step and duration of the record.
+
+The devices of `Device` follow their nonlinear law only in the nonlinear time
+history. For linear analyses `feagent.dynamic_cases.apply_device_stiffness(model)`
+adds them as springs with the initial stiffness (elastic support to ground,
+directional spring between two nodes, also coincident) and
+`remove_device_stiffness` removes them; `run_dynamic` does it by itself for
+the linear dynamic analyses.

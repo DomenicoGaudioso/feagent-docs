@@ -48,6 +48,26 @@ solo in locale e ogni chiamata richiede il token di sessione generato
 all'avvio, quindi una pagina web qualsiasi aperta nel browser non può leggere
 o modificare i tuoi file.
 
+### Senza Python: eseguibile a file singolo
+
+Per chi non ha Python c'e' **`feagent-gui.exe`** (Windows; per macOS e Linux
+`feagent-gui-macos` e `feagent-gui-linux`): un solo file di circa 95 MB con
+dentro Python, numpy, scipy, pandas e python-docx. Doppio clic e
+l'interfaccia si apre nel browser; si puo' anche trascinare un modello
+sull'eseguibile o usare "Apri con". Accetta le opzioni `--port`,
+`--no-browser` e `--keep-alive`; gli errori di avvio finiscono in
+`%LOCALAPPDATA%\feagent\feagent-gui.log`.
+
+Gli eseguibili si scaricano dagli allegati della release su GitHub (li
+costruisce e li collauda il workflow `Eseguibili`) oppure si costruiscono in
+locale:
+
+```bash
+pip install pyinstaller pillow
+python scripts/build_exe.py             # dist/feagent-gui.exe
+python packaging/smoke_exe.py dist/feagent-gui.exe
+```
+
 ## Il documento del modello
 
 Quello che si vede nell'albero e nelle tabelle è il **formato Excel di
@@ -367,6 +387,19 @@ Il gruppo **Dinamica** dell'albero e **Analisi > Dinamica** raccolgono:
 
 Ogni analisi ha la sua sorgente di massa, lo smorzamento (Rayleigh tarato su
 due frequenze, modale, nessuno) e l'eventuale gruppo di sezioni.
+
+I **dispositivi** seguono la loro legge non lineare nella time history non
+lineare; in tutte le altre analisi (statica, combinazioni, modale, buckling,
+carichi mobili, time history lineare, armonica) entrano con la **rigidezza
+iniziale**: per il pendolo μ·W/u_y + W/R, per l'isolatore bilineare k1, per il
+ritegno con gioco chiuso k, nulla per il dissipatore viscoso. Cosi' un
+impalcato appoggiato solo sugli isolatori si risolve anche in statica, e le
+tabelle dei risultati riportano le forze nei dispositivi.
+
+Nel **convoglio in movimento** le ruote viaggiano come nella scansione
+statica: eccentricita' della corsia, carreggiata e assali inclinati, con la
+ripartizione sui traversi. Il carico distribuito di corsia non e' un carico
+che viaggia: si somma staticamente, a scacchiera, agli inviluppi dinamici.
 **Analisi > Analisi dinamiche** le esegue e per ciascuna restituisce:
 
 * la **deformata nel tempo** (o per frequenza nell'armonica): cursore e
@@ -476,7 +509,14 @@ In container, dalla radice del repository:
 ```bash
 docker build -f deploy/Dockerfile -t feagent-gui .
 docker run -d -p 127.0.0.1:8777:8777 -e FEAGENT_GUI_KEY=una-chiave-lunga feagent-gui
+python deploy/smoke_test.py http://127.0.0.1:8777 una-chiave-lunga
 ```
+
+L'immagine gira con un utente non privilegiato e senza chiave rifiuta di
+partire. Il workflow `Docker` del repository la costruisce e la collauda a
+ogni modifica con `deploy/smoke_test.py`: pagina e script, chiave sbagliata
+rifiutata, sessioni isolate, analisi statica e dinamica, export Excel e Word,
+nessun accesso al file system del server.
 
 ## Scorciatoie
 

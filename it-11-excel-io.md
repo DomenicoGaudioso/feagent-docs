@@ -291,3 +291,10 @@ L'eccitazione e' un accelerogramma alla base (`Accelerogram`, `Direction`,
 sovrapposizione modale, oppure assente (`DampingType = none`). `MassSource`
 elenca i casi convertiti in massa (`G1=1 G2=1`); vuoto usa la densita' dei
 materiali. `dt` e `t_end` vuoti prendono passo e durata dell'accelerogramma.
+
+I dispositivi di `Device` seguono la legge non lineare solo nella time
+history non lineare. Per le analisi lineari
+`feagent.dynamic_cases.apply_device_stiffness(model)` li aggiunge come molle
+con la rigidezza iniziale (vincolo elastico verso il suolo, molla
+direzionale fra due nodi anche coincidenti) e `remove_device_stiffness` li
+toglie; `run_dynamic` lo fa da solo per le analisi dinamiche lineari.
