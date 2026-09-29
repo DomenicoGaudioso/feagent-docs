@@ -416,6 +416,39 @@ definirli nel foglio `Vehicle`: `LM1_TS1`, `LM1_TS2`, `LM1_TS3`, `LM2`, `FLM3`,
   gruppo, il gruppo si applica da solo; altrimenti si sceglie nella finestra
   delle analisi statica, modale e di buckling.
 
+### Fasi con proprietà diverse: acciaio, tempi, ritiro, cedimenti
+
+Per un impalcato misto le proprietà cambiano con la fase. Si tengono nel modello
+con un **gruppo di sezioni per fase**, ciascuno legato ai casi di carico di
+quella fase:
+
+| Gruppo | Sezioni | Casi legati |
+|---|---|---|
+| `acciaio` | solo trave metallica | `G1` (peso della trave e del getto) |
+| `t0` | sezione mista con n a breve termine | `G2`, `Q` |
+| `tinf` | sezione mista con n a lungo termine | `RITIRO`, `CEDIMENTI` |
+
+Nella finestra **Gruppo di sezioni** si indicano le travi (`*` = tutte), la
+sezione e i casi. Regole di applicazione:
+
+* se **tutti i casi** di un'analisi sono legati allo stesso gruppo, il gruppo si
+  applica da solo (una statica di `RITIRO` usa `tinf`);
+* se una combinazione mescola casi di gruppi diversi la scelta è ambigua e si
+  usano le sezioni base: per una fase precisa si sceglie il gruppo nella
+  finestra dell'analisi (statica, modale, buckling, dinamica), oppure si
+  risolve ogni fase con i propri casi e si sommano gli effetti come nella
+  procedura a fasi.
+
+I **cedimenti** appartengono a una fase con la colonna `Case` della tabella
+**Cedimenti** (**Carichi > Tabelle dei carichi**). Senza `Case` il cedimento è
+sempre attivo, come nei modelli storici; con un caso, per esempio `CEDIMENTI`,
+agisce solo nelle combinazioni che contengono quel caso e per il suo
+coefficiente (`CEDIMENTI=0.5` dimezza lo spostamento imposto). Così un
+cedimento differito si combina con il ritiro nel gruppo `tinf` e non compare
+nella fase di getto. I casi dei cedimenti compaiono nell'elenco dei casi di
+carico, si rinominano e si eliminano con gli altri, e valgono per statica,
+combinazioni, P-Delta, non lineare e vincoli cinematici.
+
 ## Profili termici e cavi di precompressione
 
 * **Profilo termico non lineare** (**Carichi > Profilo termico**): punti
@@ -479,6 +512,42 @@ che viaggia: si somma staticamente, a scacchiera, agli inviluppi dinamici.
 La relazione di calcolo aggiunge il capitolo delle analisi dinamiche:
 equazione del moto, smorzamento, accelerogrammi, dispositivi, sintesi dei
 picchi, storie, taglio alla base, cicli dei dispositivi e inviluppi.
+
+### Lower e upper bound per SLV e SLC
+
+Le proprietà di dispositivi, appoggi e materiali sono note entro un intervallo:
+per SLV e SLC si analizza il modello con i valori **lower bound** (LB) e **upper
+bound** (UB) e si prende l'inviluppo. Il foglio **Insiemi lower/upper bound**
+(foglio `Bounds`, nel gruppo **Dinamica** dell'albero) contiene una regola per
+riga:
+
+| Set | Target | Ids | Param | Factor |
+|---|---|---|---|---|
+| `SLV_LB` | `device` | vuoto = tutti | `Fy` | 0,8 |
+| `SLV_LB` | `device` | vuoto | `k1` | 0,8 |
+| `SLV_UB` | `device` | vuoto | `Fy` | 1,2 |
+| `SLV_UB` | `elastic` | nodi | `all` | 1,3 |
+| `SLC_LB` | `material` | `CLS` | `E` | 0,85 |
+
+* `device`: `Param` è un parametro della legge del dispositivo (`k1`, `k2`,
+  `Fy`, `mu`, `R`, `c`...), `Ids` gli id dei dispositivi;
+* `elastic`: molle a terra, `Param` è `kx`...`krz` oppure `all`, `Ids` i nodi;
+* `material`: `E` scala insieme E e G, oppure `G`, `rho`; `Ids` sono i nomi;
+* `section`: `A`, `Iy`, `Iz`, `J` oppure `all`; `Ids` sono i nomi delle sezioni.
+
+`Factor` moltiplica il valore; le righe con lo stesso `Set` si applicano
+insieme. Nella finestra dell'analisi dinamica il riquadro **Lower / upper
+bound** ha lo **Stato limite** (SLV, SLC, con etichetta nei messaggi) e gli
+**Insiemi bound** da eseguire, per esempio `SLV_LB,SLV_UB`: il campo suggerisce
+i nomi del foglio e segnala un insieme non definito. Per SLV e SLC si definiscono
+due analisi, ciascuna con il proprio accelerogramma e i propri insiemi.
+
+Ogni analisi produce una corsa per insieme più l'**inviluppo**, come risultati
+distinti (`SLV [SLV_LB]`, `SLV [SLV_UB]`, `SLV [inviluppo]`). L'inviluppo prende
+il minimo dei minimi e il massimo dei massimi di spostamenti, reazioni e
+sollecitazioni; le storie temporali e i cicli dei dispositivi sono quelli della
+corsa che governa lo spostamento. Modello e dati tornano com'erano alla fine di
+ogni corsa; la validazione controlla target, coefficiente e insiemi citati.
 
 ## Pilotare l'interfaccia con un'IA
 

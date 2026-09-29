@@ -402,6 +402,38 @@ the `Vehicle` sheet: `LM1_TS1`, `LM1_TS2`, `LM1_TS3`, `LM2`, `FLM3`, `LM71`,
   When all the cases of an analysis are linked to the same group it applies by
   itself; otherwise it is chosen in the static, modal and buckling dialogs.
 
+### Phases with different properties: steel, time, shrinkage, settlements
+
+For a composite deck the properties change with the construction phase. They
+are kept in the model with one **section group per phase**, each linked to the
+load cases of that phase:
+
+| Group | Sections | Linked cases |
+|---|---|---|
+| `steel` | steel girder only | `G1` (weight of girder and cast) |
+| `t0` | composite section with short-term n | `G2`, `Q` |
+| `tinf` | composite section with long-term n | `SHRINKAGE`, `SETTLEMENTS` |
+
+In the **Section group** window pick the beams (`*` = all), the section and the
+cases. Application rules:
+
+* when **all cases** of an analysis are linked to the same group the group is
+  applied automatically (a `SHRINKAGE` static analysis uses `tinf`);
+* when a combination mixes cases of different groups the choice is ambiguous
+  and the base sections are used: for a specific phase pick the group in the
+  analysis window (static, modal, buckling, dynamic), or solve each phase with
+  its own cases and add the effects as in the staged procedure.
+
+**Settlements** belong to a phase through the `Case` column of the
+**Settlements** table (**Loads > Load tables**). Without `Case` the settlement
+is always active, as in legacy models; with a case, for example `SETTLEMENTS`,
+it acts only in the combinations containing that case and times its factor
+(`SETTLEMENTS=0.5` halves the imposed displacement). A deferred settlement is
+thus combined with shrinkage in the `tinf` group and does not appear in the
+casting phase. Settlement cases show up in the load case list, are renamed and
+deleted with the others, and hold for static, combinations, P-Delta, nonlinear
+and kinematic constraints.
+
 ## Thermal profiles and prestressing tendons
 
 * **Nonlinear thermal profile** (**Loads > Thermal profile**): depth:temperature
@@ -463,6 +495,41 @@ them and returns for each one:
 The calculation report adds the dynamic analyses chapter: equation of motion,
 damping, accelerograms, devices, peak summary, histories, base shear, device
 loops and envelopes.
+
+### Lower and upper bound for SLV and SLC
+
+The properties of devices, bearings and materials are known within a range: for
+SLV and SLC the model is analysed with the **lower bound** (LB) and **upper
+bound** (UB) values and the envelope is taken. The **Lower/upper bound sets**
+sheet (`Bounds` sheet, in the **Dynamics** group of the tree) holds one rule
+per row:
+
+| Set | Target | Ids | Param | Factor |
+|---|---|---|---|---|
+| `SLV_LB` | `device` | empty = all | `Fy` | 0.8 |
+| `SLV_LB` | `device` | empty | `k1` | 0.8 |
+| `SLV_UB` | `device` | empty | `Fy` | 1.2 |
+| `SLV_UB` | `elastic` | nodes | `all` | 1.3 |
+| `SLC_LB` | `material` | `CLS` | `E` | 0.85 |
+
+* `device`: `Param` is a parameter of the device law (`k1`, `k2`, `Fy`, `mu`,
+  `R`, `c`...), `Ids` the device ids;
+* `elastic`: ground springs, `Param` is `kx`...`krz` or `all`, `Ids` the nodes;
+* `material`: `E` scales E and G together, or `G`, `rho`; `Ids` are the names;
+* `section`: `A`, `Iy`, `Iz`, `J` or `all`; `Ids` are the section names.
+
+`Factor` multiplies the value; rows with the same `Set` apply together. In the
+dynamic analysis window the **Lower / upper bound** box has the **Limit state**
+(SLV, SLC, a label in the messages) and the **Bound sets** to run, for example
+`SLV_LB,SLV_UB`: the field suggests the sheet names and flags an undefined set.
+For SLV and SLC define two analyses, each with its own accelerogram and sets.
+
+Each analysis gives one run per set plus the **envelope**, as separate results
+(`SLV [SLV_LB]`, `SLV [SLV_UB]`, `SLV [envelope]`). The envelope takes the
+minimum of the minima and the maximum of the maxima of displacements, reactions
+and internal forces; time histories and device loops are those of the run that
+governs the displacement. Model and data are restored at the end of each run;
+validation checks the target, the factor and the sets that are cited.
 
 ## Driving the interface with an AI
 
