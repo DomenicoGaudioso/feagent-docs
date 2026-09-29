@@ -200,7 +200,7 @@ normalizzato prima di usarlo (`feagent convert tabelle_sap.xlsx modello.xlsx --A
 | DistributedLoad | Element, Component, qi, [qj], [a], [b], [frame], [Case] - `a`, `b` normalizzati in [0, 1] |
 | ConcentratedLoad | Element, xi, Fx, Fy, Fz, Mx, My, Mz, [frame], [Case] - `xi` normalizzato in [0, 1] |
 | Thermal | Element, [dT_axial], [dT_grad_y], [h_y], [dT_grad_z], [h_z], [Case] |
-| Settlement | Node, Dof, Value (sempre attivo, senza caso di carico) |
+| Settlement | Node, Dof, Value, [Case] (senza Case sempre attivo; con Case agisce solo nelle combinazioni che lo contengono, per il suo coefficiente: cedimenti differiti e fasi di costruzione) |
 | Prestress | Element, P, [e_i], [e_j], [plane], [sag], [Profile], [Case] - `Profile` (`0:0; 0.5:-0.3; 1:0`) e' il tracciato e(xi) poligonale al posto di e_i, e_j, sag |
 | Combination | Name, Case, Coef (opzionale, vedi sopra) |
 | ShellSection | Section, t, [kappa] - sezione di guscio o piastra |
@@ -216,7 +216,8 @@ normalizzato prima di usarlo (`feagent convert tabelle_sap.xlsx modello.xlsx --A
 | SelfWeight | Case, [g], [DirX], [DirY], [DirZ] - peso proprio automatico di travi, bielle e gusci |
 | Vehicle | Vehicle, Offset, Load, [Gauge] - veicolo, una riga per asse (Load = peso dell'asse, positivo) |
 | Lane | Lane, Elements (`1:20` o `1,2,3`), [StartNode], [Ecc], [Skew], [Deck] - corsia su una catena di travi |
-| MovingLoad | MovingLoad, Lane, Vehicle, [Positions], [Axis] (`-z`), [Factor], [Static], [UDL], [Width] - caso di carico mobile; `UDL` [N/m2] per `Width` (default 3 m) e' il carico distribuito di corsia applicato a scacchiera |
+| Lane (superficie) | Lane, Points (id di nodo `1,5,9` o `x y z; x y z`), Surface (`all` o `1:200`), [Patch] (`0.4,0.4` o `auto`), [Ecc] - *moving load surface*: il convoglio scorre su una linea di punti e le ruote sono scaricate sui nodi dei gusci della piastra con le funzioni di forma; in uscita gli inviluppi dei gusci (`Mx`, `My`, `Mxy`, `Qx`, `Qy`) oltre a spostamenti e reazioni. `Vehicle` puo' essere un nome del catalogo (`LM1_TS1..3`, `LM2`, `FLM3`, `LM71`, `HL93_TRUCK`, `HL93_TANDEM`, `CDS_44T`, `CDS_26T`, `CDS_7_5T`) senza definirlo nel foglio Vehicle |
+| MovingLoad | MovingLoad, Lane, Vehicle, [Positions], [Axis] (`-z`), [Factor], [Static], [UDL], [Width], [Speed] - caso di carico mobile; `UDL` [N/m2] per `Width` (default 3 m) e' il carico distribuito di corsia applicato a scacchiera - `Speed` [m/s] da' l'istante di passaggio delle reazioni concomitanti (tabella nei risultati e menu Esporta > Carichi mobili con concomitanti) |
 | SupportAxis | Node, xX, xY, xZ, yX, yY, yZ - appoggio ruotato: x locale e un vettore del piano x-y; i GdL di Support e Settlement del nodo diventano locali |
 | SectionGroup | Group, [Elements], Section, [Cases] - sezioni alternative (fessurata, lungo termine); `Elements` vuoto = tutte le travi; `Cases` lega il gruppo ai casi di carico |
 | ThermalProfile | Element (`3` o `1:10`), Axis (`y`, `z`), h, Profile (`-0.25:0; 0.2:4; 0.25:13`), [Width], [n_section], [Case] - profilo termico non lineare sull'altezza |
@@ -225,6 +226,7 @@ normalizzato prima di usarlo (`feagent convert tabelle_sap.xlsx modello.xlsx --A
 | Accelerogram | Accelerogram, Time, Acc - accelerogramma o funzione del tempo, una riga per campione |
 | Device | Device, NodeI, [NodeJ], Type (`bilinear`, `fps`, `viscous`, `gap`), [Axes], parametri (k1 k2 Fy; W R mu mu_slow a u_y; c alpha; k gap sign), [coupled] - dispositivo non lineare, NodeJ vuoto = suolo |
 | DynamicAnalysis | Analysis, Type, [Accelerogram], [Direction], [Scale], [dt], [t_end], [Damping], [DampingType], [F1], [F2], [Modes], [MassSource], [Method], [FreqMin], [FreqMax], [NFreq], [MovingLoad], [Speed], [SectionGroup] - analisi dinamica |
+| Bounds | Set, Target (`device`, `elastic`, `material`, `section`), [Ids], Param, Factor, [Note] - insieme di proprieta' lower/upper bound: `Factor` moltiplica il parametro (device: k1, Fy, mu...; elastic: kx..krz o all; material: E scala E e G; section: A, Iy, Iz, J o all); le righe con lo stesso `Set` si applicano insieme. In `DynamicAnalysis` le colonne `LimitState` (SLV, SLC) e `Bounds` (es. `SLV_LB,SLV_UB`) eseguono una corsa per insieme e ne danno l'inviluppo |
 | DynamicLoad | Analysis, Node, Dof, Amplitude, [History], [Phase] - forza dinamica nodale |
 | README | testo libero, ignorato |
 

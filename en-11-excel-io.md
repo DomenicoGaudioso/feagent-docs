@@ -198,7 +198,7 @@ use (`feagent convert sap_tables.xlsx model.xlsx --A ... --Iy ...`).
 | DistributedLoad | Element, Component, qi, [qj], [a], [b], [frame], [Case] - `a`, `b` normalized in [0, 1] |
 | ConcentratedLoad | Element, xi, Fx, Fy, Fz, Mx, My, Mz, [frame], [Case] - `xi` normalized in [0, 1] |
 | Thermal | Element, [dT_axial], [dT_grad_y], [h_y], [dT_grad_z], [h_z], [Case] |
-| Settlement | Node, Dof, Value (always active, no load case) |
+| Settlement | Node, Dof, Value, [Case] (without Case always active; with Case it acts only in the combinations containing it, times its factor: deferred settlements and construction phases) |
 | Prestress | Element, P, [e_i], [e_j], [plane], [sag], [Profile], [Case] - `Profile` (`0:0; 0.5:-0.3; 1:0`) is the polygonal tendon path e(xi) replacing e_i, e_j, sag |
 | Combination | Name, Case, Coef (optional, see above) |
 | ShellSection | Section, t, [kappa] - shell or plate section |
@@ -214,7 +214,8 @@ use (`feagent convert sap_tables.xlsx model.xlsx --A ... --Iy ...`).
 | SelfWeight | Case, [g], [DirX], [DirY], [DirZ] - automatic self weight of beams, trusses and shells |
 | Vehicle | Vehicle, Offset, Load, [Gauge] - vehicle, one row per axle (Load = axle weight, positive) |
 | Lane | Lane, Elements (`1:20` or `1,2,3`), [StartNode], [Ecc], [Skew], [Deck] - lane on a chain of beams |
-| MovingLoad | MovingLoad, Lane, Vehicle, [Positions], [Axis] (`-z`), [Factor], [Static], [UDL], [Width] - moving load case; `UDL` [N/m2] times `Width` (default 3 m) is the lane distributed load, applied on the adverse stretches |
+| Lane (surface) | Lane, Points (node ids `1,5,9` or `x y z; x y z`), Surface (`all` or `1:200`), [Patch] (`0.4,0.4` or `auto`), [Ecc] - *moving load surface*: the vehicle runs along a line of points and the wheels are spread over the plate shell nodes with the shape functions; the output adds shell envelopes (`Mx`, `My`, `Mxy`, `Qx`, `Qy`) to displacements and reactions. `Vehicle` may be a catalogue name (`LM1_TS1..3`, `LM2`, `FLM3`, `LM71`, `HL93_TRUCK`, `HL93_TANDEM`, `CDS_44T`, `CDS_26T`, `CDS_7_5T`) without defining it in the Vehicle sheet |
+| MovingLoad | MovingLoad, Lane, Vehicle, [Positions], [Axis] (`-z`), [Factor], [Static], [UDL], [Width], [Speed] - moving load case; `UDL` [N/m2] times `Width` (default 3 m) is the lane distributed load, applied on the adverse stretches - `Speed` [m/s] gives the passage time of the concomitant reactions (results table and Export > Moving loads with concomitants) |
 | SupportAxis | Node, xX, xY, xZ, yX, yY, yZ - rotated support: local x and a vector of the local x-y plane; the node's Support and Settlement DOFs become local |
 | SectionGroup | Group, [Elements], Section, [Cases] - alternative sections (cracked, long term); empty `Elements` = all beams; `Cases` links the group to load cases |
 | ThermalProfile | Element (`3` or `1:10`), Axis (`y`, `z`), h, Profile (`-0.25:0; 0.2:4; 0.25:13`), [Width], [n_section], [Case] - nonlinear temperature profile over the depth |
@@ -223,6 +224,7 @@ use (`feagent convert sap_tables.xlsx model.xlsx --A ... --Iy ...`).
 | Accelerogram | Accelerogram, Time, Acc - ground motion or time function, one row per sample |
 | Device | Device, NodeI, [NodeJ], Type (`bilinear`, `fps`, `viscous`, `gap`), [Axes], parameters (k1 k2 Fy; W R mu mu_slow a u_y; c alpha; k gap sign), [coupled] - nonlinear device, empty NodeJ = ground |
 | DynamicAnalysis | Analysis, Type, [Accelerogram], [Direction], [Scale], [dt], [t_end], [Damping], [DampingType], [F1], [F2], [Modes], [MassSource], [Method], [FreqMin], [FreqMax], [NFreq], [MovingLoad], [Speed], [SectionGroup] - dynamic analysis |
+| Bounds | Set, Target (`device`, `elastic`, `material`, `section`), [Ids], Param, Factor, [Note] - lower/upper bound property set: `Factor` multiplies the parameter (device: k1, Fy, mu...; elastic: kx..krz or all; material: E scales E and G; section: A, Iy, Iz, J or all); rows with the same `Set` apply together. In `DynamicAnalysis` the `LimitState` (SLV, SLC) and `Bounds` (e.g. `SLV_LB,SLV_UB`) columns run one analysis per set and give the envelope |
 | DynamicLoad | Analysis, Node, Dof, Amplitude, [History], [Phase] - nodal dynamic force |
 | README | free text, ignored |
 

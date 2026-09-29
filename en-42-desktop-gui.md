@@ -343,6 +343,48 @@ beyond the ends of the distributing cross beams the log says so, with the
 number of cases and the largest distance: usually eccentricity or gauge are
 wrong.
 
+### Concomitant reactions
+
+To design piers, bearings and foundations the largest reaction of a node is
+not enough: the other reactions **acting at the same instant** are needed too.
+The moving load results give them in two tables:
+
+* **Concomitant reactions**: for every node with a reaction, for each
+  component (Fx, Fy, Fz, Mx, My, Mz) and each extreme (max and min), the
+  vehicle position `s0`, the passage time `t`, the value of the extreme and
+  the six reactions of the same node at that position;
+* **Concomitants on all nodes**: for the component along the load axis, the
+  reactions of every node at the position where one node reaches its extreme
+  (for example, what the other piers carry when this one is at its maximum).
+  Omitted above 150 nodes with a reaction.
+
+The value of each row equals the extreme of the reaction envelope, because it
+includes the lane distributed load on the stretches with a favourable sign for
+that quantity (with its reactions on the other components) and the superposed
+static combination, if any. The time needs the vehicle speed: `Speed` [m/s]
+column of the moving case; without it the time stays empty. For the **moving
+vehicle dynamics** (`moving_dynamic`) the extreme is searched on the reaction
+time histories and `t` is the time of the time history.
+
+**File > Export > Moving loads with concomitants (.xlsx)** writes one set of
+sheets per case (beam envelopes, displacements, min and max reactions,
+concomitants per node and on all nodes) and a `Casi` sheet with vehicle, lane,
+factor, speed and type (quasi-static or dynamic), including the dynamic vehicle
+analyses. From Python: `res.concomitant_reactions(node, "uz", "max", speed=v)`
+and `res.concomitant_table(...)`.
+
+### Moving loads on a plate and predefined vehicles
+
+When the deck is a slab (shells) rather than a grillage, the lane is given as
+a **line of points** (`Points` column of the `Lane` sheet, node ids) and the
+wheels are spread over the shells listed in `Surface` (`all` or a range), with
+the wheel footprint in `Patch` (`0.4,0.4` or `auto`). The vehicle runs along
+the line of points with eccentricity and gauge as usual; besides the beam
+envelopes the shell envelopes (Mx, My, Mxy, Qx, Qy) are obtained. The `Vehicle`
+column also accepts the **predefined vehicle** names without defining them in
+the `Vehicle` sheet: `LM1_TS1`, `LM1_TS2`, `LM1_TS3`, `LM2`, `FLM3`, `LM71`,
+`HL93_TRUCK`, `HL93_TANDEM`, `CDS_44T`, `CDS_26T`, `CDS_7_5T`.
+
 ## Rotated and offset beams, rotated supports, section groups
 
 * **Section roll** about the local x axis (`Roll` column, degrees, with an

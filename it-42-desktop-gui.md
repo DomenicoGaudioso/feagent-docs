@@ -95,7 +95,8 @@ carico ancora senza carichi; la libreria lo ignora.
 | Strumenti | collega un'IA (indirizzo, token, configurazioni pronte), opzioni |
 
 **Esporta** scrive il modello per OpenSees (Tcl e Python), SAP2000, MIDAS,
-Robot e Straus7, i risultati in Excel, il tabulato di calcolo e la relazione
+Robot e Straus7, i risultati in Excel, il tabulato di calcolo, i carichi mobili con
+le reazioni concomitanti e la relazione
 Word. Se i dialoghi file nativi non sono disponibili, apertura e salvataggio
 passano per il caricamento e lo scaricamento del browser.
 
@@ -353,6 +354,48 @@ quello del veicolo (per due campate uguali, il massimo momento positivo vale
 0,0957 qL², quello sull'appoggio qL²/8). Se una ruota cade oltre gli estremi
 dei traversi di ripartizione, il messaggio lo segnala con il numero di casi e
 la distanza massima: di solito eccentricità o carreggiata sono sbagliate.
+
+### Reazioni concomitanti
+
+Per dimensionare pile, appoggi e fondazioni non basta la reazione massima di
+un nodo: servono anche le altre reazioni **presenti nello stesso istante**. I
+risultati dei carichi mobili le riportano in due tabelle:
+
+* **Reazioni concomitanti**: per ogni nodo con reazione, per ciascuna
+  componente (Fx, Fy, Fz, Mx, My, Mz) e per ciascun estremo (max e min), la
+  posizione del convoglio `s0`, l'istante di passaggio `t`, il valore
+  dell'estremo e le sei reazioni dello stesso nodo a quella posizione;
+* **Concomitanti su tutti i nodi**: per la componente lungo l'asse di carico,
+  le reazioni di tutti i nodi alla posizione in cui un nodo raggiunge il suo
+  estremo (per esempio, quali reazioni hanno le altre pile quando questa è al
+  massimo). Si omette oltre 150 nodi con reazione.
+
+Il valore di ogni riga coincide con l'estremo dell'inviluppo delle reazioni,
+perché include il carico distribuito di corsia sui tratti a segno favorevole
+per quella grandezza (con le sue reazioni sulle altre componenti) e l'eventuale
+combinazione statica sovrapposta. L'istante richiede la velocità del
+convoglio: colonna `Speed` [m/s] del caso mobile; senza, resta vuoto. Per la
+**dinamica del convoglio** (`moving_dynamic`) l'estremo si cerca sulle storie
+temporali delle reazioni e `t` è l'istante della time history.
+
+**File > Esporta > Carichi mobili con concomitanti (.xlsx)** scrive un foglio
+di lavoro per ogni caso (inviluppi delle travi, spostamenti, reazioni min e
+max, concomitanti per nodo e su tutti i nodi) e un foglio `Casi` con veicolo,
+corsia, coefficiente, velocità e tipo (quasi statico o dinamico), anche per le
+analisi dinamiche del convoglio. Da Python: `res.concomitant_reactions(nodo,
+"uz", "max", speed=v)` e `res.concomitant_table(...)`.
+
+### Carichi mobili su piastra e veicoli predefiniti
+
+Se l'impalcato è una soletta (gusci) e non un graticcio, la corsia si dà come
+**linea di punti** (colonna `Points` del foglio `Lane`, id di nodo) e le ruote
+si scaricano sui gusci indicati in `Surface` (`all` o un intervallo), con
+l'impronta della ruota in `Patch` (`0.4,0.4` oppure `auto`). Il convoglio scorre
+sulla linea di punti con eccentricità e carreggiata come al solito; oltre agli
+inviluppi delle travi si ottengono quelli dei gusci (Mx, My, Mxy, Qx, Qy). La
+colonna `Vehicle` accetta anche i nomi dei **veicoli predefiniti** senza
+definirli nel foglio `Vehicle`: `LM1_TS1`, `LM1_TS2`, `LM1_TS3`, `LM2`, `FLM3`,
+`LM71`, `HL93_TRUCK`, `HL93_TANDEM`, `CDS_44T`, `CDS_26T`, `CDS_7_5T`.
 
 ## Travi ruotate ed eccentriche, appoggi ruotati, gruppi di sezioni
 

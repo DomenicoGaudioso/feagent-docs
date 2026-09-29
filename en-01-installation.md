@@ -38,11 +38,11 @@ who have access.
 **From the wheel** (the `[all]` extra pulls Excel, plotting, report, HDF5 and MCP support):
 
 ```bash
-pip install "feagent[all] @ file:///C:/Downloads/feagent-0.6.0-py3-none-any.whl"    # Windows
-pip install "feagent[all] @ file:///home/user/feagent-0.6.0-py3-none-any.whl"      # macOS / Linux
+pip install "feagent[all] @ file:///C:/Downloads/feagent-0.7.0-py3-none-any.whl"    # Windows
+pip install "feagent[all] @ file:///home/user/feagent-0.7.0-py3-none-any.whl"      # macOS / Linux
 ```
 
-(`pip install feagent-0.6.0-py3-none-any.whl` installs the base package only;
+(`pip install feagent-0.7.0-py3-none-any.whl` installs the base package only;
 add the extras afterwards with `pip install pandas openpyxl plotly matplotlib
 python-docx h5py`.)
 
@@ -63,7 +63,7 @@ pip install "feagent[all] @ git+https://github.com/DomenicoGaudioso/feagent.git"
 **With pipx**, to get the `feagent` command isolated from other projects:
 
 ```bash
-pipx install "feagent[all] @ file:///C:/Downloads/feagent-0.6.0-py3-none-any.whl"
+pipx install "feagent[all] @ file:///C:/Downloads/feagent-0.7.0-py3-none-any.whl"
 ```
 
 ## Extras
@@ -95,7 +95,7 @@ the terminal capabilities and the result of a solver self-test. Alternatives:
 
 ```bash
 feagent --version
-python -c "import feagent; print(feagent.__version__)"    # 0.6.0
+python -c "import feagent; print(feagent.__version__)"    # 0.7.0
 ```
 
 Then run your first analysis from a bundled example:
