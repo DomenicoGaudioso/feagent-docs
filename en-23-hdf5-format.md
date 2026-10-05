@@ -52,7 +52,8 @@ modal=modal, buckling=buck)` has this structure (real dump, 4-node /
 ├── node_ids            (4,)      int64      [1, 2, 3, 4]
 ├── element_ids         (3,)      int64      [1, 2, 3]
 │
-├── static/                       attrs: cases='{"G": 1.0}', section_group=''
+├── static/                       attrs: cases='{"G": 1.0}', section_group='',
+│   │                                       reliable=1, cond=1.4e+05, warnings='[]', warning_details='[]'
 │   ├── U               (24,)     float64    spostamenti globali
 │   ├── R               (24,)     float64    reazioni globali
 │   ├── element_forces  (3, 12)   float64    attrs: columns="FxI,FyI,...,MzJ"
@@ -74,10 +75,32 @@ modal=modal, buckling=buck)` has this structure (real dump, 4-node /
 │   ├── part            (4, 3)    float64    fattori di partecipazione
 │   └── total_mass      (3,)      float64    massa totale traslazionale
 │
-└── buckling/                     attrs: cases='{"G": 1.0}', n_modes=3, section_group=''
-    ├── load_factors    (3,)      float64    moltiplicatori critici λ
-    └── phi             (24, 3)   float64    forme di instabilità (ndof × n_modi)
+├── buckling/                     attrs: cases='{"G": 1.0}', n_modes=3, section_group=''
+│   ├── load_factors    (3,)      float64    critical multipliers λ
+│   └── phi             (24, 3)   float64    buckling shapes (ndof × n_modes)
+│
+├── model/                        attrs: name, description, units='{"force": "N", "length": "m"}',
+│   │                                    document_format='feagent-model', document_version=1
+│   └── sheets/                   one group per non-empty sheet (the same sheets as the Excel workbook)
+│       ├── Node/                 attrs: n_rows=4, columns='["Node","X","Y","Z"]'
+│       │   ├── Node            (4,)      float64    attrs: kind="number", name="Node"
+│       │   ├── X, Y, Z         (4,)      float64    NaN = empty cell
+│       ├── Material/, Section/, Element/, Support/, ...
+│       └── (text columns: uint8 holding compressed UTF-8 JSON, attrs: kind="text-json")
+│
+└── loads/
+    └── sheets/                   LoadCase, NodalLoad, DistributedLoad, ConcentratedLoad, Thermal,
+                                  ThermalProfile, Prestress, Settlement, SelfWeight, ShellPressure,
+                                  ShellLoad, ShellThermal, Vehicle, Lane, MovingLoad, Accelerogram,
+                                  DynamicLoad, Combination
 ```
+
+`/model` and `/loads` hold the **model document**: with the same data an `.h5` file reopens by itself
+(`io_hdf5.read_model(path)` returns the `Model` with its loads, `read_model_document(path)` the GUI document,
+`read_results(path, model="embedded")` the results linked to the saved model). Loads are kept apart from the rest of
+the model: `/loads` for the actions, `/model` for geometry, materials, sections, supports, special elements and
+dynamic analyses. `include_model=False` (or a file written before format version 2) leaves only the results;
+`Model.to_hdf5(path)` saves only model and loads and results can be added later with `mode="a"`.
 
 The three groups `/static`, `/modal`, `/buckling` are **independent**: a file can
 contain one, two, or all three of them.
@@ -91,6 +114,19 @@ contain one, two, or all three of them.
 | `element_forces` | row = element (same order as `element_ids`), 12 local end forces |
 | `phi` | column = mode, row = global DOF |
 | `cases` | JSON string of the dict `{case: coefficient}` (empty = None) |
+| `reliable` | 1 if the linear solution is reliable, 0 if a warning declares it unreliable |
+| `cond` | estimated condition number of the stiffness matrix (diagonally equilibrated); -1 = not estimated |
+| `warnings` | JSON string with the quality warnings as `"[TYPE] message"` |
+| `warning_details` | JSON string with the same warnings as objects (`type`, `level`, `message`, `cond`, `shortest_element`, `model_size`, `ratio`) |
+
+Warning types are `PRECISIONE_RIDOTTA` (reduced precision: condition number above 1e14, usable result with fewer
+exact digits), `MESH_FITTA` (over-fine mesh, above 1e15: elements much shorter than the span, unreliable result)
+and `RESIDUO_ALTO` (equilibrium residual too high). Chains of aligned elements are merged internally before the
+solve, but the file still holds the results of **all** elements and nodes. Files written before 0.7.2 lack these
+attributes and still read (`reliable` = true, no warnings).
+
+From the GUI: **File > Export > Modello, carichi e risultati (.h5, HDF5)** writes a single file with everything (21-point
+diagrams per element) and **File > Open** reopens it (model and loads).
 
 ---
 
@@ -195,13 +231,13 @@ See section 3. No dependency on feagent: `h5py` and `numpy` are all you need.
 
 ## 6. Format versioning
 
-The root attribute `format_version` (currently **1**) allows the format to
+The root attribute `format_version` (currently **2**: version 2 adds `/model` and `/loads`; version 1 readers ignore them and version 1 files still read) allows the format to
 evolve while maintaining backward compatibility. A reader can check it:
 
 ```python
 with h5py.File(path, "r") as h5:
     assert h5.attrs["format"] == "feagent-results"
-    if h5.attrs["format_version"] > 1:
+    if h5.attrs["format_version"] > 2:
         print("Attenzione: file scritto da una versione più recente.")
 ```
 

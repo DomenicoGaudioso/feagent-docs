@@ -216,15 +216,24 @@ with a stable code, the sheet and the **Excel row** (header = row 1):
 | Group | Codes | What is caught |
 |---|---|---|
 | Sheets and columns | `E01`-`E02`, `E07`-`E08`, `E11`-`E13`, `E16`-`E18` | missing `Node` sheet, missing `Material`/`Section`/`Element` sheets or their mandatory columns |
-| Ids and references | `E03`-`E04`, `E09`, `E14`, `E19`-`E22`, `E25` | non-integer or duplicated ids, elements pointing to undefined nodes, materials (warning `W03`) or sections |
+| Ids and references | `E03`-`E04`, `E09`, `E14`, `E19`-`E22`, `E25`, `E91` | non-integer or duplicated ids, elements pointing to undefined nodes, materials or sections (material left blank: warning `W03`, the first one of the sheet is used) |
 | Geometry | `E23`-`E24`, `E37` | coincident end nodes, zero-length elements, nodes not connected to any element and not fully restrained |
 | Element data | `E26`-`E27` | `shear = 1` on a section without `Asy`/`Asz`; invalid release names |
 | Supports | `E29`-`E36`, `W04` | restraint on an undefined node, no restrained degree of freedom at all (unstable), all-zero rows |
 | Loads | `E38`-`E56`, `W05` | loads on undefined nodes/elements, invalid `Component`, `a`/`b`/`xi` outside `[0, 1]`, thermal gradient without `h_y`/`h_z`, invalid `Dof`, `plane` or `frame` |
 | Combinations | `E57`-`E59` | missing columns, non-numeric coefficient, combination citing a load case that no load uses |
 | Model build | `E60` | any error raised while building the model |
+| Non-finite values | `E90` | cells holding `NaN` or `inf` written as a value (an empty cell is still a missing value) |
 | Trial analysis (`--solve`) | `E61`-`E63`, `W07` | singular / near-singular stiffness (mechanism), analysis failure, global equilibrium residual, displacements much larger than the model |
-| Information | `I01`-`I03`, `W01`-`W02`, `W06` | unknown sheets (ignored), missing coordinate columns, no loads |
+| Information | `I01`-`I05`, `W01`-`W02`, `W06` | unknown sheets (ignored), missing coordinate columns, no loads, out-of-scale section that no element uses (`I05`) |
+| Suspicious data | `W09`-`W12`, `W14` | column whose name is almost an expected one (typo, with the suggestion and the rows, even when the right column is already filled: `Fyy` next to `Fy` is not added), distinct coincident nodes not connected, load on a restrained DOF (by a support, by an `equal_dof` or `rigid_link` to a fixed node, or a concentrated load at `xi = 0` or `1` on a restrained end), thermal load (`Thermal`, `ThermalProfile`, `ShellThermal`) on a material without `alpha`, assigned section out of scale with the structure (units of `A` and `I`) |
+
+In the interface the same check adds `W15` (load case used by loads but not declared, declared
+without loads, or no case declared at all and cases inferred from the load names), `W16` (elastic
+modulus outside the values of structural materials for the model units), `W18` (model base unit not recognised: values are not converted), `W17` (sheet not recognised
+on opening, JSON or Excel, with the suggestion: it stays in **Check** and **Analyse** until another
+file is opened) and `E92` (every cell holding an invalid value, with sheet and row). The warnings also arrive when only **Analyse** is pressed: the
+model is analysed and the log lists the data warnings.
 
 Exit code `4` when errors are present (or warnings with `--strict`), so the
 command can gate a batch or a CI job.
@@ -402,8 +411,9 @@ feagent export model.xlsx model.s2k --format sap2000
 | Robot | `robot` | `.str` |
 | Straus7 | `straus7` | `.txt` |
 
-See [24 - External Export](en-24-external-export.html) for the mapping of local
-axes, releases and loads.
+All these exporters are **work in progress (🚧 WIP)**: the command says so at every run.
+See [24 - External Export](en-24-external-export.html) for the mapping of local axes,
+releases and loads and for the data not exported yet.
 
 ## `completion` - shell completion
 

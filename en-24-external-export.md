@@ -7,6 +7,14 @@ nav_order: 24
 
 # 24 - Export to external analysis software
 
+> **🚧 Work in progress (WIP).** The exporters to other programs are being revised against
+> the official format documentation: some files do not have the correct syntax yet and part
+> of the model is not exported (concentrated span loads, thermal loads, self weight, springs,
+> elastic and kinematic constraints, rotated supports, eccentricities, combinations,
+> distributed moments; shells and trusses in some formats). The interface and the command
+> line warn at every export and the interface lists the data that were not exported.
+> Always check the file in the target program before using it.
+
 feagent can **export the model** to the main structural analysis
 software packages, generating importable text files.
 

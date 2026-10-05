@@ -79,6 +79,74 @@ AI. In alternativa si salva un progetto `.feagent.json` con lo stesso
 contenuto. L'unico foglio in più è **LoadCase**, che elenca anche i casi di
 carico ancora senza carichi; la libreria lo ignora.
 
+## Unità di misura
+
+I valori del modello sono scritti nelle **unità base** del documento
+(forza, lunghezza, tempo, temperatura; di default N, m, s, °C), indicate in
+**Strumenti > Opzioni** e salvate nel file (foglio **Units** del workbook).
+Il solutore usa i numeri in modo coerente, quindi un modello in kN e mm è
+valido quanto uno in N e m.
+
+Per lavorare in altre unità basta cambiarle nella **barra di stato**, in
+basso: cinque menu per forza (N, daN, kN, MN, kgf, tf), lunghezza (mm, cm,
+dm, m, km), tempo (ms, s, min, h), temperatura (°C, K, °F) e angoli (rad, °).
+Tabelle, finestre, pannello Proprietà, vista, risultati e grafici mostrano e
+leggono i valori in quelle unità, con l'unità nelle intestazioni delle
+colonne; quello che si scrive viene convertito nelle unità base al momento
+dell'inserimento. **Cambiare le unità della barra di stato non modifica i
+dati**: si può passare da m a mm e da N a kN quante volte si vuole, anche a
+metà di una tabella. La scelta resta per le sessioni successive; alla prima apertura la vista è in kN e m, quindi i
+momenti, prodotto delle due, sono in kN·m.
+
+Le grandezze derivate seguono le unità scelte: E e tensioni in forza per
+lunghezza al quadrato (kN/mm², cioè GPa), inerzie in lunghezza alla quarta,
+densità di massa con il nome della massa quando c'è (kg/m³, t/m³),
+rigidezze rotazionali in forza per lunghezza per radiante, frequenze in Hz.
+Alcune colonne cambiano grandezza con la riga: `qi` e `qj` dei carichi
+distribuiti sono forze per lunghezza per le componenti `fx`, `fy`, `fz` e
+forze (momenti per lunghezza) per `mx`, `my`, `mz`; il `Value` dei cedimenti è
+una lunghezza o un angolo secondo il `Dof`; l'ampiezza delle forze dinamiche
+è una forza o un momento. Anche i testi con coppie di numeri si convertono
+parte per parte: il `Profile` dei profili termici (quota e temperatura), la
+`Width`, il profilo della precompressione, l'impronta `Patch` delle ruote.
+Le temperature sono differenze (ΔT), quindi °C e K coincidono.
+
+I valori proposti dalle finestre (materiali S355 e calcestruzzo, g, veicoli
+LM1, spessori e luci di default) sono definiti in SI ed entrano nel modello
+convertiti, qualunque siano le sue unità base. Anche l'accelerazione di
+gravità usata quando `g` è vuota e per ricavare le masse dai casi di carico
+segue le unità base (9,81 m/s², 9810 mm/s²).
+
+### Esportazioni
+
+Le esportazioni (**File > Esporta** e la relazione Word) escono nelle unità
+scelte nella barra di stato per forza, lunghezza e temperatura; il tempo resta
+in secondi e le rotazioni in radianti. Il modello viene convertito prima di
+esportare e, per i file con risultati, ricalcolato nelle stesse unità: numeri e
+intestazioni sono quindi coerenti. Il registro dice in quali unità è uscito il
+file.
+
+| Esportazione | Unità |
+|---|---|
+| Modello Excel, progetto JSON | quelle scelte, scritte nel foglio **Units** o in `meta.units` |
+| Risultati, tabulato, carichi mobili (.xlsx) | quelle scelte, elencate nel foglio **Units** del file |
+| Modello, carichi e risultati (.h5) | quelle scelte, negli attributi del gruppo `/model` |
+| Relazione Word | quelle scelte, nel capitolo delle unità e nelle intestazioni delle tabelle |
+| OpenSees, OpenSeesPy | quelle scelte, in un commento in testa al file |
+| SAP2000, MIDAS | forza N, kN, kgf, tf; lunghezza m, cm, mm |
+| Robot | forza N, kN, daN; lunghezza m, cm, mm |
+| Straus7 | N con m, kN con m, N con mm (la massa deve essere coerente) |
+
+Se il programma di destinazione non prevede le unità scelte, il file esce in
+N, m, °C e il registro lo segnala. **Salva** invece scrive sempre il modello
+nelle sue unità base.
+
+Per riscrivere il modello in altre unità base si cambiano in **Strumenti >
+Opzioni**: **Converti** riscrive tutti i valori (stessa struttura, stessi
+risultati), **Solo etichetta** lascia i numeri e serve quando erano già
+scritti nelle nuove unità. Il tempo base resta il secondo, perché spettri di
+norma e accelerogrammi sono definiti in secondi.
+
 ## Menu e barra strumenti
 
 ![Menu File con i sottomenu di importazione](images/gui_menu.png)
@@ -95,7 +163,8 @@ carico ancora senza carichi; la libreria lo ignora.
 | Strumenti | collega un'IA (indirizzo, token, configurazioni pronte), opzioni |
 
 **Esporta** scrive il modello per OpenSees (Tcl e Python), SAP2000, MIDAS,
-Robot e Straus7, i risultati in Excel, il tabulato di calcolo, i carichi mobili con
+Robot e Straus7 (in aggiornamento, segnati 🚧 WIP nel menu: vedi
+[24 - Export verso software esterni](it-24-external-export.html)), i risultati in Excel, il tabulato di calcolo, i carichi mobili con
 le reazioni concomitanti e la relazione
 Word. Se i dialoghi file nativi non sono disponibili, apertura e salvataggio
 passano per il caricamento e lo scaricamento del browser.
@@ -586,10 +655,33 @@ L'IA dispone di tre canali, tutti sulla stessa API:
 | `live/history` | storia temporale di un nodo o curva armonica di un'analisi dinamica |
 | `live/check`, `live/export` | validazione, file esportato |
 
+Il programma **non contiene nessuna IA**: ognuno usa il proprio harness (Claude
+Code, Codex, Cursor, Gemini CLI, un client MCP, uno script) e la propria IA. Il
+funzionamento pratico e' lanciare l'app e dire all'IA di collegarsi e fare il
+modello: l'eseguibile si lascia collegare senza installare nulla e spiega da
+solo all'IA come dialogare.
+
+* **Server MCP integrato** (streamable HTTP) su `http://127.0.0.1:<porta>/mcp`,
+  con gli stessi strumenti `gui_*` del connettore e `Authorization: Bearer
+  <token>`. Per Claude Code: `claude mcp add --transport http feagent
+  http://127.0.0.1:8777/mcp --header "Authorization: Bearer <token>"`; per gli
+  altri client basta il file di configurazione MCP mostrato dal dialogo.
+* **Guida per l'IA** su `/api/live/guide` (anche `/llms.txt`), senza token e
+  senza dati riservati: come collegarsi, strumenti, convenzioni, modo di
+  lavorare e un esempio Python pronto. E' anche la risorsa MCP
+  `feagent://gui/guide` e la stringa `instructions` dell'inizializzazione.
+* **File di sessione autoesplicativo**: `~/.feagent/gui_session.json` contiene
+  indirizzo, token, `mcp_url`, `guide_url`, `openapi_url` e un suggerimento
+  d'uso. In locale basta dire all'IA: *"Collegati a feagent: leggi
+  ~/.feagent/gui_session.json e lavora sul modello aperto"*.
+
 **Strumenti > Collega un'IA** (o il pulsante **IA** della barra) mostra
-indirizzo e token della sessione con la configurazione MCP, un esempio
-`curl` e le righe Python pronte da copiare. Il token apre **solo quella
-sessione**.
+l'**istruzione da incollare nell'IA** (indirizzo, token e guida), la
+configurazione MCP per Claude Code e per gli altri client, un esempio `curl` e
+i riferimenti REST/OpenAPI. Il token apre **solo quella sessione**: non e'
+nella guida pubblica, ma nell'istruzione copiata dal dialogo e nel file di
+sessione; sul server online ogni accesso ha il proprio token e l'endpoint MCP
+rifiuta le richieste con un'origine web diversa.
 
 ![Dialogo Collega un'IA](images/gui_ai_connect.png)
 

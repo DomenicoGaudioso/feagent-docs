@@ -52,7 +52,8 @@ modal=modal, buckling=buck)` ha questa struttura (dump reale, modello 4 nodi /
 ├── node_ids            (4,)      int64      [1, 2, 3, 4]
 ├── element_ids         (3,)      int64      [1, 2, 3]
 │
-├── static/                       attrs: cases='{"G": 1.0}', section_group=''
+├── static/                       attrs: cases='{"G": 1.0}', section_group='',
+│   │                                       reliable=1, cond=1.4e+05, warnings='[]', warning_details='[]'
 │   ├── U               (24,)     float64    spostamenti globali
 │   ├── R               (24,)     float64    reazioni globali
 │   ├── element_forces  (3, 12)   float64    attrs: columns="FxI,FyI,...,MzJ"
@@ -74,13 +75,35 @@ modal=modal, buckling=buck)` ha questa struttura (dump reale, modello 4 nodi /
 │   ├── part            (4, 3)    float64    fattori di partecipazione
 │   └── total_mass      (3,)      float64    massa totale traslazionale
 │
-└── buckling/                     attrs: cases='{"G": 1.0}', n_modes=3, section_group=''
-    ├── load_factors    (3,)      float64    moltiplicatori critici λ
-    └── phi             (24, 3)   float64    forme di instabilità (ndof × n_modi)
+├── buckling/                     attrs: cases='{"G": 1.0}', n_modes=3, section_group=''
+│   ├── load_factors    (3,)      float64    moltiplicatori critici λ
+│   └── phi             (24, 3)   float64    forme di instabilità (ndof × n_modi)
+│
+├── model/                        attrs: name, description, units='{"force": "N", "length": "m"}',
+│   │                                    document_format='feagent-model', document_version=1
+│   └── sheets/                   un gruppo per foglio non vuoto (gli stessi fogli del workbook Excel)
+│       ├── Node/                 attrs: n_rows=4, columns='["Node","X","Y","Z"]'
+│       │   ├── Node            (4,)      float64    attrs: kind="number", name="Node"
+│       │   ├── X, Y, Z         (4,)      float64    NaN = cella vuota
+│       ├── Material/, Section/, Element/, Support/, ...
+│       └── (colonne di testo: uint8 con JSON UTF-8 compresso, attrs: kind="text-json")
+│
+└── loads/
+    └── sheets/                   LoadCase, NodalLoad, DistributedLoad, ConcentratedLoad, Thermal,
+                                  ThermalProfile, Prestress, Settlement, SelfWeight, ShellPressure,
+                                  ShellLoad, ShellThermal, Vehicle, Lane, MovingLoad, Accelerogram,
+                                  DynamicLoad, Combination
 ```
 
-I tre gruppi `/static`, `/modal`, `/buckling` sono **indipendenti**: un file può
-contenerne uno, due o tutti e tre.
+`/model` e `/loads` contengono il **documento del modello**: con gli stessi dati un file `.h5` si riapre da solo
+(`io_hdf5.read_model(path)` restituisce il `Model` con carichi, `read_model_document(path)` il documento della GUI,
+`read_results(path, model="embedded")` i risultati collegati al modello salvato). I carichi sono separati dal resto
+del modello: `/loads` per le azioni, `/model` per geometria, materiali, sezioni, vincoli, elementi speciali e
+analisi dinamiche. `include_model=False` (o un file scritto prima della versione 2) lascia solo i risultati;
+`Model.to_hdf5(path)` salva solo modello e carichi e i risultati si aggiungono dopo con `mode="a"`.
+
+I gruppi `/static`, `/modal`, `/buckling` sono **indipendenti**: un file può
+contenerne uno, due o tutti e tre; `/model` e `/loads` sono facoltativi.
 
 ### Convenzioni dei dati
 
@@ -91,6 +114,19 @@ contenerne uno, due o tutti e tre.
 | `element_forces` | riga = elemento (stesso ordine di `element_ids`), 12 forze d'estremità locali |
 | `phi` | colonna = modo, riga = GdL globale |
 | `cases` | stringa JSON del dict `{case: coefficiente}` (vuota = None) |
+| `reliable` | 1 se la soluzione lineare e' affidabile, 0 se un avviso la dichiara non affidabile |
+| `cond` | condizionamento stimato della matrice di rigidezza (equilibrata sulla diagonale); -1 = non stimato |
+| `warnings` | stringa JSON con gli avvisi di qualita' come `"[TIPO] messaggio"` |
+| `warning_details` | stringa JSON con gli stessi avvisi come oggetti (`type`, `level`, `message`, `cond`, `shortest_element`, `model_size`, `ratio`) |
+
+I tipi di avviso sono `PRECISIONE_RIDOTTA` (condizionamento oltre 1e14, risultato utilizzabile con meno cifre
+esatte), `MESH_FITTA` (oltre 1e15: elementi molto piu' corti della luce, risultato non affidabile) e
+`RESIDUO_ALTO` (l'equilibrio non torna). Le catene di elementi allineati vengono unite internamente prima del
+calcolo, ma il file contiene comunque i risultati di **tutti** gli elementi e di tutti i nodi. I file scritti
+prima della 0.7.2 non hanno questi attributi e si leggono lo stesso (`reliable` = vero, senza avvisi).
+
+Dalla GUI: **File > Esporta > Modello, carichi e risultati (.h5, HDF5)** scrive un solo file con tutto (diagrammi di
+21 punti per elemento) e **File > Apri** lo riapre (modello e carichi).
 
 ---
 
@@ -195,13 +231,14 @@ Vedi sezione 3. Nessuna dipendenza da feagent: bastano `h5py` e `numpy`.
 
 ## 6. Versionamento del formato
 
-L'attributo di root `format_version` (attualmente **1**) consente l'evoluzione
+L'attributo di root `format_version` (attualmente **2**: la versione 2 aggiunge `/model` e `/loads`; i lettori della
+versione 1 li ignorano e i file della 1 si leggono ancora) consente l'evoluzione
 del formato mantenendo la retrocompatibilità. Un lettore può controllarlo:
 
 ```python
 with h5py.File(path, "r") as h5:
     assert h5.attrs["format"] == "feagent-results"
-    if h5.attrs["format_version"] > 1:
+    if h5.attrs["format_version"] > 2:
         print("Attenzione: file scritto da una versione più recente.")
 ```
 

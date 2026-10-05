@@ -217,15 +217,24 @@ riga 1):
 | Gruppo | Codici | Cosa intercetta |
 |---|---|---|
 | Fogli e colonne | `E01`-`E02`, `E07`-`E08`, `E11`-`E13`, `E16`-`E18` | foglio `Node` mancante, fogli `Material`/`Section`/`Element` mancanti o senza le colonne obbligatorie |
-| Id e riferimenti | `E03`-`E04`, `E09`, `E14`, `E19`-`E22`, `E25` | id non interi o duplicati, elementi che puntano a nodi, materiali (avviso `W03`) o sezioni non definiti |
+| Id e riferimenti | `E03`-`E04`, `E09`, `E14`, `E19`-`E22`, `E25`, `E91` | id non interi o duplicati, elementi che puntano a nodi, materiali o sezioni non definiti (materiale non indicato: avviso `W03`, si usa il primo del foglio) |
 | Geometria | `E23`-`E24`, `E37` | nodi di estremita' coincidenti, elementi di lunghezza nulla, nodi non collegati ad alcun elemento e non completamente vincolati |
 | Dati degli elementi | `E26`-`E27` | `shear = 1` su una sezione senza `Asy`/`Asz`; nomi di rilascio non validi |
 | Vincoli | `E29`-`E36`, `W04` | vincolo su nodo inesistente, nessun grado di liberta' vincolato (struttura labile), righe tutte a zero |
 | Carichi | `E38`-`E56`, `W05` | carichi su nodi/elementi inesistenti, `Component` non valida, `a`/`b`/`xi` fuori da `[0, 1]`, gradiente termico senza `h_y`/`h_z`, `Dof`, `plane` o `frame` non validi |
 | Combinazioni | `E57`-`E59` | colonne mancanti, coefficiente non numerico, combinazione che cita un caso di carico non usato da alcun carico |
 | Costruzione del modello | `E60` | qualsiasi errore sollevato costruendo il modello |
+| Valori non finiti | `E90` | celle con `NaN` o `inf` scritti come valore (la cella vuota resta un dato mancante) |
 | Analisi di prova (`--solve`) | `E61`-`E63`, `W07` | rigidezza singolare o quasi (meccanismo), analisi fallita, residuo dell'equilibrio globale, spostamenti molto maggiori del modello |
-| Informazioni | `I01`-`I03`, `W01`-`W02`, `W06` | fogli sconosciuti (ignorati), colonne di coordinate mancanti, nessun carico |
+| Informazioni | `I01`-`I05`, `W01`-`W02`, `W06` | fogli sconosciuti (ignorati), colonne di coordinate mancanti, nessun carico, sezione fuori scala che nessun elemento usa (`I05`) |
+| Dati sospetti | `W09`-`W12`, `W14` | colonna con un nome quasi uguale a una prevista (refuso, con il suggerimento e le righe, anche quando la colonna giusta e' gia' compilata: `Fyy` accanto a `Fy` non si somma), nodi distinti coincidenti e non collegati, carico su un GdL vincolato (dall'appoggio, da un `equal_dof` o `rigid_link` verso un nodo bloccato, o carico concentrato a `xi = 0` o `1` su un estremo vincolato), carico termico (`Thermal`, `ThermalProfile`, `ShellThermal`) su un materiale senza `alpha`, sezione assegnata fuori scala rispetto alla struttura (unita' di `A` e `I`) |
+
+Nell'interfaccia lo stesso controllo aggiunge `W15` (caso di carico usato dai carichi ma non dichiarato,
+dichiarato senza carichi, o nessun caso dichiarato e casi ricavati dai nomi dei carichi), `W16` (modulo
+elastico fuori dai valori dei materiali strutturali per le unita' del modello), `W18` (unità base del modello non riconosciuta: i valori non si convertono), `W17` (foglio non
+riconosciuto all'apertura, JSON o Excel, con il suggerimento: resta anche in **Controlla** e **Analizza**
+finche' non si apre un altro file) ed `E92` (tutte le celle con un valore non valido, con foglio e riga). Gli avvisi arrivano anche premendo solo **Analizza**:
+il modello viene analizzato e il registro elenca gli avvisi sui dati.
 
 Codice di uscita `4` in presenza di errori (o di avvisi con `--strict`): il
 comando puo' fare da cancello in un batch o in una pipeline.
@@ -405,8 +414,9 @@ feagent export modello.xlsx modello.s2k --format sap2000
 | Robot | `robot` | `.str` |
 | Straus7 | `straus7` | `.txt` |
 
-Vedi [24 - Export verso software esterni](it-24-external-export.html) per la
-mappatura di assi locali, rilasci e carichi.
+Tutti questi esportatori sono **in aggiornamento (🚧 WIP)**: il comando lo ricorda a ogni
+esecuzione. Vedi [24 - Export verso software esterni](it-24-external-export.html) per la
+mappatura di assi locali, rilasci e carichi e per i dati non ancora esportati.
 
 ## `completion` - completamento della shell
 

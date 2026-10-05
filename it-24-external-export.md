@@ -7,6 +7,14 @@ nav_order: 24
 
 # 24 - Export verso software di calcolo esterni
 
+> **🚧 In aggiornamento (WIP).** Gli esportatori verso altri programmi sono in revisione
+> sulla documentazione ufficiale dei formati: la sintassi di alcuni file non è ancora
+> corretta e parte del modello non viene esportata (carichi concentrati in campata, termici,
+> peso proprio, molle, vincoli elastici e cinematici, appoggi ruotati, eccentricità,
+> combinazioni, momenti distribuiti; gusci e bielle in alcuni formati). L'interfaccia e la
+> riga di comando avvisano a ogni esportazione e l'interfaccia elenca i dati non esportati.
+> Controllare sempre il file nel programma di destinazione prima di usarlo.
+
 feagent può **esportare il modello** verso i principali software di calcolo
 strutturale, generando file di testo importabili.
 

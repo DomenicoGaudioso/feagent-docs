@@ -76,6 +76,71 @@ AI connector read back unchanged. A `.feagent.json` project with the same
 content is the alternative. The only extra sheet is **LoadCase**, which also
 lists load cases that have no loads yet; the library ignores it.
 
+## Units
+
+Model values are written in the document's **base units** (force, length,
+time, temperature; N, m, s, °C by default), set in **Tools > Options** and
+saved with the file (sheet **Units** of the workbook). The solver uses the
+numbers consistently, so a model in kN and mm is as valid as one in N and m.
+
+To work in other units, change them in the **status bar**: five menus for
+force (N, daN, kN, MN, kgf, tf), length (mm, cm, dm, m, km), time (ms, s,
+min, h), temperature (°C, K, °F) and angles (rad, °). Tables, dialogs, the
+Properties panel, the view, results and charts show and read values in
+those units, with the unit in the column headers; whatever is typed is
+converted to the base units as it is entered. **Changing the status bar
+units never modifies the data**: switch between m and mm or N and kN as often
+as needed, even in the middle of a table. On first use the view is in kN and m, so moments, the product of the two,
+are in kN·m. The choice is kept for later
+sessions.
+
+Derived quantities follow the chosen units: E and stresses in force per
+length squared (kN/mm², i.e. GPa), inertias in length to the fourth, mass
+density with the mass name when there is one (kg/m³, t/m³), rotational
+stiffnesses in force times length per radian, frequencies in Hz. Some
+columns change quantity with the row: `qi` and `qj` of distributed loads
+are forces per length for `fx`, `fy`, `fz` and forces (moments per length)
+for `mx`, `my`, `mz`; the settlement `Value` is a length or an angle
+depending on `Dof`; the amplitude of dynamic loads is a force or a moment.
+Texts holding pairs of numbers are converted part by part: thermal profile
+`Profile` (depth and temperature), `Width`, the prestress profile, the wheel
+`Patch`. Temperatures are differences (ΔT), so °C and K coincide.
+
+Values proposed by the dialogs (S355 and concrete materials, g, LM1
+vehicles, default thicknesses and spans) are defined in SI and enter the
+model converted, whatever its base units. The gravity used when `g` is
+empty and to derive masses from load cases also follows the base units
+(9.81 m/s², 9810 mm/s²).
+
+### Exports
+
+Exports (**File > Export** and the Word report) are written in the units
+chosen in the status bar for force, length and temperature; time stays in
+seconds and rotations in radians. The model is converted before exporting and,
+for files with results, analysed again in the same units, so numbers and
+headers agree. The log states the units of the file.
+
+| Export | Units |
+|---|---|
+| Excel model, JSON project | the chosen ones, written in the **Units** sheet or in `meta.units` |
+| Results, client tables, moving loads (.xlsx) | the chosen ones, listed in the **Units** sheet of the file |
+| Model, loads and results (.h5) | the chosen ones, in the attributes of the `/model` group |
+| Word report | the chosen ones, in the units chapter and in the table headers |
+| OpenSees, OpenSeesPy | the chosen ones, in a comment at the top of the file |
+| SAP2000, MIDAS | force N, kN, kgf, tf; length m, cm, mm |
+| Robot | force N, kN, daN; length m, cm, mm |
+| Straus7 | N with m, kN with m, N with mm (the mass unit must be consistent) |
+
+When the target program does not support the chosen units, the file is
+written in N, m, °C and the log says so. **Save** always writes the model in
+its base units.
+
+To rewrite the model in other base units, change them in **Tools > Options**:
+**Convert** rewrites every value (same structure, same results), **Label
+only** keeps the numbers and is meant for values already written in the new
+units. The base time stays the second, because code spectra and
+accelerograms are defined in seconds.
+
 ## Menus and toolbar
 
 ![File menu with the import submenu](images/gui_menu.png)
@@ -92,7 +157,8 @@ lists load cases that have no loads yet; the library ignores it.
 | Tools (Strumenti) | connect an AI (address, token, ready-made configurations), options |
 
 **Export** writes the model for OpenSees (Tcl and Python), SAP2000, MIDAS,
-Robot and Straus7, the results to Excel, the calculation printout and the
+Robot and Straus7 (work in progress, marked 🚧 WIP in the menu: see
+[24 - External Export](en-24-external-export.html)), the results to Excel, the calculation printout and the
 Word report. When native file dialogs are not available, opening and saving
 go through browser upload and download.
 
@@ -567,10 +633,33 @@ The AI has three channels, all on the same API:
 | `live/history` | time history of a node or harmonic curve of a dynamic analysis |
 | `live/check`, `live/export` | validation, exported file |
 
+The program **contains no AI**: everyone uses their own harness (Claude Code,
+Codex, Cursor, Gemini CLI, an MCP client, a script) and their own AI. In practice
+you launch the app and tell the AI to connect and build the model: the
+executable lets itself be connected without installing anything and explains to
+the AI how to talk to it.
+
+* **Built-in MCP server** (streamable HTTP) at `http://127.0.0.1:<port>/mcp`,
+  with the same `gui_*` tools as the connector and `Authorization: Bearer
+  <token>`. For Claude Code: `claude mcp add --transport http feagent
+  http://127.0.0.1:8777/mcp --header "Authorization: Bearer <token>"`; for the
+  other clients the MCP configuration file shown by the dialog is enough.
+* **Guide for the AI** at `/api/live/guide` (also `/llms.txt`), without token and
+  without private data: how to connect, tools, conventions, how to work and a
+  ready Python example. It is also the MCP resource `feagent://gui/guide` and
+  the `instructions` string of the initialisation.
+* **Self-describing session file**: `~/.feagent/gui_session.json` holds address,
+  token, `mcp_url`, `guide_url`, `openapi_url` and a usage hint. Locally it is
+  enough to tell the AI: *"Connect to feagent: read ~/.feagent/gui_session.json
+  and work on the open model"*.
+
 **Strumenti > Collega un'IA** (Tools > Connect an AI, or the **IA** toolbar
-button) shows the session address and token with the MCP configuration, a
-`curl` example and Python lines ready to copy. The token opens **only that
-session**.
+button) shows the **instruction to paste into the AI** (address, token and
+guide), the MCP configuration for Claude Code and for the other clients, a
+`curl` example and the REST/OpenAPI references. The token opens **only that
+session**: it is not in the public guide, but in the instruction copied from the
+dialog and in the session file; on the online server every login has its own
+token and the MCP endpoint refuses requests with a different web origin.
 
 ![Connect an AI dialog](images/gui_ai_connect.png)
 
