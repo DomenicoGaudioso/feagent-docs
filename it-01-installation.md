@@ -39,11 +39,11 @@ clone per chi ha accesso.
 **Dal wheel** (l'extra `[all]` porta con se' Excel, grafici, relazione, HDF5 e MCP):
 
 ```bash
-pip install "feagent[all] @ file:///C:/Download/feagent-0.8.0-py3-none-any.whl"    # Windows
-pip install "feagent[all] @ file:///home/utente/feagent-0.8.0-py3-none-any.whl"   # macOS / Linux
+pip install "feagent[all] @ file:///C:/Download/feagent-0.8.1-py3-none-any.whl"    # Windows
+pip install "feagent[all] @ file:///home/utente/feagent-0.8.1-py3-none-any.whl"   # macOS / Linux
 ```
 
-(`pip install feagent-0.8.0-py3-none-any.whl` installa il solo pacchetto
+(`pip install feagent-0.8.1-py3-none-any.whl` installa il solo pacchetto
 base; gli extra si aggiungono dopo con `pip install pandas openpyxl plotly
 matplotlib python-docx h5py`.)
 
@@ -64,7 +64,7 @@ pip install "feagent[all] @ git+https://github.com/DomenicoGaudioso/feagent.git"
 **Con pipx**, per avere il comando `feagent` isolato dagli altri progetti:
 
 ```bash
-pipx install "feagent[all] @ file:///C:/Download/feagent-0.8.0-py3-none-any.whl"
+pipx install "feagent[all] @ file:///C:/Download/feagent-0.8.1-py3-none-any.whl"
 ```
 
 ## Extra
@@ -96,7 +96,7 @@ terminale e l'esito di un auto-test del solutore. In alternativa:
 
 ```bash
 feagent --version
-python -c "import feagent; print(feagent.__version__)"    # 0.8.0
+python -c "import feagent; print(feagent.__version__)"    # 0.8.1
 ```
 
 Poi esegui la prima analisi da un esempio distribuito:
@@ -116,7 +116,7 @@ feagent completion zsh  >> ~/.zshrc           # zsh
 ## Aggiornare e rimuovere
 
 ```bash
-pip install --upgrade "feagent[all] @ file:///C:/Download/feagent-0.8.0-py3-none-any.whl"
+pip install --upgrade "feagent[all] @ file:///C:/Download/feagent-0.8.1-py3-none-any.whl"
 pip install -e ".[all]"      # in un clone, dopo git pull (da ripetere solo se cambiano le dipendenze)
 pip uninstall feagent
 ```

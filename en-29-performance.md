@@ -118,3 +118,34 @@ python   benchmark/gen_benchmark_charts.py   # regenerate this page's charts
 ```
 
 Absolute timings are machine-dependent; the ratios are what matters.
+
+## Analysis time and number of elements (October 2026)
+
+![Analysis time vs number of elements](images/bench_elements.png)
+
+Updated comparison with version 0.8.1 on two model families, with time on the
+x axis and the number of elements on the y axis:
+
+* **plane beam frame** with k bays and k storeys (2k² + k elements): feagent,
+  OpenSees, PyNite, CALFEM, pystran and anastruct. The cantilever used above
+  does not scale to many elements: it is so ill-conditioned that at 12 800
+  elements OpenSees gets its deflection wrong;
+* **block of 8-node hexahedra**: feagent (`Hex8`) and OpenSees (`stdBrick`),
+  the only solvers of the list with solid elements.
+
+All solvers give the same displacement (differences below 1e-10). Each
+measurement runs in its own process with a single thread: some libraries alter
+numpy's state in the process, and with multi-threaded BLAS the times depend on
+the machine load more than on the solver. feagent's merging of aligned beam
+chains is disabled.
+
+* Among pure-Python solvers feagent is the fastest from about 200 elements,
+  6 to 30 times at 820 elements.
+* On the frame OpenSees (C++) is 3-7 times faster on large models: half of
+  feagent's time goes into the sparse factorization (SuperLU, single thread),
+  the rest into rotation matrices computed in Python. The MKL Pardiso backend
+  (`feagent[fast]`) is not included.
+* On solids feagent and OpenSees are on par: the factorization dominates.
+
+Full tables in the README; measurements with `benchmark/benchmark_elements.py`,
+chart with `benchmark/gen_elements_chart.py`.

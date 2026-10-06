@@ -185,6 +185,10 @@ con continuità sulle facce.
 * **NAFEMS LE10** (piastra spessa in pressione, σyy in D = −5,38 MPa): Tet10
   −5,36 MPa (0,4 %), Hex8 a modi incompatibili −5,51 MPa (2,5 %); report in
   `validation/nafems/LE10`.
+* **NAFEMS LE11** (solido di rotazione con campo termico, σzz in A = −105 MPa):
+  −104,5 MPa (0,4 %) con l'Hex8 a modi incompatibili; `validation/nafems/LE11`.
+* **NAFEMS FV42** (sfera cava spessa, vibrazione radiale): i primi cinque modi
+  entro lo 0,35 % dalla soluzione esatta; `validation/nafems/FV42`.
 * **NAFEMS FV52** con il modello solido: i due elementi concordano fra loro
   (44 Hz sul primo modo, 4 % sotto il valore in forma chiusa della piastra
   spessa); dettagli in `validation/nafems/FV52`.

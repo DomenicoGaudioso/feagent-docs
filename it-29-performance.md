@@ -121,3 +121,34 @@ python   benchmark/gen_benchmark_charts.py   # rigenera i grafici di questa pagi
 ```
 
 I tempi assoluti dipendono dalla macchina; contano i rapporti.
+
+## Tempo di analisi e numero di elementi (ottobre 2026)
+
+![Tempo di analisi in funzione del numero di elementi](images/bench_elements.png)
+
+Confronto aggiornato con la versione 0.8.1 su due famiglie di modelli, con il
+tempo in ascissa e il numero di elementi in ordinata:
+
+* **telaio piano di travi** di k campate per k piani (2k² + k elementi): feagent,
+  OpenSees, PyNite, CALFEM, pystran e anastruct. La mensola usata sopra non è
+  adatta a molti elementi: è così mal condizionata che a 12 800 elementi
+  OpenSees ne sbaglia la freccia;
+* **blocco di esaedri a 8 nodi**: feagent (`Hex8`) e OpenSees (`stdBrick`),
+  gli unici della lista con elementi solidi.
+
+Tutti i solutori danno lo stesso spostamento (scarti sotto 1e-10). Ogni misura
+gira in un processo separato e a un solo thread: alcune librerie alterano lo
+stato di numpy nel processo, e con BLAS multi-thread i tempi dipendono dal
+carico della macchina più che dal solutore. Per feagent l'unione delle catene
+di travi allineate è disattivata.
+
+* Fra i solutori in puro Python feagent è il più rapido da circa 200 elementi,
+  da 6 a 30 volte a 820 elementi.
+* Sul telaio OpenSees (C++) è 3-7 volte più rapido sui modelli grandi: metà del
+  tempo di feagent va nella fattorizzazione sparsa (SuperLU, un thread), il
+  resto nelle matrici di rotazione calcolate in Python. Il backend MKL Pardiso
+  (`feagent[fast]`) non è incluso.
+* Sui solidi feagent e OpenSees sono alla pari: domina la fattorizzazione.
+
+Tabelle complete nel README; misure con `benchmark/benchmark_elements.py`,
+grafico con `benchmark/gen_elements_chart.py`.

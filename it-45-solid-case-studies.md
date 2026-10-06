@@ -146,6 +146,10 @@ rifatto saldando le pareti sui nodi comuni.
 
 * **NAFEMS LE10** (piastra spessa in pressione): Tet10 −5,36 MPa contro −5,38
   in D; report in `validation/nafems/LE10`.
+* **NAFEMS LE11** (cilindro, cono e sfera con campo termico): −104,5 MPa contro
+  −105 in A; `validation/nafems/LE11`.
+* **NAFEMS FV42** (sfera cava spessa, vibrazione radiale): cinque modi entro lo
+  0,35 %; `validation/nafems/FV42`.
 * **NAFEMS FV52** con il modello solido: `validation/nafems/FV52`.
 * **Pulvino su fusto a trave** (`examples/ex19_solid_pier_cap.py`): modello
   misto, emette l'avviso `SOLIDI_MISTI` (vedi il capitolo 43).

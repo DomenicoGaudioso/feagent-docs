@@ -163,6 +163,11 @@ holds beams and shells; `physical_materials` per volume), `mesh_box_tet`,
 * **NAFEMS LE10** (thick plate under pressure, σyy at D = −5.38 MPa): Tet10
   −5.36 MPa (0.4 %), incompatible Hex8 −5.51 MPa (2.5 %); report in
   `validation/nafems/LE10`.
+* **NAFEMS LE11** (solid of revolution under a temperature field, σzz at A =
+  −105 MPa): −104.5 MPa (0.4 %) with incompatible-mode Hex8;
+  `validation/nafems/LE11`.
+* **NAFEMS FV42** (thick hollow sphere, radial vibration): first five modes
+  within 0.35 % of the exact solution; `validation/nafems/FV42`.
 * **NAFEMS FV52** with the solid model: both elements agree (44 Hz on the
   first mode, 4 % below the closed-form thick-plate value); see
   `validation/nafems/FV52`.

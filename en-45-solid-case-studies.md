@@ -141,6 +141,10 @@ not share nodes: the model was rebuilt with the walls welded on common nodes.
 
 * **NAFEMS LE10** (thick plate under pressure): Tet10 −5.36 MPa vs −5.38 at D;
   report in `validation/nafems/LE10`.
+* **NAFEMS LE11** (cylinder, taper and sphere under a temperature field):
+  −104.5 MPa vs −105 at A; `validation/nafems/LE11`.
+* **NAFEMS FV42** (thick hollow sphere, radial vibration): five modes within
+  0.35 %; `validation/nafems/FV42`.
 * **NAFEMS FV52** with the solid model: `validation/nafems/FV52`.
 * **Pier cap on a beam column** (`examples/ex19_solid_pier_cap.py`): mixed
   model, emits the `SOLIDI_MISTI` warning (see chapter 43).
