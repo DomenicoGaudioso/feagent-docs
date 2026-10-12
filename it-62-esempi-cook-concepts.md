@@ -104,7 +104,7 @@ python scripts/_gen_book_docs.py
 | [Sez. 10.4, Fig. 10.4-1, Eq. 10.4-4](#cook-10-4-square-wave-fourier) | Serie di Fourier di un'onda quadra (carico uniforme su una luce) | 📐 | 4/4 | 0.00 % |
 | [Sez. 10.4, Eq. 10.4-5](#cook-10-4-point-load-fourier) | Serie di Fourier di un carico concentrato in mezzeria e freccia della trave | 📐 | 2/2 | 0.00 % |
 | [Sez. 10.4, Eq. 10.4-6..10.4-12, Fig. 10.4-2](#cook-10-4-ss-beam-sine-load) | Trave appoggiata con carico sinusoidale: soluzione armonica disaccoppiata | ✅ | 3/3 | 0.32 % |
-| [Sez. 11.3, Fig. 11.3-2, Tabella 11.3-1](#cook-11-3-mindlin-clamped-square-plate) | Piastra quadrata incastrata con elementi di Mindlin: locking al variare di L/t | 🟡 | 4/4 | 1.13 % |
+| [Sez. 11.3, Fig. 11.3-2, Tabella 11.3-1](#cook-11-3-mindlin-clamped-square-plate) | Piastra quadrata incastrata con elementi di Mindlin: locking al variare di L/t | 🟡 | 4/4 | 1.14 % |
 | [Sez. 11.4, Tabella 11.4-1, Fig. 11.4-2](#cook-11-4-dkt-square-plates) | Elemento DKT: freccia al centro di piastre quadrate | ✅ | 16/16 | 0.04 % |
 | [Sez. 11.4, Fig. 11.4-3](#cook-11-4-dkt-stiffness-code) | Matrice di rigidezza 9x9 dell'elemento DKT | 📐 | 4/4 | 0.00 % |
 | [Sez. 11.5, Fig. 11.5-2](#cook-11-5-rhombic-plate) | Piastra romboidale appoggiata (Morley): condizioni d'appoggio classiche e 'agli elementi finiti' | ✅ | 4/4 | 2.93 % |
@@ -117,7 +117,7 @@ python scripts/_gen_book_docs.py
 | [Sez. 13.3, Eq. 13.3-1..13.3-3, Fig. 13.3-1](#cook-13-3-bar-beam-mass-matrices) | Matrici di massa consistente e concentrata di barra e trave | 📐 | 4/4 | 0.00 % |
 | [Sez. 13.3, Fig. 13.3-2](#cook-13-3-cst-q4-consistent-mass) | Matrici di massa consistenti di CST e rettangolo bilineare | 📐 | 2/2 | 0.00 % |
 | [Sez. 13.3, Eq. 13.3-4, 13.3-5, Fig. 13.3-3](#cook-13-3-hrz-lumping) | Masse diagonali HRZ di barra, trave, Q8 e Q9 | 📐 | 13/13 | 0.00 % |
-| [Sez. 13.3, Tabella 13.3-1](#cook-13-3-thick-plate-frequencies-mass) | Frequenze di una piastra spessa appoggiata: massa consistente e concentrata | 🟡 | 7/7 | 5.87 % |
+| [Sez. 13.3, Tabella 13.3-1](#cook-13-3-thick-plate-frequencies-mass) | Frequenze di una piastra spessa appoggiata: massa consistente e concentrata | 🟡 | 7/7 | 6.34 % |
 | [Sez. 13.3, Eq. 13.3-6..13.3-9, Fig. 13.3-4](#cook-13-3-optimal-lumping-quadratic-bar) | Concentrazione ottimale delle masse: barra quadratica, T6, Q8, Q9 | 📐 | 9/9 | 0.00 % |
 | [Sez. 13.4, Eq. 13.4-1..13.4-3, Fig. 13.4-1](#cook-13-4-rayleigh-damping) | Smorzamento di Rayleigh: coefficienti da due rapporti di smorzamento | 📐 | 4/4 | 0.00 % |
 | [Sez. 13.5, Eq. 13.5-8..13.5-10, Fig. 13.5-1](#cook-13-5-free-bar-eigen) | Barra libera con un elemento: autovalori con massa consistente e concentrata | ✅ | 3/3 | 0.00 % |
@@ -2087,12 +2087,12 @@ Il libro confronta, con mesh 8x8, la freccia al centro calcolata e quella della 
 
 | Grandezza | Rif. | Riferimento | feagent | Scarto | |
 |---|---|---|---|---|---|
-| w calcolata / w piastra sottile, L/t = 100 | esatta | 1 | 0.99075 | 0.92 % | ✅ |
+| w calcolata / w piastra sottile, L/t = 100 | esatta | 1 | 0.99064 | 0.94 % | ✅ |
 | w calcolata / w piastra sottile, L/t = 1000 | esatta | 1 | 0.98871 | 1.13 % | ✅ |
 | w calcolata / w piastra sottile, L/t = 10000 | esatta | 1 | 0.98869 | 1.13 % | ✅ |
-| w calcolata / w piastra sottile, L/t = 1e+06 | esatta | 1 | 0.98869 | 1.13 % | ✅ |
+| w calcolata / w piastra sottile, L/t = 1e+06 | esatta | 1 | 0.98863 | 1.14 % | ✅ |
 
-**Note**: feagent non ha le piastre di Mindlin a 8 e 9 nodi ne' l'heterosis: si rifa' la curva del solo Q4, che non si blocca (rapporto 0,989 sulla piastra sottile da L/t = 100 a 1e6, come il bilineare selettivo del libro). I valori del libro sono solo in grafico. Riferimento w = 0,001265 q L^4/D (Timoshenko).
+**Note**: feagent non ha le piastre di Mindlin a 8 e 9 nodi ne' l'heterosis: si rifa' la curva del solo Q4, che non si blocca (rapporto 0,989 sulla piastra sottile da L/t = 100 a 1e6, come il bilineare selettivo del libro; quello di feagent ha il taglio assunto MITC4). I valori del libro sono solo in grafico. Riferimento w = 0,001265 q L^4/D (Timoshenko).
 
 *Codice*: `validation/books/cook/ch11.py`
 
@@ -2382,15 +2382,15 @@ Il libro confronta gli errori percentuali delle frequenze di una piastra spessa 
 
 | Grandezza | Rif. | Riferimento | feagent | Scarto | |
 |---|---|---|---|---|---|
-| modo (1,1), massa consistente | esatta | 0.58117 | 0.59073 | 1.65 % | ✅ |
-| modo (1,1), massa concentrata | esatta | 0.58117 | 0.58283 | 0.28 % | ✅ |
-| modo (1,2), massa consistente | esatta | 1.398 | 1.4801 | 5.87 % | ✅ |
-| modo (1,2), massa concentrata | esatta | 1.398 | 1.4261 | 2.00 % | ✅ |
-| modo (2,2), massa consistente | esatta | 2.1583 | 2.2823 | 5.75 % | ✅ |
-| modo (2,2), massa concentrata | esatta | 2.1583 | 2.1465 | 0.55 % | ✅ |
+| modo (1,1), massa consistente | esatta | 0.58117 | 0.59095 | 1.68 % | ✅ |
+| modo (1,1), massa concentrata | esatta | 0.58117 | 0.58304 | 0.32 % | ✅ |
+| modo (1,2), massa consistente | esatta | 1.398 | 1.4822 | 6.02 % | ✅ |
+| modo (1,2), massa concentrata | esatta | 1.398 | 1.4281 | 2.15 % | ✅ |
+| modo (2,2), massa consistente | esatta | 2.1583 | 2.2952 | 6.34 % | ✅ |
+| modo (2,2), massa concentrata | esatta | 2.1583 | 2.1587 | 0.02 % | ✅ |
 | modo (1,1): la massa concentrata abbassa la frequenza | libro | 1 | 1 | 0.00 % | ✅ |
 
-**Note**: feagent non ha la piastra di Mindlin a 8 nodi: la tabella non e' riproducibile cella per cella, e il libro non da' lo spessore (rimanda al rif. 13.5). Si usa t/a = 0,1, nu = 0,3 e si confrontano i modi bassi con la soluzione esatta di Mindlin senza inerzia rotazionale (la massa dei gusci di feagent e' solo traslazionale). Con la mesh grossolana di Q4 la massa consistente sovrastima di 1,6 % il modo (1,1) e di circa 6 % i modi (2,1) e (2,2); la massa concentrata compensa la rigidezza in eccesso ed e' piu' precisa (0,3 %, 2 %, -0,6 %), la stessa tendenza della colonna HRZ del libro.
+**Note**: feagent non ha la piastra di Mindlin a 8 nodi: la tabella non e' riproducibile cella per cella, e il libro non da' lo spessore (rimanda al rif. 13.5). Si usa t/a = 0,1, nu = 0,3 e si confrontano i modi bassi con la soluzione esatta di Mindlin senza inerzia rotazionale (la massa dei gusci di feagent e' solo traslazionale). Con la mesh grossolana di Q4 la massa consistente sovrastima di 1,7 % il modo (1,1) e di circa 6 % i modi (2,1) e (2,2); la massa concentrata compensa la rigidezza in eccesso ed e' piu' precisa (0,3 %, 2 %, 0,0 %), la stessa tendenza della colonna HRZ del libro.
 
 *Codice*: `validation/books/cook/ch13.py`
 

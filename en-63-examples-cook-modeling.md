@@ -16,7 +16,7 @@ python scripts/_gen_book_docs.py
 
 **Outcome**: ✅ reproduced and compared; 🟡 partly reproduced (book data or results incomplete); 📐 derivation of formulas checked numerically; ⛔ not reproducible (reason in the notes). The *error* column is the largest relative error of the comparisons; *ref.* tells what the comparison is made against: book, exact solution or corrected value of a misprint.
 
-**54 examples**: 27 reproduced, 15 partly, 12 derivations checked, 0 not reproducible; 445 numerical checks, 445 within tolerance.
+**54 examples**: 29 reproduced, 13 partly, 12 derivations checked, 0 not reproducible; 452 numerical checks, 452 within tolerance.
 
 ## Summary
 
@@ -39,19 +39,19 @@ python scripts/_gen_book_docs.py
 | [Sez. 5.5, Fig. 5.5-1, Eqq. 5.5-3...5.5-7](#cookmod-5-5-homogenized-perforated-plate) | Equivalent elastic properties of a perforated plate from a repeating cell | 📐 | 12/12 | 0.39 % |
 | [Sez. 5.7, Fig. 5.7-3, Eqq. 5.7-1, 5.7-2](#cookmod-5-7-bolt-pretension-smeared) | Smeared flange bolts and pretension by cooling | 📐 | 4/4 | 0.00 % |
 | [Sez. 5.10, Fig. 5.10-1, Eqq. 5.10-1, 5.10-2](#cookmod-5-10-ill-conditioning-springs) | Ill-conditioning: stiff part supported by a flexible part | ✅ | 7/7 | 0.00 % |
-| [Sez. 5.10, Fig. 5.10-3](#cookmod-5-10-folded-strip-ill-conditioning) | Arch-like folded strip of flat shells: stress degradation as the thickness decreases | 🟡 | 6/6 | 2.18 % |
+| [Sez. 5.10, Fig. 5.10-3](#cookmod-5-10-folded-strip-ill-conditioning) | Arch-like folded strip of flat shells: stress degradation as the thickness decreases | 🟡 | 6/6 | 1.18 % |
 | [Sez. 5.14, Fig. 5.14-1](#cookmod-5-14-scf-correction-factor) | Correction factor from a secondary case for the stress near a hole | 🟡 | 5/5 | 4.00 % |
 | [Sez. 5.15, Eq. 5.15-1, Fig. 5.15-2](#cookmod-5-15-richardson-extrapolation) | Extrapolation to h -> 0 from two meshes | 📐 | 4/4 | 0.26 % |
 | [Sez. 5.16, Figg. 5.16-1, 5.16-2, Eqq. 5.16-1, 5.16-2](#cookmod-5-16-zz-error-adaptive) | Z2 energy error estimator and guided refinement | 🟡 | 8/8 | 0.52 % |
 | [Sez. 6.3 A 3D Application, Figg. 6.3-1, 6.3-2, Eq. 6.3-1](#cookmod-6-3-curved-beam-3d) | Curved beam of trapezoidal section in pure bending with Hex8 solids | ✅ | 7/7 | 0.64 % |
 | [Sez. 6.5 An Axisymmetric Application, Figg. 6.5-1...6.5-4](#cookmod-6-5-shrink-fit-spinning-disks) | Tapered disk with a shrink-fitted ring, then spinning | 🟡 | 8/8 | 11.86 % |
 | [Sez. 7.1, Fig. 7.1-4, Eqq. 7.1-5, 7.1-6](#cookmod-7-1-membrane-string-action) | Beam with immovable hinges: share of load carried by string action | ✅ | 5/5 | 13.39 % |
-| [Sez. 7.2 Test Cases, Fig. 7.2-6a](#cookmod-7-2-square-plate-benchmarks) | Simply supported or clamped square plate: centre deflection | ✅ | 6/6 | 0.94 % |
+| [Sez. 7.2 Test Cases, Fig. 7.2-6a](#cookmod-7-2-square-plate-benchmarks) | Simply supported or clamped square plate: centre deflection | ✅ | 6/6 | 0.36 % |
 | [Sez. 7.2 Test Cases, Fig. 7.2-6b](#cookmod-7-2-rhombic-plate) | 30-degree rhombic plate, simply supported, uniform load | ✅ | 3/3 | 2.71 % |
-| [Sez. 7.2 Test Cases, Fig. 7.2-6c,d](#cookmod-7-2-twisted-strip-plate) | Twisting of a flat cantilever strip | 🟡 | 5/5 | 1.20 % |
+| [Sez. 7.2 Test Cases, Fig. 7.2-6c,d](#cookmod-7-2-twisted-strip-plate) | Twisting of a flat cantilever strip | ✅ | 5/5 | 4.28 % |
 | [Sez. 7.3 A Plate Application, Figg. 7.3-1...7.3-3](#cookmod-7-3-plate-winkler-point-load) | Plate on a Winkler foundation under a point load | ✅ | 5/5 | 9.01 % |
 | [Sez. 7.4, Eq. 7.4-1](#cookmod-7-4-boundary-layer-length) | Width of the bending boundary layer in shells | 📐 | 5/5 | 4.26 % |
-| [Sez. 7.5 Test Cases, Fig. 7.5-2](#cookmod-7-5-shell-obstacle-course) | Shell benchmarks: cylindrical roof, pinched cylinder, hemisphere, twisted beam | 🟡 | 7/7 | 1.67 % |
+| [Sez. 7.5 Test Cases, Fig. 7.5-2](#cookmod-7-5-shell-obstacle-course) | Shell benchmarks: cylindrical roof, pinched cylinder, hemisphere, twisted beam | ✅ | 14/14 | 4.12 % |
 | [Sez. 7.5, Fig. 7.5-3](#cookmod-7-5-conical-frusta-sphere) | Pressurized sphere modelled with conical frusta: spurious bending moments | 🟡 | 3/3 | 0.11 % |
 | [Sez. 7.6 An Axisymmetric Shell Application, Figg. 7.6-1, 7.6-2](#cookmod-7-6-spherical-segment-axisym-shell) | Spherical zone clamped at the equator with a line load on the upper edge | 🟡 | 7/7 | 5.36 % |
 | [Sez. 7.7 A General Shell Application, Figg. 7.7-1...7.7-3](#cookmod-7-7-slit-tube-cantilever) | Thin tube slit lengthwise, cantilevered, under a transverse force | 🟡 | 9/9 | 8.85 % |
@@ -563,10 +563,10 @@ Thin arch-like structure, similar to a folded paper strip: membrane stiffness is
 | Nx in element A, t = 0.001 (limit 3/5) | exact | 0.6 | 0.6 | 0.00 % | ✅ |
 | Nx in element A, t = 0.0001 (limit 3/5) | exact | 0.6 | 0.6 | 0.00 % | ✅ |
 | Nx in element A, t = 1e-05 (limit 3/5) | exact | 0.6 | 0.59999 | 0.00 % | ✅ |
-| log10 of the condition-number ratio between t = 1e-5 and 1e-4 (about 2) | other | 2 | 1.9564 | 2.18 % | ✅ |
+| log10 of the condition-number ratio between t = 1e-5 and 1e-4 (about 2) | other | 2 | 1.9765 | 1.18 % | ✅ |
 | t = 1e-6: solution flagged as unreliable (1 = true) | book | 1 | 1 | 0.00 % | ✅ |
 
-**Notes**: Geometry read from the figure (arch nodes at 63.3 and 37.8 degrees, bases at x = -9.1 and 14.1), E = 1e7, nu = 0.3 chosen. For t -> 0 element A becomes rigid and the membrane force tends to Nx = 3 / 5 (symmetric part of the loads, self-equilibrated in A): this is the reference. In double precision feagent stays exact to 1e-5 down to t = 1e-5 (estimated condition number about 1e14), then degrades; at t = 1e-6 the error is 0.2 % and the solution is flagged as unreliable. The condition number grows as 1/t^2. The book's thresholds (single precision) cannot be compared.
+**Notes**: Geometry read from the figure (arch nodes at 63.3 and 37.8 degrees, bases at x = -9.1 and 14.1), E = 1e7, nu = 0.3 chosen. For t -> 0 element A becomes rigid and the membrane force tends to Nx = 3 / 5 (symmetric part of the loads, self-equilibrated in A): this is the reference. In double precision feagent stays exact to 1e-6 down to t = 1e-4; at t = 1e-5 (estimated condition number about 6e13) the error is 2e-5, then it degrades: at t = 1e-6 the error is 1 % and the solution is flagged as unreliable. The condition number grows as 1/t^2. Since October 2026 the drilling spring of the shells is referred to the bending stiffness (before, to the membrane one, which restrained rigid rotations in thin shells): at extreme thicknesses it weighs less, and the error at t = 1e-5 and 1e-6 went up from 1e-5 and 0.2 %. The book's thresholds (single precision) cannot be compared.
 
 *Code*: `validation/books/cookmodeling/ch05.py`
 
@@ -734,7 +734,7 @@ Square plate of side L, nu = 0.3, simply supported or clamped, under uniform loa
 | Quantity | Ref. | Reference | feagent | Error | |
 |---|---|---|---|---|---|
 | alpha, simply supported, uniform load, DKT | book | 0.00406 | 0.0040588 | 0.03 % | ✅ |
-| alpha, simply supported, uniform load, Mindlin Q4 | book | 0.00406 | 0.0040981 | 0.94 % | ✅ |
+| alpha, simply supported, uniform load, Mindlin Q4 | book | 0.00406 | 0.0040747 | 0.36 % | ✅ |
 | alpha, simply supported, central force, DKT | book | 0.0116 | 0.011614 | 0.12 % | ✅ |
 | alpha, clamped, uniform load, DKT | exact | 0.001265 | 0.0012676 | 0.20 % | ✅ |
 | alpha, clamped, uniform load, Mindlin Q4 | exact | 0.001265 | 0.0012669 | 0.15 % | ✅ |
@@ -768,7 +768,7 @@ Rhombus with a 30-degree acute angle, simply supported, uniform load: at the obt
 
 ### Sez. 7.2 Test Cases, Fig. 7.2-6c,d - Twisting of a flat cantilever strip
 
-🟡 · PDF page 190 · plate
+✅ · PDF page 190 · plate
 
 Flat cantilever strip twisted by a unit end torque, applied as a pair of vertical forces or as nodal moments. With E = 1e7, nu = 0.25, t = 0.05 the reference value is w3 = 0.0029 L. One or two elements are used to test the effect of shape.
 
@@ -778,11 +778,11 @@ Flat cantilever strip twisted by a unit end torque, applied as a pair of vertica
 |---|---|---|---|---|---|
 | w3 / L, 32 x 8 DKT mesh, load (c) | book | 0.0029 | 0.0029272 | 0.94 % | ✅ |
 | w3 / L, 32 x 8 DKT mesh, load (d) | book | 0.0029 | 0.0029272 | 0.94 % | ✅ |
-| w3 / L, Mindlin Q4 8 x 2 | book | 0.0029 | 0.0029347 | 1.20 % | ✅ |
+| w3 / L, Mindlin Q4 8 x 2 | book | 0.0029 | 0.0029299 | 1.03 % | ✅ |
 | w3 / L with two DKT triangles (no printed value) | book | - | 0.0032781 | - | ✅ |
-| w3 / L with one Mindlin Q4 (spurious mode, see notes) | book | - | 0.047346 | - | ✅ |
+| w3 / L with a single Mindlin Q4 (MITC4) | book | 0.0029 | 0.0027758 | 4.28 % | ✅ |
 
-**Notes**: The book does not give L: since w3/L is independent of L only for long strips, L = 12 is assumed (the 12 x 1 strip of benchmark [7.1]); with L = 1 the converged solution would be 0.0023 L. The fine DKT mesh gives 0.00293 L (Saint-Venant theory 0.0030 L). Two DKT give 0.0033 L. feagent defect: a single Mindlin Q4 (and in general a single row of Q4 across the width) has a near zero-energy twisting mode and gives w3 = 0.047 L, i.e. 16 times too much; with two rows of Q4 the result becomes correct again (0.0029 L).
+**Notes**: The book does not give L: since w3/L is independent of L only for long strips, L = 12 is assumed (the 12 x 1 strip of benchmark [7.1]); with L = 1 the converged solution would be 0.0023 L. The fine DKT mesh gives 0.00293 L (Saint-Venant theory 0.0030 L). Two DKT give 0.0033 L. A single Mindlin Q4 gives 0.00278 L (-4 %). Until October 2026 the Q4 integrated the shear at a single point: a single row of elements across the width had a near zero-energy twisting mode and gave 0.047 L, 16 times too much; with the MITC4 assumed shear (Bathe and Dvorkin 1985) the mode is gone.
 
 *Code*: `validation/books/cookmodeling/ch07.py`
 
@@ -836,23 +836,30 @@ With a line load at the end of a cylinder the bending response decays as e^(-lam
 
 ### Sez. 7.5 Test Cases, Fig. 7.5-2 - Shell benchmarks: cylindrical roof, pinched cylinder, hemisphere, twisted beam
 
-🟡 · PDF page 198 · shell
+✅ · PDF page 198 · shell
 
 The MacNeal-Harder 'obstacle course': cylindrical roof under self weight (0.3024), pinched cylinder (0.1825e-4), hemisphere with four radial forces (0.0924), beam with a 90-degree twist with t = 0.0032 and forces 1e-6 (5256e-6 and 1294e-6).
 
-**Model**: Thin DKT triangles with GT9 membrane (add_shell_tri formulation='thin'): Scordelis-Lo roof on a 16 x 16 quarter, pinched cylinder on a 24 x 24 eighth, quarter hemisphere subdivided into 32^2 triangles, 24 x 4 twisted beam. For comparison the Mindlin Q4 (add_shell) on roof and cylinder.
+**Model**: Thin DKT triangles with GT9 membrane (add_shell_tri formulation='thin'): Scordelis-Lo roof on a 16 x 16 quarter, pinched cylinder on a 24 x 24 eighth, quarter hemisphere subdivided into 32^2 triangles, 24 x 4 twisted beam (48 x 8 in the thin case). MITC4 Mindlin Q4 (add_shell) on roof, cylinder and 24 x 4 twisted beam.
 
 | Quantity | Ref. | Reference | feagent | Error | |
 |---|---|---|---|---|---|
-| Scordelis-Lo roof, DKT 16 x 16 | book | 0.3024 | 0.29899 | 1.13 % | ✅ |
-| pinched cylinder, DKT 24 x 24 | book | 1.8250e-05 | 1.8287e-05 | 0.20 % | ✅ |
-| hemisphere, DKT 32^2 | book | 0.0924 | 0.091098 | 1.41 % | ✅ |
-| twisted beam, t = 0.32, in-plane tip load (MacNeal-Harder) | other | 0.005424 | 0.0053822 | 0.77 % | ✅ |
-| twisted beam, t = 0.32, out-of-plane tip load (MacNeal-Harder) | other | 0.001754 | 0.0017248 | 1.67 % | ✅ |
-| roof, Mindlin Q4 16 x 16 (defect, see notes) | book | - | 0.45198 | - | ✅ |
-| book's twisted beam (t = 0.0032), DKT (not compared) | book | - | 3.4213e-04 | - | ✅ |
+| Scordelis-Lo roof, DKT 16 x 16 | book | 0.3024 | 0.29874 | 1.21 % | ✅ |
+| pinched cylinder, DKT 24 x 24 | book | 1.8250e-05 | 1.8297e-05 | 0.26 % | ✅ |
+| hemisphere, DKT 32^2 | book | 0.0924 | 0.091339 | 1.15 % | ✅ |
+| twisted beam, t = 0.32, in-plane tip load (MacNeal-Harder) | other | 0.005424 | 0.0053874 | 0.67 % | ✅ |
+| twisted beam, t = 0.32, out-of-plane tip load (MacNeal-Harder) | other | 0.001754 | 0.0017205 | 1.91 % | ✅ |
+| book's twisted beam (t = 0.0032, F = 1e-6), in-plane load, DKT 48 x 8 | book | 0.005256 | 0.0050396 | 4.12 % | ✅ |
+| book's twisted beam, out-of-plane load, DKT 48 x 8 | book | 0.001294 | 0.0012516 | 3.28 % | ✅ |
+| book's twisted beam, in-plane load, DKT 24 x 4 (still stiff, see notes) | book | - | 0.0033491 | - | ✅ |
+| Scordelis-Lo roof, MITC4 Q4 16 x 16 | book | 0.3024 | 0.30468 | 0.76 % | ✅ |
+| pinched cylinder, MITC4 Q4 24 x 24 | book | 1.8250e-05 | 1.7768e-05 | 2.64 % | ✅ |
+| twisted beam, t = 0.32, in-plane load, MITC4 Q4 24 x 4 | other | 0.005424 | 0.0054035 | 0.38 % | ✅ |
+| twisted beam, t = 0.32, out-of-plane load, MITC4 Q4 24 x 4 | other | 0.001754 | 0.0017165 | 2.14 % | ✅ |
+| book's twisted beam, in-plane load, MITC4 Q4 24 x 4 | book | 0.005256 | 0.0050899 | 3.16 % | ✅ |
+| book's twisted beam, out-of-plane load, MITC4 Q4 24 x 4 | book | 0.001294 | 0.0012716 | 1.73 % | ✅ |
 
-**Notes**: With DKT: roof -1.1 % (32 x 32: -0.8 %, flat shells converge to about 0.300), cylinder +0.2 %, hemisphere -1.4 % (slow convergence from below: 48^2 triangles give -0.9 %). Twisted beam: with MacNeal and Harder's original thickness (t = 0.32, F = 1: 5.424e-3 and 1.754e-3) the DKT are within 2 %; with the book's thin case (t = 0.0032) the DKT give values 10-30 times too small (stiffening of the twisted flat triangles, sensitive also to the drilling stiffness): not compared. Defects of the feagent Mindlin Q4: on the roof they converge to 0.453 (+50 %), on the pinched cylinder they exceed the reference and keep growing (24 x 24: +6 %), on the twisted beam they diverge (0.002, 0.007, 0.021 with 12, 24, 48 elements).
+**Notes**: With DKT: roof -1.2 % (32 x 32: -0.7 %, flat shells converge to about 0.300), cylinder +0.3 %, hemisphere -1.1 % (slow convergence from below: 48^2 triangles give -0.3 %). Twisted beam: with MacNeal and Harder's original thickness (t = 0.32, F = 1: 5.424e-3 and 1.754e-3) the DKT are within 2 %; in the book's thin case (t = 0.0032) the 24 x 4 DKT are still about 35 % too stiff (0.64 and 0.68 of the reference) and converge with refinement (48 x 8: -4 % and -3 %). The MITC4 Q4: roof +0.8 %, cylinder -2.6 % (convergence from below), twisted beam -0.4 % and -2.1 %, thin case -3.2 % and -1.7 %. Corrections of October 2026 that came out of this case: the Q4 integrated the shear at one point (spurious modes: roof 0.453, +50 %; cylinder above the reference and growing) and had neither rigid warping offsets nor a drilling link in warped elements (diverging twisted beam); the stabilising drilling stiffness of Q4 and triangles was referred to the membrane stiffness and restrained rigid rotations; the GT9 triangles read the bending of non-coplanar neighbours as in-plane rotation (thin twisted beam 10-30 times too stiff, now read about the nodal normal).
 
 *Code*: `validation/books/cookmodeling/ch07.py`
 
@@ -923,7 +930,7 @@ Tube of mean radius 25 mm, 2 mm thick, 280 mm long, slit along a generator, clam
 | deflection at x = +R, book mesh [1e-6 mm] | book | 682 | 642.33 | 5.82 % | ✅ |
 | deflection at x = -R, book mesh [1e-6 mm] | book | 1252 | 1161.9 | 7.20 % | ✅ |
 | end rotation, book mesh [1e-6 rad] | book | -11.4 | -10.392 | 8.85 % | ✅ |
-| mean deflection, 20 x 28 mesh, versus theory [1e-6 mm] | exact | 933 | 921.59 | 1.22 % | ✅ |
+| mean deflection, 20 x 28 mesh, versus theory [1e-6 mm] | exact | 933 | 918.7 | 1.53 % | ✅ |
 | abscissa of the model shear centre [mm] | book | -45.6 | -45.198 | 0.88 % | ✅ |
 
 **Notes**: The restrained-warping torsion formulas are verified (theta, v, sigma_z). With the book's mesh feagent gives 642e-6 and 1162e-6 mm (mean 902e-6, -7 % from the book) and theta = 10.4e-6: the element differs (the book's Q6 membrane is more flexible on the coarse mesh); with the 20 x 28 mesh the mean converges to 922e-6 (-1.2 % from theory, 933e-6). The model shear centre, from the second load equivalent to 0.5 N at x = -2R, lies at -45.2 mm (book -45.6). 10 % tolerances on the coarse-mesh values.

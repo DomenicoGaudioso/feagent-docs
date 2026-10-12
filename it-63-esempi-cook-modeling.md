@@ -16,7 +16,7 @@ python scripts/_gen_book_docs.py
 
 **Esiti**: ✅ riprodotto e confrontato; 🟡 riprodotto in parte (dati o risultati del libro incompleti); 📐 ricavo di formule verificato numericamente; ⛔ non riproducibile (motivo nelle note). La colonna *scarto* e' l'errore relativo massimo dei confronti; *rif.* indica il riferimento del confronto: libro, soluzione esatta o valore corretto di un refuso.
 
-**54 esempi**: 27 riprodotti, 15 in parte, 12 ricavi verificati, 0 non riproducibili; 445 confronti numerici, 445 entro la tolleranza.
+**54 esempi**: 29 riprodotti, 13 in parte, 12 ricavi verificati, 0 non riproducibili; 452 confronti numerici, 452 entro la tolleranza.
 
 ## Riepilogo
 
@@ -39,19 +39,19 @@ python scripts/_gen_book_docs.py
 | [Sez. 5.5, Fig. 5.5-1, Eqq. 5.5-3...5.5-7](#cookmod-5-5-homogenized-perforated-plate) | Proprieta' elastiche equivalenti di una lastra forata da una cella ripetitiva | 📐 | 12/12 | 0.39 % |
 | [Sez. 5.7, Fig. 5.7-3, Eqq. 5.7-1, 5.7-2](#cookmod-5-7-bolt-pretension-smeared) | Bulloni di flangia spalmati e pretensione per raffreddamento | 📐 | 4/4 | 0.00 % |
 | [Sez. 5.10, Fig. 5.10-1, Eqq. 5.10-1, 5.10-2](#cookmod-5-10-ill-conditioning-springs) | Mal condizionamento: parte rigida sostenuta da una parte flessibile | ✅ | 7/7 | 0.00 % |
-| [Sez. 5.10, Fig. 5.10-3](#cookmod-5-10-folded-strip-ill-conditioning) | Striscia piegata ad arco di gusci piani: degrado della tensione al diminuire dello spessore | 🟡 | 6/6 | 2.18 % |
+| [Sez. 5.10, Fig. 5.10-3](#cookmod-5-10-folded-strip-ill-conditioning) | Striscia piegata ad arco di gusci piani: degrado della tensione al diminuire dello spessore | 🟡 | 6/6 | 1.18 % |
 | [Sez. 5.14, Fig. 5.14-1](#cookmod-5-14-scf-correction-factor) | Fattore correttivo da un caso secondario per la tensione vicino a un foro | 🟡 | 5/5 | 4.00 % |
 | [Sez. 5.15, Eq. 5.15-1, Fig. 5.15-2](#cookmod-5-15-richardson-extrapolation) | Estrapolazione a h -> 0 da due mesh | 📐 | 4/4 | 0.26 % |
 | [Sez. 5.16, Figg. 5.16-1, 5.16-2, Eqq. 5.16-1, 5.16-2](#cookmod-5-16-zz-error-adaptive) | Stimatore d'errore Z2 in energia e raffinamento guidato | 🟡 | 8/8 | 0.52 % |
 | [Sez. 6.3 A 3D Application, Figg. 6.3-1, 6.3-2, Eq. 6.3-1](#cookmod-6-3-curved-beam-3d) | Trave curva a sezione trapezia in flessione pura con solidi Hex8 | ✅ | 7/7 | 0.64 % |
 | [Sez. 6.5 An Axisymmetric Application, Figg. 6.5-1...6.5-4](#cookmod-6-5-shrink-fit-spinning-disks) | Disco rastremato con anello calettato a caldo, poi in rotazione | 🟡 | 8/8 | 11.86 % |
 | [Sez. 7.1, Fig. 7.1-4, Eqq. 7.1-5, 7.1-6](#cookmod-7-1-membrane-string-action) | Trave con cerniere fisse: quota di carico portata per effetto fune | ✅ | 5/5 | 13.39 % |
-| [Sez. 7.2 Test Cases, Fig. 7.2-6a](#cookmod-7-2-square-plate-benchmarks) | Piastra quadrata appoggiata o incastrata: freccia al centro | ✅ | 6/6 | 0.94 % |
+| [Sez. 7.2 Test Cases, Fig. 7.2-6a](#cookmod-7-2-square-plate-benchmarks) | Piastra quadrata appoggiata o incastrata: freccia al centro | ✅ | 6/6 | 0.36 % |
 | [Sez. 7.2 Test Cases, Fig. 7.2-6b](#cookmod-7-2-rhombic-plate) | Piastra romboidale a 30 gradi appoggiata con carico uniforme | ✅ | 3/3 | 2.71 % |
-| [Sez. 7.2 Test Cases, Fig. 7.2-6c,d](#cookmod-7-2-twisted-strip-plate) | Torsione di una striscia piana a mensola | 🟡 | 5/5 | 1.20 % |
+| [Sez. 7.2 Test Cases, Fig. 7.2-6c,d](#cookmod-7-2-twisted-strip-plate) | Torsione di una striscia piana a mensola | ✅ | 5/5 | 4.28 % |
 | [Sez. 7.3 A Plate Application, Figg. 7.3-1...7.3-3](#cookmod-7-3-plate-winkler-point-load) | Piastra su suolo alla Winkler caricata da una forza concentrata | ✅ | 5/5 | 9.01 % |
 | [Sez. 7.4, Eq. 7.4-1](#cookmod-7-4-boundary-layer-length) | Ampiezza dello strato limite flessionale nei gusci | 📐 | 5/5 | 4.26 % |
-| [Sez. 7.5 Test Cases, Fig. 7.5-2](#cookmod-7-5-shell-obstacle-course) | Benchmark per gusci: volta cilindrica, cilindro pizzicato, emisfero, trave svergolata | 🟡 | 7/7 | 1.67 % |
+| [Sez. 7.5 Test Cases, Fig. 7.5-2](#cookmod-7-5-shell-obstacle-course) | Benchmark per gusci: volta cilindrica, cilindro pizzicato, emisfero, trave svergolata | ✅ | 14/14 | 4.12 % |
 | [Sez. 7.5, Fig. 7.5-3](#cookmod-7-5-conical-frusta-sphere) | Sfera in pressione modellata con tronchi di cono: momenti flettenti spuri | 🟡 | 3/3 | 0.11 % |
 | [Sez. 7.6 An Axisymmetric Shell Application, Figg. 7.6-1, 7.6-2](#cookmod-7-6-spherical-segment-axisym-shell) | Zona sferica incastrata all'equatore con carico di linea sul bordo superiore | 🟡 | 7/7 | 5.36 % |
 | [Sez. 7.7 A General Shell Application, Figg. 7.7-1...7.7-3](#cookmod-7-7-slit-tube-cantilever) | Tubo sottile tagliato longitudinalmente, a mensola, con forza trasversale | 🟡 | 9/9 | 8.85 % |
@@ -563,10 +563,10 @@ Struttura sottile ad arco, simile a una striscia di carta piegata: la rigidezza 
 | Nx nell'elemento A, t = 0.001 (limite 3/5) | esatta | 0.6 | 0.6 | 0.00 % | ✅ |
 | Nx nell'elemento A, t = 0.0001 (limite 3/5) | esatta | 0.6 | 0.6 | 0.00 % | ✅ |
 | Nx nell'elemento A, t = 1e-05 (limite 3/5) | esatta | 0.6 | 0.59999 | 0.00 % | ✅ |
-| log10 del rapporto dei condizionamenti fra t = 1e-5 e 1e-4 (circa 2) | altro | 2 | 1.9564 | 2.18 % | ✅ |
+| log10 del rapporto dei condizionamenti fra t = 1e-5 e 1e-4 (circa 2) | altro | 2 | 1.9765 | 1.18 % | ✅ |
 | t = 1e-6: soluzione segnalata come non affidabile (1 = vero) | libro | 1 | 1 | 0.00 % | ✅ |
 
-**Note**: Geometria letta sulla figura (nodi dell'arco a 63,3 e 37,8 gradi, basi in x = -9,1 e 14,1), E = 1e7, nu = 0,3 scelti. Per t -> 0 l'elemento A diventa rigido e lo sforzo di membrana tende a Nx = 3 / 5 (parte simmetrica dei carichi, autoequilibrata in A): e' il riferimento. In doppia precisione feagent resta esatto a 1e-5 fino a t = 1e-5 (condizionamento stimato circa 1e14), poi degrada; a t = 1e-6 l'errore e' 0,2 % e la soluzione e' segnalata come non affidabile. Il condizionamento cresce come 1/t^2. Le soglie del libro (singola precisione) non sono confrontabili.
+**Note**: Geometria letta sulla figura (nodi dell'arco a 63,3 e 37,8 gradi, basi in x = -9,1 e 14,1), E = 1e7, nu = 0,3 scelti. Per t -> 0 l'elemento A diventa rigido e lo sforzo di membrana tende a Nx = 3 / 5 (parte simmetrica dei carichi, autoequilibrata in A): e' il riferimento. In doppia precisione feagent resta esatto a 1e-6 fino a t = 1e-4; a t = 1e-5 (condizionamento stimato circa 6e13) l'errore e' 2e-5, poi degrada: a t = 1e-6 l'errore e' l'1 % e la soluzione e' segnalata come non affidabile. Il condizionamento cresce come 1/t^2. Dall'ottobre 2026 la molla di drilling dei gusci e' riferita alla rigidezza flessionale (prima a quella di membrana, che frenava le rotazioni rigide nei gusci sottili): negli spessori estremi pesa meno, e l'errore a t = 1e-5 e 1e-6 e' salito da 1e-5 e 0,2 %. Le soglie del libro (singola precisione) non sono confrontabili.
 
 *Codice*: `validation/books/cookmodeling/ch05.py`
 
@@ -734,7 +734,7 @@ Piastra quadrata di lato L, nu = 0,3, appoggiata o incastrata, con carico unifor
 | Grandezza | Rif. | Riferimento | feagent | Scarto | |
 |---|---|---|---|---|---|
 | alfa, appoggiata, carico uniforme, DKT | libro | 0.00406 | 0.0040588 | 0.03 % | ✅ |
-| alfa, appoggiata, carico uniforme, Q4 Mindlin | libro | 0.00406 | 0.0040981 | 0.94 % | ✅ |
+| alfa, appoggiata, carico uniforme, Q4 Mindlin | libro | 0.00406 | 0.0040747 | 0.36 % | ✅ |
 | alfa, appoggiata, forza centrale, DKT | libro | 0.0116 | 0.011614 | 0.12 % | ✅ |
 | alfa, incastrata, carico uniforme, DKT | esatta | 0.001265 | 0.0012676 | 0.20 % | ✅ |
 | alfa, incastrata, carico uniforme, Q4 Mindlin | esatta | 0.001265 | 0.0012669 | 0.15 % | ✅ |
@@ -768,7 +768,7 @@ Rombo con angolo acuto di 30 gradi, appoggiato, carico uniforme: all'angolo ottu
 
 ### Sez. 7.2 Test Cases, Fig. 7.2-6c,d - Torsione di una striscia piana a mensola
 
-🟡 · pag. PDF 190 · plate
+✅ · pag. PDF 190 · plate
 
 Striscia piana a mensola torta da un momento unitario all'estremo, applicato come coppia di forze verticali o come momenti nodali. Con E = 1e7, nu = 0,25, t = 0,05 il valore di riferimento e' w3 = 0,0029 L. Si usa uno o due elementi per provare l'effetto della forma.
 
@@ -778,11 +778,11 @@ Striscia piana a mensola torta da un momento unitario all'estremo, applicato com
 |---|---|---|---|---|---|
 | w3 / L, mesh DKT 32 x 8, carico (c) | libro | 0.0029 | 0.0029272 | 0.94 % | ✅ |
 | w3 / L, mesh DKT 32 x 8, carico (d) | libro | 0.0029 | 0.0029272 | 0.94 % | ✅ |
-| w3 / L, Q4 di Mindlin 8 x 2 | libro | 0.0029 | 0.0029347 | 1.20 % | ✅ |
+| w3 / L, Q4 di Mindlin 8 x 2 | libro | 0.0029 | 0.0029299 | 1.03 % | ✅ |
 | w3 / L con due triangoli DKT (nessun valore stampato) | libro | - | 0.0032781 | - | ✅ |
-| w3 / L con un Q4 di Mindlin (modo spurio, vedi note) | libro | - | 0.047346 | - | ✅ |
+| w3 / L con un solo Q4 di Mindlin (MITC4) | libro | 0.0029 | 0.0027758 | 4.28 % | ✅ |
 
-**Note**: Il libro non da' L: con il rapporto w3/L indipendente da L soltanto per strisce lunghe si assume L = 12 (striscia 12 x 1 del benchmark [7.1]); con L = 1 la soluzione convergente sarebbe 0,0023 L. La mesh fine di DKT da' 0,00293 L (teoria di de Saint-Venant 0,0030 L). Due DKT danno 0,0033 L. Difetto di feagent: un solo Q4 di Mindlin (e in generale una sola fila di Q4 nella larghezza) ha un modo quasi a energia nulla in torsione e da' w3 = 0,047 L, cioe' 16 volte troppo; con due file di Q4 il risultato torna corretto (0,0029 L).
+**Note**: Il libro non da' L: con il rapporto w3/L indipendente da L soltanto per strisce lunghe si assume L = 12 (striscia 12 x 1 del benchmark [7.1]); con L = 1 la soluzione convergente sarebbe 0,0023 L. La mesh fine di DKT da' 0,00293 L (teoria di de Saint-Venant 0,0030 L). Due DKT danno 0,0033 L. Un solo Q4 di Mindlin da' 0,00278 L (-4 %). Fino all'ottobre 2026 il Q4 integrava il taglio in un solo punto: una sola fila di elementi nella larghezza aveva un modo quasi a energia nulla in torsione e dava 0,047 L, 16 volte troppo; con il taglio assunto MITC4 (Bathe e Dvorkin 1985) il modo non c'e' piu'.
 
 *Codice*: `validation/books/cookmodeling/ch07.py`
 
@@ -836,23 +836,30 @@ Con un carico di linea all'estremo di un cilindro la risposta flessionale decade
 
 ### Sez. 7.5 Test Cases, Fig. 7.5-2 - Benchmark per gusci: volta cilindrica, cilindro pizzicato, emisfero, trave svergolata
 
-🟡 · pag. PDF 198 · shell
+✅ · pag. PDF 198 · shell
 
 La 'corsa a ostacoli' di MacNeal e Harder: volta cilindrica sotto peso proprio (0,3024), cilindro pizzicato (0,1825e-4), emisfero con quattro forze radiali (0,0924), trave svergolata di 90 gradi con t = 0,0032 e forze 1e-6 (5256e-6 e 1294e-6).
 
-**Modello**: Triangoli sottili DKT con membrana GT9 (add_shell_tri formulation='thin'): volta di Scordelis-Lo su un quarto 16 x 16, cilindro pizzicato su un ottavo 24 x 24, quarto di emisfero suddiviso in 32^2 triangoli, trave svergolata 24 x 4. Per confronto i Q4 di Mindlin (add_shell) su volta e cilindro.
+**Modello**: Triangoli sottili DKT con membrana GT9 (add_shell_tri formulation='thin'): volta di Scordelis-Lo su un quarto 16 x 16, cilindro pizzicato su un ottavo 24 x 24, quarto di emisfero suddiviso in 32^2 triangoli, trave svergolata 24 x 4 (48 x 8 nel caso sottile). Q4 di Mindlin MITC4 (add_shell) su volta, cilindro e trave svergolata 24 x 4.
 
 | Grandezza | Rif. | Riferimento | feagent | Scarto | |
 |---|---|---|---|---|---|
-| volta di Scordelis-Lo, DKT 16 x 16 | libro | 0.3024 | 0.29899 | 1.13 % | ✅ |
-| cilindro pizzicato, DKT 24 x 24 | libro | 1.8250e-05 | 1.8287e-05 | 0.20 % | ✅ |
-| emisfero, DKT 32^2 | libro | 0.0924 | 0.091098 | 1.41 % | ✅ |
-| trave svergolata, t = 0,32, carico nel piano all'estremo (MacNeal-Harder) | altro | 0.005424 | 0.0053822 | 0.77 % | ✅ |
-| trave svergolata, t = 0,32, carico fuori piano (MacNeal-Harder) | altro | 0.001754 | 0.0017248 | 1.67 % | ✅ |
-| volta, Q4 di Mindlin 16 x 16 (difetto, vedi note) | libro | - | 0.45198 | - | ✅ |
-| trave svergolata del libro (t = 0,0032), DKT (non confrontata) | libro | - | 3.4213e-04 | - | ✅ |
+| volta di Scordelis-Lo, DKT 16 x 16 | libro | 0.3024 | 0.29874 | 1.21 % | ✅ |
+| cilindro pizzicato, DKT 24 x 24 | libro | 1.8250e-05 | 1.8297e-05 | 0.26 % | ✅ |
+| emisfero, DKT 32^2 | libro | 0.0924 | 0.091339 | 1.15 % | ✅ |
+| trave svergolata, t = 0,32, carico nel piano all'estremo (MacNeal-Harder) | altro | 0.005424 | 0.0053874 | 0.67 % | ✅ |
+| trave svergolata, t = 0,32, carico fuori piano (MacNeal-Harder) | altro | 0.001754 | 0.0017205 | 1.91 % | ✅ |
+| trave svergolata del libro (t = 0,0032, F = 1e-6), carico nel piano, DKT 48 x 8 | libro | 0.005256 | 0.0050396 | 4.12 % | ✅ |
+| trave svergolata del libro, carico fuori piano, DKT 48 x 8 | libro | 0.001294 | 0.0012516 | 3.28 % | ✅ |
+| trave svergolata del libro, carico nel piano, DKT 24 x 4 (ancora rigida, vedi note) | libro | - | 0.0033491 | - | ✅ |
+| volta di Scordelis-Lo, Q4 MITC4 16 x 16 | libro | 0.3024 | 0.30468 | 0.76 % | ✅ |
+| cilindro pizzicato, Q4 MITC4 24 x 24 | libro | 1.8250e-05 | 1.7768e-05 | 2.64 % | ✅ |
+| trave svergolata, t = 0,32, carico nel piano, Q4 MITC4 24 x 4 | altro | 0.005424 | 0.0054035 | 0.38 % | ✅ |
+| trave svergolata, t = 0,32, carico fuori piano, Q4 MITC4 24 x 4 | altro | 0.001754 | 0.0017165 | 2.14 % | ✅ |
+| trave svergolata del libro, carico nel piano, Q4 MITC4 24 x 4 | libro | 0.005256 | 0.0050899 | 3.16 % | ✅ |
+| trave svergolata del libro, carico fuori piano, Q4 MITC4 24 x 4 | libro | 0.001294 | 0.0012716 | 1.73 % | ✅ |
 
-**Note**: Con i DKT: volta -1,1 % (32 x 32: -0,8 %, i gusci piatti convergono a circa 0,300), cilindro +0,2 %, emisfero -1,4 % (convergenza lenta dal basso: 48^2 triangoli danno -0,9 %). Trave svergolata: con lo spessore originale di MacNeal e Harder (t = 0,32, F = 1: 5,424e-3 e 1,754e-3) i DKT sono entro il 2 %; con il caso sottile del libro (t = 0,0032) i DKT danno valori 10-30 volte troppo piccoli (irrigidimento dei triangoli piatti svergolati, sensibile anche alla rigidezza di drilling): non confrontato. Difetti dei Q4 di Mindlin di feagent: sulla volta convergono a 0,453 (+50 %), sul cilindro pizzicato superano il riferimento e continuano a crescere (24 x 24: +6 %), sulla trave svergolata divergono (0,002, 0,007, 0,021 con 12, 24, 48 elementi).
+**Note**: Con i DKT: volta -1,2 % (32 x 32: -0,7 %, i gusci piatti convergono a circa 0,300), cilindro +0,3 %, emisfero -1,1 % (convergenza lenta dal basso: 48^2 triangoli danno -0,3 %). Trave svergolata: con lo spessore originale di MacNeal e Harder (t = 0,32, F = 1: 5,424e-3 e 1,754e-3) i DKT sono entro il 2 %; nel caso sottile del libro (t = 0,0032) i DKT 24 x 4 sono ancora rigidi del 35 % circa (0,64 e 0,68 del riferimento) e convergono infittendo (48 x 8: -4 % e -3 %). I Q4 MITC4: volta +0,8 %, cilindro -2,6 % (convergenza dal basso), trave svergolata -0,4 % e -2,1 %, caso sottile -3,2 % e -1,7 %. Correzioni dell'ottobre 2026 emerse da questo caso: il Q4 integrava il taglio in un punto (modi spuri: volta 0,453, +50 %; cilindro oltre il riferimento e in crescita) e non aveva ne' bracci rigidi di svergolamento ne' legame di drilling negli elementi svergolati (trave svergolata divergente); il drilling di stabilizzazione di Q4 e triangoli era riferito alla rigidezza di membrana e frenava le rotazioni rigide; i triangoli GT9 leggevano come rotazione nel piano la flessione dei vicini non complanari (trave svergolata sottile 10-30 volte troppo rigida, ora letta attorno alla normale nodale).
 
 *Codice*: `validation/books/cookmodeling/ch07.py`
 
@@ -923,7 +930,7 @@ Tubo di raggio medio 25 mm, spessore 2 mm, lungo 280 mm, tagliato lungo una gene
 | freccia in x = +R, mesh del libro [1e-6 mm] | libro | 682 | 642.33 | 5.82 % | ✅ |
 | freccia in x = -R, mesh del libro [1e-6 mm] | libro | 1252 | 1161.9 | 7.20 % | ✅ |
 | rotazione dell'estremo, mesh del libro [1e-6 rad] | libro | -11.4 | -10.392 | 8.85 % | ✅ |
-| freccia media, mesh 20 x 28, contro la teoria [1e-6 mm] | esatta | 933 | 921.59 | 1.22 % | ✅ |
+| freccia media, mesh 20 x 28, contro la teoria [1e-6 mm] | esatta | 933 | 918.7 | 1.53 % | ✅ |
 | ascissa del centro di taglio del modello [mm] | libro | -45.6 | -45.198 | 0.88 % | ✅ |
 
 **Note**: Formule della torsione con ingobbamento impedito verificate (theta, v, sigma_z). Con la mesh del libro feagent da' 642e-6 e 1162e-6 mm (media 902e-6, -7 % dal libro) e theta = 10,4e-6: l'elemento e' diverso (il Q6 di membrana del libro e' piu' flessibile sulla mesh grossolana); con la mesh 20 x 28 la media converge a 922e-6 (-1,2 % dalla teoria, 933e-6). Il centro di taglio del modello, dal secondo carico equivalente a 0,5 N in x = -2R, cade a -45,2 mm (libro -45,6). Tolleranze del 10 % sui valori della mesh grossolana.

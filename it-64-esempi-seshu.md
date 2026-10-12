@@ -28,7 +28,7 @@ python scripts/_gen_book_docs.py
 | [Example 2.4](#seshu-ex-2-4) | Trave appoggiata con carico uniforme: collocazione e Galerkin con seni | 📐 | 6/6 | 1.50 % |
 | [Example 2.5](#seshu-ex-2-5) | Cilindro lungo con sorgente di calore uniforme (Galerkin) | 📐 | 3/3 | 0.00 % |
 | [Example 2.6](#seshu-ex-2-6) | Asta con carico linearmente variabile q = ax (Galerkin cubico) | 📐 | 4/4 | 0.00 % |
-| [Example 2.7](#seshu-ex-2-7) | Piastra rettangolare appoggiata con carico uniforme (Galerkin a un termine) | 📐 | 4/4 | 0.86 % |
+| [Example 2.7](#seshu-ex-2-7) | Piastra rettangolare appoggiata con carico uniforme (Galerkin a un termine) | 📐 | 4/4 | 0.07 % |
 | [Example 2.8 + Tabella 2.1](#seshu-ex-2-8) | Aletta di alluminio: Galerkin quadratico, cubico e quartico | 📐 | 13/13 | 0.25 % |
 | [Example 2.9](#seshu-ex-2-9) | Forma debole per l'asta con carico q = ax, prova quadratica | 📐 | 7/7 | 0.00 % |
 | [Example 2.10](#seshu-ex-2-10) | Trave appoggiata in forma debole con prova quadratica | 📐 | 4/4 | 0.00 % |
@@ -210,7 +210,7 @@ Piastra appoggiata sui quattro lati con carico q0: il termine di Galerkin c11 = 
 | c11 di Galerkin, a x b = 1 x 1,5 m [m] | libro | 4.3552e-04 | 4.3552e-04 | 0.00 % | ✅ |
 | freccia al centro, Galerkin a un termine [q0a^4/D] | libro | 0.00416 | 0.0041606 | 0.02 % | ✅ |
 | freccia al centro, serie di Navier [q0a^4/D] | esatta | 0.00406 | 0.0040624 | 0.06 % | ✅ |
-| freccia al centro, 16x16 gusci feagent [m] | esatta | 2.2180e-04 | 2.2371e-04 | 0.86 % | ✅ |
+| freccia al centro, 16x16 gusci feagent [m] | esatta | 2.2180e-04 | 2.2197e-04 | 0.07 % | ✅ |
 
 **Note**: Valori di prova: a = b = 1 m (e b = 1,5 m per il caso rettangolare), t = 10 mm, E = 200 GPa, nu = 0,3, q0 = 1 kPa. Il riferimento esatto e' la serie di Navier.
 

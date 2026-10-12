@@ -104,7 +104,7 @@ python scripts/_gen_book_docs.py
 | [Sez. 10.4, Fig. 10.4-1, Eq. 10.4-4](#cook-10-4-square-wave-fourier) | Fourier series of a square wave (uniform load on a span) | 📐 | 4/4 | 0.00 % |
 | [Sez. 10.4, Eq. 10.4-5](#cook-10-4-point-load-fourier) | Fourier series of a midspan point load and beam deflection | 📐 | 2/2 | 0.00 % |
 | [Sez. 10.4, Eq. 10.4-6..10.4-12, Fig. 10.4-2](#cook-10-4-ss-beam-sine-load) | Simply supported beam under sinusoidal load: uncoupled harmonic solution | ✅ | 3/3 | 0.32 % |
-| [Sez. 11.3, Fig. 11.3-2, Tabella 11.3-1](#cook-11-3-mindlin-clamped-square-plate) | Clamped square plate with Mindlin elements: locking as L/t varies | 🟡 | 4/4 | 1.13 % |
+| [Sez. 11.3, Fig. 11.3-2, Tabella 11.3-1](#cook-11-3-mindlin-clamped-square-plate) | Clamped square plate with Mindlin elements: locking as L/t varies | 🟡 | 4/4 | 1.14 % |
 | [Sez. 11.4, Tabella 11.4-1, Fig. 11.4-2](#cook-11-4-dkt-square-plates) | DKT element: centre deflection of square plates | ✅ | 16/16 | 0.04 % |
 | [Sez. 11.4, Fig. 11.4-3](#cook-11-4-dkt-stiffness-code) | 9x9 stiffness matrix of the DKT element | 📐 | 4/4 | 0.00 % |
 | [Sez. 11.5, Fig. 11.5-2](#cook-11-5-rhombic-plate) | Simply supported rhombic plate (Morley): classical and 'finite element' support conditions | ✅ | 4/4 | 2.93 % |
@@ -117,7 +117,7 @@ python scripts/_gen_book_docs.py
 | [Sez. 13.3, Eq. 13.3-1..13.3-3, Fig. 13.3-1](#cook-13-3-bar-beam-mass-matrices) | Consistent and lumped mass matrices of bar and beam | 📐 | 4/4 | 0.00 % |
 | [Sez. 13.3, Fig. 13.3-2](#cook-13-3-cst-q4-consistent-mass) | Consistent mass matrices of CST and bilinear rectangle | 📐 | 2/2 | 0.00 % |
 | [Sez. 13.3, Eq. 13.3-4, 13.3-5, Fig. 13.3-3](#cook-13-3-hrz-lumping) | HRZ diagonal masses of bar, beam, Q8 and Q9 | 📐 | 13/13 | 0.00 % |
-| [Sez. 13.3, Tabella 13.3-1](#cook-13-3-thick-plate-frequencies-mass) | Frequencies of a thick simply supported plate: consistent and lumped mass | 🟡 | 7/7 | 5.87 % |
+| [Sez. 13.3, Tabella 13.3-1](#cook-13-3-thick-plate-frequencies-mass) | Frequencies of a thick simply supported plate: consistent and lumped mass | 🟡 | 7/7 | 6.34 % |
 | [Sez. 13.3, Eq. 13.3-6..13.3-9, Fig. 13.3-4](#cook-13-3-optimal-lumping-quadratic-bar) | Optimal mass lumping: quadratic bar, T6, Q8, Q9 | 📐 | 9/9 | 0.00 % |
 | [Sez. 13.4, Eq. 13.4-1..13.4-3, Fig. 13.4-1](#cook-13-4-rayleigh-damping) | Rayleigh damping: coefficients from two damping ratios | 📐 | 4/4 | 0.00 % |
 | [Sez. 13.5, Eq. 13.5-8..13.5-10, Fig. 13.5-1](#cook-13-5-free-bar-eigen) | Free bar with one element: eigenvalues with consistent and lumped mass | ✅ | 3/3 | 0.00 % |
@@ -2087,12 +2087,12 @@ With an 8x8 mesh the book compares the computed centre deflection with the thin-
 
 | Quantity | Ref. | Reference | feagent | Error | |
 |---|---|---|---|---|---|
-| computed w / thin-plate w, L/t = 100 | exact | 1 | 0.99075 | 0.92 % | ✅ |
+| computed w / thin-plate w, L/t = 100 | exact | 1 | 0.99064 | 0.94 % | ✅ |
 | computed w / thin-plate w, L/t = 1000 | exact | 1 | 0.98871 | 1.13 % | ✅ |
 | computed w / thin-plate w, L/t = 10000 | exact | 1 | 0.98869 | 1.13 % | ✅ |
-| computed w / thin-plate w, L/t = 1e+06 | exact | 1 | 0.98869 | 1.13 % | ✅ |
+| computed w / thin-plate w, L/t = 1e+06 | exact | 1 | 0.98863 | 1.14 % | ✅ |
 
-**Notes**: feagent has no 8- and 9-node Mindlin plates nor heterosis: only the Q4 curve is redone, and it does not lock (ratio 0.989 to the thin plate from L/t = 100 to 1e6, like the book's selective bilinear). The book values are only plotted. Reference w = 0.001265 q L^4/D (Timoshenko).
+**Notes**: feagent has no 8- and 9-node Mindlin plates nor heterosis: only the Q4 curve is redone, and it does not lock (ratio 0.989 to the thin plate from L/t = 100 to 1e6, like the book's selective bilinear; feagent's one has the MITC4 assumed shear). The book values are only plotted. Reference w = 0.001265 q L^4/D (Timoshenko).
 
 *Code*: `validation/books/cook/ch11.py`
 
@@ -2382,12 +2382,12 @@ The book compares the percentage frequency errors of a thick simply supported pl
 
 | Quantity | Ref. | Reference | feagent | Error | |
 |---|---|---|---|---|---|
-| mode (1,1), consistent mass | exact | 0.58117 | 0.59073 | 1.65 % | ✅ |
-| mode (1,1), lumped mass | exact | 0.58117 | 0.58283 | 0.28 % | ✅ |
-| mode (1,2), consistent mass | exact | 1.398 | 1.4801 | 5.87 % | ✅ |
-| mode (1,2), lumped mass | exact | 1.398 | 1.4261 | 2.00 % | ✅ |
-| mode (2,2), consistent mass | exact | 2.1583 | 2.2823 | 5.75 % | ✅ |
-| mode (2,2), lumped mass | exact | 2.1583 | 2.1465 | 0.55 % | ✅ |
+| mode (1,1), consistent mass | exact | 0.58117 | 0.59095 | 1.68 % | ✅ |
+| mode (1,1), lumped mass | exact | 0.58117 | 0.58304 | 0.32 % | ✅ |
+| mode (1,2), consistent mass | exact | 1.398 | 1.4822 | 6.02 % | ✅ |
+| mode (1,2), lumped mass | exact | 1.398 | 1.4281 | 2.15 % | ✅ |
+| mode (2,2), consistent mass | exact | 2.1583 | 2.2952 | 6.34 % | ✅ |
+| mode (2,2), lumped mass | exact | 2.1583 | 2.1587 | 0.02 % | ✅ |
 | mode (1,1): lumped mass lowers the frequency | book | 1 | 1 | 0.00 % | ✅ |
 
 **Notes**: feagent has no 8-node Mindlin plate: the table cannot be reproduced cell by cell, and the book does not give the thickness (it refers to ref. 13.5). t/a = 0.1, nu = 0.3 are used and the low modes are compared with the exact Mindlin solution without rotary inertia (feagent shell mass is translational only): the lumped mass gives lower frequencies than the consistent one, as in the book for the low modes.

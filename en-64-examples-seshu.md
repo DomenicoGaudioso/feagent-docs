@@ -28,7 +28,7 @@ python scripts/_gen_book_docs.py
 | [Example 2.4](#seshu-ex-2-4) | Simply supported beam under uniform load: collocation and Galerkin with sines | 📐 | 6/6 | 1.50 % |
 | [Example 2.5](#seshu-ex-2-5) | Long cylinder with uniform heat source (Galerkin) | 📐 | 3/3 | 0.00 % |
 | [Example 2.6](#seshu-ex-2-6) | Bar with linearly varying load q = ax (cubic Galerkin) | 📐 | 4/4 | 0.00 % |
-| [Example 2.7](#seshu-ex-2-7) | Simply supported rectangular plate under uniform load (one-term Galerkin) | 📐 | 4/4 | 0.86 % |
+| [Example 2.7](#seshu-ex-2-7) | Simply supported rectangular plate under uniform load (one-term Galerkin) | 📐 | 4/4 | 0.07 % |
 | [Example 2.8 + Tabella 2.1](#seshu-ex-2-8) | Aluminium pin fin: quadratic, cubic and quartic Galerkin | 📐 | 13/13 | 0.25 % |
 | [Example 2.9](#seshu-ex-2-9) | Weak form for the bar with load q = ax, quadratic trial | 📐 | 7/7 | 0.00 % |
 | [Example 2.10](#seshu-ex-2-10) | Simply supported beam in weak form with quadratic trial | 📐 | 4/4 | 0.00 % |
@@ -210,7 +210,7 @@ Plate simply supported on four edges under q0: the Galerkin term c11 = 16 q0 / (
 | Galerkin c11, a x b = 1 x 1.5 m [m] | book | 4.3552e-04 | 4.3552e-04 | 0.00 % | ✅ |
 | Centre deflection, one-term Galerkin [q0a^4/D] | book | 0.00416 | 0.0041606 | 0.02 % | ✅ |
 | Centre deflection, Navier series [q0a^4/D] | exact | 0.00406 | 0.0040624 | 0.06 % | ✅ |
-| Centre deflection, 16x16 feagent shells [m] | exact | 2.2180e-04 | 2.2371e-04 | 0.86 % | ✅ |
+| Centre deflection, 16x16 feagent shells [m] | exact | 2.2180e-04 | 2.2197e-04 | 0.07 % | ✅ |
 
 **Notes**: Test values: a = b = 1 m (and b = 1.5 m for the rectangular case), t = 10 mm, E = 200 GPa, nu = 0.3, q0 = 1 kPa. The exact reference is Navier's series.
 

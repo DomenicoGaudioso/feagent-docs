@@ -150,6 +150,6 @@ globale e `refinement_ratio` indica gli elementi da raffinare.
 | Libro | Pagina | Esempi | ✅ | 🟡 | 📐 | ⛔ | Confronti superati |
 |---|---|---|---|---|---|---|---|
 | R.D. Cook, *Concepts and Applications of Finite Element Analysis* | [62](it-62-esempi-cook-concepts.html) | 135 | 36 | 19 | 77 | 3 | 785/785 |
-| R.D. Cook, *Finite Element Modeling for Stress Analysis* | [63](it-63-esempi-cook-modeling.html) | 54 | 27 | 15 | 12 | 0 | 445/445 |
+| R.D. Cook, *Finite Element Modeling for Stress Analysis* | [63](it-63-esempi-cook-modeling.html) | 54 | 29 | 13 | 12 | 0 | 452/452 |
 | P. Seshu, *Textbook of Finite Element Analysis* | [64](it-64-esempi-seshu.html) | 44 | 21 | 2 | 19 | 2 | 422/422 |
 | S.S. Bhavikatti, *Finite Element Analysis* | [65](it-65-esempi-bhavikatti.html) | 58 | 21 | 2 | 35 | 0 | 361/361 |

@@ -146,6 +146,6 @@ the global relative error and `refinement_ratio` flags the elements to refine.
 | Book | Page | Examples | ✅ | 🟡 | 📐 | ⛔ | Checks passed |
 |---|---|---|---|---|---|---|---|
 | R.D. Cook, *Concepts and Applications of Finite Element Analysis* | [62](en-62-examples-cook-concepts.html) | 135 | 36 | 19 | 77 | 3 | 785/785 |
-| R.D. Cook, *Finite Element Modeling for Stress Analysis* | [63](en-63-examples-cook-modeling.html) | 54 | 27 | 15 | 12 | 0 | 445/445 |
+| R.D. Cook, *Finite Element Modeling for Stress Analysis* | [63](en-63-examples-cook-modeling.html) | 54 | 29 | 13 | 12 | 0 | 452/452 |
 | P. Seshu, *Textbook of Finite Element Analysis* | [64](en-64-examples-seshu.html) | 44 | 21 | 2 | 19 | 2 | 422/422 |
 | S.S. Bhavikatti, *Finite Element Analysis* | [65](en-65-examples-bhavikatti.html) | 58 | 21 | 2 | 35 | 0 | 361/361 |
