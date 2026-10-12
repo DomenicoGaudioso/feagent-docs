@@ -63,6 +63,9 @@ feagent uses several techniques to approach the speed of compiled solvers
 
 - **Optional pypardiso** (MKL Pardiso): if installed (`pip install feagent[fast]`)
   it is used automatically as the sparse solver instead of SuperLU.
+  Calls to Pardiso are serialized: analyses started together from different threads
+  (GUI, REST server, threaded scripts) queue up instead of hanging the process, and a
+  singular matrix raises an error instead of returning meaningless displacements.
 - **Solution check with both solvers**: every solution estimates the 1-norm
   condition number of the diagonally scaled matrix with the same factorisation
   used to solve (SuperLU or Pardiso, also above 50,000 DOFs). Above 1e14 the result

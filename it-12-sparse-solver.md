@@ -62,7 +62,10 @@ compilati (vedi [29 - Prestazioni e Benchmark](it-29-performance.html)):
   ```
 
 - **pypardiso opzionale** (MKL Pardiso): se installato (`pip install feagent[fast]`)
-  viene usato automaticamente come solutore sparso al posto di SuperLU.
+  viene usato automaticamente come solutore sparso al posto di SuperLU. Le chiamate a
+  Pardiso sono serializzate: analisi lanciate insieme da thread diversi (GUI, server
+  REST, script con thread) si mettono in coda invece di bloccare il processo, e una
+  matrice singolare solleva un errore invece di dare spostamenti senza senso.
 - **Controllo della soluzione con entrambi i solutori**: a ogni soluzione si stima il
   condizionamento 1-norma della matrice equilibrata sulla diagonale, con la stessa
   fattorizzazione usata per risolvere (SuperLU o Pardiso, anche sopra i 50 000 GdL).
