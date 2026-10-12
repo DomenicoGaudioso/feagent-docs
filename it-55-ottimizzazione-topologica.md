@@ -200,8 +200,8 @@ dai meccanismi veri); il nodo caricato appartiene a due gusci, che restano pieni
 | Deformabilità finale [J] | 23,23 (con il grigio) | 16,88 | 3,9 · 10⁸ |
 | Frazione con soglia 0,5 | 0,298 | 0,298 | 0,299 |
 | Volume in grigio | 0,495 | 0 | 0 |
-| Modello ridotto | 263 gusci, soglia abbassata a 0,419 (frazione 0,34) | 230 gusci, soglia 0,5 | non disponibile: carico staccato |
-| Deformabilità del ridotto [J] | 12,31 | 16,62 | |
+| Modello ridotto | 278 gusci, soglia abbassata a 0,374 (frazione 0,36) | 230 gusci, soglia 0,5 | non disponibile: carico staccato |
+| Deformabilità del ridotto [J] | 11,87 | 16,62 | |
 
 Come leggere i numeri:
 
@@ -212,9 +212,9 @@ Come leggere i numeri:
   non si confronta direttamente con BESO. Il confronto giusto è fra i modelli
   ridotti, dove ogni guscio è pieno o tolto.
 * Il ridotto SIMP tagliato alla soglia che conserva il volume lasciava catene di
-  gusci uniti per un vertice (meccanismi fuori piano); la soglia si abbassa
-  finché spariscono, e il modello ha il 34 % del volume: per questo è più rigido
-  del BESO al 30 %.
+  gusci uniti per un vertice; la soglia si abbassa finché i gusci tenuti sono
+  tutti collegati per lati all'incastro, e il modello ha il 36 % del volume: per
+  questo è più rigido del BESO al 30 %.
 * Senza il controllo di connessione BESO stacca il carico all'iterazione 52 e
   non si riprende (figure 3 e 4).
 
@@ -273,6 +273,7 @@ Per rifare l'esempio guidato:
 |---|---|---|
 | `BESO: frazione di volume ferma a … (chiesta …) per non staccare il carico dai vincoli` | sulla mesh data BESO non trova un disegno collegato alla frazione chiesta | infittire la mesh (una quarantina di elementi sul lato lungo), alzare la frazione o usare SIMP |
 | `modello ridotto SIMP: soglia abbassata da … a …` | il taglio del grigio lasciava cerniere nel percorso del carico | nulla: il ridotto è valido, con il volume indicato; per tornare al volume chiesto infittire la mesh o usare BESO |
+| `modello ridotto SIMP: … elementi restano uniti al resto per un solo vertice` | anche abbassando la soglia fino a +0,10 di volume restano bielle incernierate nel percorso del carico | mesh più fitta; `modello_ridotto(soglia)` con una soglia più bassa; BESO |
 | `il modello ridotto è labile anche togliendo le parti appese` | anche abbassando la soglia restano meccanismi che toccano elementi da tenere pieni | mesh più fitta; `modello_ridotto(soglia)` con una soglia più bassa; BESO |
 | `con la soglia … elementi da tenere pieni restano staccati dai vincoli` | la soglia taglia il percorso del carico | soglia più bassa o mesh più fitta |
 | `nodi caricati restano senza elementi` | con `carichi_pieni=False` sono stati tolti gli elementi attorno al carico | lasciare `carichi_pieni=True` o abbassare la soglia |
@@ -300,6 +301,19 @@ Per rifare l'esempio guidato:
   invece di 12). Si prova allora ad abbassare la soglia, fino a +0,10 di volume,
   e si tiene il modello con la minore deformabilità per volume. Un avviso dice
   la soglia usata, che resta in `soglia_ridotto`;
+* la soglia più bassa si accetta solo se, oltre a non avere meccanismi, ogni
+  elemento tenuto è collegato a un appoggio da una catena di lati (gusci) o di
+  facce (solidi) comuni. Un gruppo di gusci unito al resto per due vertici non è
+  labile, perché il nodo trasmette anche le rotazioni, ma nel piano è una biella
+  incernierata. Sulla lastra a mensola a 0,3 la soglia 0,458 non lascia
+  meccanismi ma quattro gruppetti di questo tipo, e il ridotto ha deformabilità
+  77 contro 23 del grigio; toglierli non serve, perché fanno da ponte (a 0,427:
+  74 invece di 25). La soglia scende a 0,374 (frazione 0,36): 278 gusci, tutti
+  collegati per lati, deformabilità 11,9. Fino al passaggio dei gusci Q4 al
+  taglio MITC4 i modi spuri della piastra venivano presi per meccanismi e la
+  soglia scendeva a 0,419 per un caso fortunato. Se nemmeno a +0,10 di volume i
+  gruppi uniti per un vertice spariscono, si tiene il taglio alla soglia che
+  conserva il volume e un avviso lo segnala;
 * si tolgono le forze di volume e i carichi termici degli elementi rimossi, e i
   nodi rimasti senza elementi si bloccano (nell'interfaccia si tolgono del tutto,
   con i loro vincoli, così il modello ridotto non mostra centinaia di vincoli
@@ -374,8 +388,10 @@ Gli altri test (`tests/test_topology.py`) controllano:
   sopra la frazione chiesta;
 * che SIMP sulla stessa lastra dia un modello ridotto risolvibile e in equilibrio
   in pochi secondi: a 0,3 con la soglia abbassata (prima 137 s e matrice singolare),
-  a 0,4 senza (prima un falso meccanismo fuori piano lo rendeva non disponibile);
-  e che una lastra intera da 5 mm non risulti labile;
+  a 0,4 senza (prima un falso meccanismo fuori piano lo rendeva non disponibile),
+  in entrambi i casi più rigido del grigio e senza gusci uniti per un solo
+  vertice; che un guscio unito per un vertice sia segnalato e uno unito per un
+  lato no; e che una lastra intera da 5 mm non risulti labile;
 * gli errori sui parametri.
 
 Script delle figure: `examples/ex20_topologia.py` (validazione), `examples/ex21_topologia_lastra.py` (esempio guidato) e `scripts/_gen_gui_topology_screenshots.py` (schermate dell'interfaccia).

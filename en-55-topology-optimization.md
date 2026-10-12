@@ -202,8 +202,8 @@ true mechanisms); the loaded node belongs to two shells, which stay solid.
 | Final compliance [J] | 23.23 (with grey) | 16.88 | 3.9 · 10⁸ |
 | Fraction with threshold 0.5 | 0.298 | 0.298 | 0.299 |
 | Grey volume | 0.495 | 0 | 0 |
-| Reduced model | 263 shells, threshold lowered to 0.419 (fraction 0.34) | 230 shells, threshold 0.5 | not available: load detached |
-| Compliance of the reduced model [J] | 12.31 | 16.62 | |
+| Reduced model | 278 shells, threshold lowered to 0.374 (fraction 0.36) | 230 shells, threshold 0.5 | not available: load detached |
+| Compliance of the reduced model [J] | 11.87 | 16.62 | |
 
 How to read the numbers:
 
@@ -213,9 +213,9 @@ How to read the numbers:
   cannot be compared directly with BESO. The fair comparison is between the
   reduced models, where every shell is either solid or removed.
 * The SIMP reduced model cut at the volume-preserving threshold left chains of
-  shells joined by a vertex (out-of-plane mechanisms); the threshold is lowered
-  until they disappear, and the model keeps 34 % of the volume: that is why it
-  is stiffer than the BESO one at 30 %.
+  shells joined by a vertex; the threshold is lowered until every kept shell is
+  connected through shared edges to the clamped side, and the model keeps 36 %
+  of the volume: that is why it is stiffer than the BESO one at 30 %.
 * Without the connection check BESO detaches the load at iteration 52 and never
   recovers (figures 3 and 4).
 
@@ -273,6 +273,7 @@ needed). To repeat the worked example:
 |---|---|---|
 | `BESO: frazione di volume ferma a … (chiesta …) per non staccare il carico dai vincoli` | on this mesh BESO finds no connected layout at the requested fraction | refine the mesh (about forty elements along the long side), raise the fraction or use SIMP |
 | `modello ridotto SIMP: soglia abbassata da … a …` | cutting the grey left hinges on the load path | nothing: the reduced model is valid, with the volume shown; to get back to the requested volume refine the mesh or use BESO |
+| `modello ridotto SIMP: … elementi restano uniti al resto per un solo vertice` | even lowering the threshold up to +0.10 of volume, pin-ended struts remain on the load path | finer mesh; `modello_ridotto(threshold)` with a lower threshold; BESO |
 | `il modello ridotto è labile anche togliendo le parti appese` | even with a lower threshold, mechanisms remain that involve elements to keep solid | finer mesh; `modello_ridotto(threshold)` with a lower threshold; BESO |
 | `con la soglia … elementi da tenere pieni restano staccati dai vincoli` | the threshold cuts the load path | lower threshold or finer mesh |
 | `nodi caricati restano senza elementi` | with `carichi_pieni=False` the elements around the load were removed | keep `carichi_pieni=True` or lower the threshold |
@@ -301,6 +302,19 @@ needed). To repeat the worked example:
   of 12). The threshold is then lowered, up to +0.10 of volume, and the model
   with the lowest compliance per volume is kept. A warning reports the
   threshold used, which is stored in `soglia_ridotto`;
+* a lower threshold is accepted only if, besides having no mechanisms, every
+  kept element is connected to a support by a chain of shared edges (shells) or
+  faces (solids). A group of shells joined to the rest by two vertices is not a
+  mechanism, because the node also carries the rotations, but in plane it is a
+  pin-ended strut. On the cantilever plate at 0.3 the threshold 0.458 leaves no
+  mechanisms but four such groups, and the reduced model has a compliance of 77
+  against 23 for the grey layout; removing them does not help, since they act
+  as bridges (at 0.427: 74 instead of 25). The threshold goes down to 0.374
+  (fraction 0.36): 278 shells, all connected by edges, compliance 11.9. Until
+  the Q4 shells moved to MITC4 transverse shear, spurious plate modes were taken
+  for mechanisms and the threshold dropped to 0.419 by luck. If the groups
+  joined by a vertex do not disappear even at +0.10 of volume, the cut at the
+  volume-preserving threshold is kept and a warning says so;
 * body forces and thermal loads of the removed elements go with them, and
   nodes left without elements are fixed (the GUI removes them altogether, with
   their supports, so the reduced model does not show hundreds of useless
@@ -376,7 +390,10 @@ The other tests (`tests/test_topology.py`) check:
 * that SIMP on the same plate gives a solvable reduced model in equilibrium
   within a few seconds: at 0.3 with the lowered threshold (before: 137 s and a
   singular matrix), at 0.4 without (before: a spurious out-of-plane mechanism
-  made it unavailable); and that a whole 5 mm plate is not flagged as a mechanism;
+  made it unavailable), in both cases stiffer than the grey layout and with no
+  shell joined by a single vertex; that a shell joined by a vertex is flagged and
+  one joined by an edge is not; and that a whole 5 mm plate is not flagged as a
+  mechanism;
 * the parameter errors.
 
 Figure scripts: `examples/ex20_topologia.py` (validation), `examples/ex21_topologia_lastra.py` (worked example) and `scripts/_gen_gui_topology_screenshots.py` (GUI screenshots).
