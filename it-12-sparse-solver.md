@@ -63,6 +63,13 @@ compilati (vedi [29 - Prestazioni e Benchmark](it-29-performance.html)):
 
 - **pypardiso opzionale** (MKL Pardiso): se installato (`pip install feagent[fast]`)
   viene usato automaticamente come solutore sparso al posto di SuperLU.
+- **Controllo della soluzione con entrambi i solutori**: a ogni soluzione si stima il
+  condizionamento 1-norma della matrice equilibrata sulla diagonale, con la stessa
+  fattorizzazione usata per risolvere (SuperLU o Pardiso, anche sopra i 50 000 GdL).
+  Oltre 1e14 il risultato porta l'avviso `PRECISIONE_RIDOTTA` (utilizzabile, con meno
+  cifre esatte), oltre 1e15 `MESH_FITTA` e `Result.reliable = False` (elementi molto piu'
+  corti della luce: va usata una mesh piu' rada); il valore e' in `Result.cond`. La
+  stima costa poco: circa 0,3 s su 120 000 GdL con Pardiso.
 
 ## Analisi modale e di buckling sparse
 

@@ -63,6 +63,13 @@ feagent uses several techniques to approach the speed of compiled solvers
 
 - **Optional pypardiso** (MKL Pardiso): if installed (`pip install feagent[fast]`)
   it is used automatically as the sparse solver instead of SuperLU.
+- **Solution check with both solvers**: every solution estimates the 1-norm
+  condition number of the diagonally scaled matrix with the same factorisation
+  used to solve (SuperLU or Pardiso, also above 50,000 DOFs). Above 1e14 the result
+  carries the warning `PRECISIONE_RIDOTTA` (usable, with fewer exact digits), above
+  1e15 `MESH_FITTA` and `Result.reliable = False` (elements much shorter than the
+  span: use a coarser mesh); the value is in `Result.cond`. The estimate is cheap:
+  about 0.3 s on 120,000 DOFs with Pardiso.
 
 ## Sparse modal and buckling analysis
 
