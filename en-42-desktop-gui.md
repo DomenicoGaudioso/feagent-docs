@@ -152,9 +152,11 @@ accelerograms are defined in seconds.
 | View | 3D, plan, front, side, fit; labels, local axes, supports, loads, grid |
 | Model | drawing tools, nodes by coordinates, structural grid, divide, merge nodes, properties, materials and sections |
 | Loads | load cases, nodal, distributed, concentrated and thermal loads, self weight, combinations |
-| Analysis | model check (codes E01-E63 of `feagent check`), static per load case, custom combination, combinations, modal, buckling |
-| Results | deformed shape, N, Vy, Vz, T, My, Mz, reactions, modes, tables |
-| Tools (Strumenti) | connect an AI (address, token, ready-made configurations), options |
+| Analysis | model check (codes E01-E63 of `feagent check`), static per load case, custom combination, combinations, modal, buckling, P-Delta, nonlinear with cables, response spectrum, moving loads, topology optimisation, dynamic analyses |
+| Results | deformed shape, N, Vy, Vz, T, My, Mz, reactions, modes, stresses in beams and shells, stresses in the section, density and history of the optimisation, reduced model, tables |
+| Plugin | tools built on the engine: bridges, trains, frames, trusses, digital twin, masonry bridges, Gerber saddles ([46](en-46-plugins.html)) |
+| Tools (Strumenti) | connect an AI (address, token, ready-made configurations), options: units, view and drawing, parallel and multithreaded computing |
+| Help (Aiuto) | shortcuts, documentation, examples, about |
 
 **Export** writes the model for OpenSees (Tcl and Python), SAP2000, MIDAS,
 Robot and Straus7 (work in progress, marked 🚧 WIP in the menu: see
@@ -274,9 +276,11 @@ sheet (see [Excel I/O](en-11-excel-io.html)) and tree group:
 
 | Element | Sheet | How to create it |
 |---|---|---|
-| Shell or plate (Q4, triangle) | Shell, ShellSection | tool **P** (3 or 4 vertices in order), **Model > Plate mesh generator**, table |
+| Shell or plate (Q4, triangle; shell, membrane or shear panel) | Shell, ShellSection | tool **P** (3 or 4 vertices in order), **Model > Plates** (drawing, mesh generators, shell properties, sections, tables), table |
+| Plane element T3, Q4, T6 or Q8 (plane stress, plane strain, axisymmetric) | Plane | tool **Q** (click 3 or 4 corners in the X-Y plane; with the quadratic order the mid-side nodes are created automatically and shared with neighbouring elements, giving T6 and Q8), **Model > Plates > Plane mesh 2D**, element from the selected nodes, table; pressure on the sides from the selected nodes. A model made only of plane elements opens with Y up |
 | Truss bar | Truss | Truss tool (area and behaviour asked first), table |
-| Axial spring | Spring | Spring tool, table |
+| Spring-damper (axial k plus six stiffnesses and dampers in global, member or given axes) | Spring | Spring tool, table |
+| Nodal masses and dampers | NodalMass, NodalDamper | selected nodes, **Model > Nodal masses** and **Nodal dampers** (also from the right-click menu), table (tree: Dynamics); drawn as a disc (mass) and a dashpot (damper) |
 | Cable (bar or catenary) | Cable | Cable tool, table |
 | Elastic support to ground | ElasticSupport | selected nodes, **Model > Elastic supports** |
 | Rigid link, equalDOF, diaphragm | Constraint | two or more selected nodes, **Model > Kinematic constraint** (the first is the master) |
@@ -597,6 +601,38 @@ and internal forces; time histories and device loops are those of the run that
 governs the displacement. Model and data are restored at the end of each run;
 validation checks the target, the factor and the sets that are cited.
 
+## Topology optimisation, stresses, parallel computing and plugins
+
+Four recent features, each with a page of its own.
+
+**Topology optimisation.** **Analisi > Ottimizzazione topologica (SIMP/BESO)…**
+empties the lightly stressed shells of the open model, keeping the requested
+volume fraction. The density map colours each shell with its own density (BESO:
+solid or void); **Risultati > Storia dell'ottimizzazione** plots compliance and
+volume per iteration and **Risultati > Apri il modello ridotto** opens the model
+without the removed shells, ready for re-analysis. Worked example, choice of the
+method and messages in [55 - Topology optimization](en-55-topology-optimization.html).
+
+![BESO density](images/gui_topology_beso.png)
+
+**Stresses.** After a static analysis, **Risultati > σ max travi / σ min travi**
+and **Tensione in una fibra** draw the stresses along the beams; with the
+extruded view (key E) the true section is coloured point by point; **Tensioni
+nella sezione…** shows the σ(y) diagram with the contributions of the phases of
+composite sections; shells get maps of von Mises, principal and component
+stresses on both faces. See [47 - Stresses](en-47-stresses.html).
+
+**Parallel computing.** **Strumenti > Opzioni > Calcolo** switches on parallel
+processes (load cases, combinations, moving loads, dynamic analyses) and
+multithreaded linear algebra, with automatic values taken from the PC. The
+switches are off by default: turn them on for large models or many
+combinations. Timings and advice in [29 - Performance](en-29-performance.html).
+
+**Plugins.** The **Plugin** menu opens the tools built on the engine (bridges,
+trains, frames, trusses, digital twin, masonry arch bridges, Gerber saddles):
+pick the action, fill in the form and the model produced opens in the window.
+See [46 - Plugins](en-46-plugins.html).
+
 ## Driving the interface with an AI
 
 Each session's model lives on the server: the window, AI assistants and other
@@ -714,6 +750,15 @@ The repository `Docker` workflow builds and tests it on every change with
 `deploy/smoke_test.py`: page and scripts, wrong key rejected, isolated
 sessions, static and dynamic analyses, Excel and Word export, no access to
 the server file system.
+
+## Usage reporting
+
+The executable (protected release build and free build) sends civilbox.xyz an event at start-up and one
+for each analysis, plugin command or report: program, version, build, operating system, event type, PC
+fingerprint (sha256 of the machine id, never in clear) and IP address; if a civilBox account is saved on
+the PC the event is linked to it. It is sent without an account too, to detect copies used outside the
+licence. No model data leaves the PC. Nothing is sent from source or from the pip package, and sending
+never blocks the program.
 
 ## Shortcuts
 

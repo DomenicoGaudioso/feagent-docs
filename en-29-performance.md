@@ -149,3 +149,87 @@ chains is disabled.
 
 Full tables in the README; measurements with `benchmark/benchmark_elements.py`,
 chart with `benchmark/gen_elements_chart.py`.
+
+## Parallel and multithreaded computation (October 2026)
+
+Two optimisations, **off by default**: the user turns them on.
+
+| Option | What it does | When it pays off |
+|---|---|---|
+| Parallel computation | spreads independent analyses over several processes: load cases, combinations (in blocks, one factorisation per block), moving load cases, dynamic analyses | large models, many combinations, time-history and nonlinear runs |
+| Multithreaded linear algebra | sets the number of BLAS/LAPACK threads (and MKL Pardiso, if installed) | dense solver and modal analyses on medium models |
+
+Processes are used instead of threads because feagent spends its time in
+Python loops over the elements (equivalent loads, internal force recovery),
+which the GIL does not run in parallel. Each process gets a copy of the model
+and returns results **identical** to the sequential ones (zero difference on
+displacements, reactions and end forces in the tests).
+
+Timings on a CPU with 16 logical threads, grillage with 9,648 DOFs:
+
+| Combinations | Sequential | 4 processes | 8 processes |
+|---|---|---|---|
+| 40 | 3.0 s | 1.6 s (×1.9) | 1.5 s (×2.1) |
+| 160 | 10.4 s | 5.1 s (×2.1) | 4.0 s (×2.6) |
+
+The gain on static combinations is limited by sending the results back to the
+main process; it is much higher on long independent analyses (time-history of
+the seven accelerograms, nonlinear runs per combination). Vectorising the
+post-processing, planned in issue #7, will cut the time per combination in
+sequential runs too.
+
+A surprising measurement on threads: with the library default (16 threads) the
+dense solver at 2,900 DOFs takes 2.8 s, with 4 threads 0.6 s and with a single
+thread 0.9 s, because logical threads compete for the same cores. With the
+option on, the default follows the physical cores. A second series: 1 thread
+0.96 s, 4 threads 0.83 s, 8 threads (the physical cores of that CPU) 0.67 s,
+16 threads 3.56 s; the best is on the physical cores.
+
+Automatic values come from the user's PC: physical cores read from the
+operating system (`psutil` if installed, otherwise the Windows API,
+`/proc/cpuinfo` on Linux, `sysctl` on macOS), total and available RAM.
+
+* **Threads**: the physical cores.
+* **Processes**: the physical cores minus one, left to the main process and
+  the GUI (2 on a dual-core machine).
+* **RAM cap**: at each run the concurrent processes are limited to what 60 %
+  of the available RAM can hold, estimating 150 MB plus 40 times the
+  serialised model for each. If the RAM fits a single process the run stays
+  sequential; the log says when the cap kicked in.
+
+On an i7-10700 (8 physical cores, 16 logical) the automatic values are 7
+processes and 8 threads. `feagent doctor` shows what was detected, and so
+does the Calcolo section of the GUI options.
+
+**In the desktop GUI**: Tools > Options > Calcolo. The choice is kept in the
+browser and also applies to analyses started by an AI on the same session; the
+process pool starts as soon as the option is ticked, so the first analysis
+does not pay for it. On the online server parallel computation stays off.
+
+**From the command line**: `--parallel`, `--workers N` (implies `--parallel`),
+`--multithread`, `--threads N` (implies `--multithread`), before or after the
+command:
+
+```bash
+feagent solve model.xlsx --combos --workers 4 --threads 2
+```
+
+**From the library**:
+
+```python
+import feagent.parallel as par
+
+par.configure(parallel=True, workers=4)      # whole program
+results = m.solve_many(combos)
+
+with par.use(parallel=True, multithread=True, threads=8):   # inside the block only
+    results = m.solve_many(combos)
+
+m.solve_many(combos, parallel=True)          # this call only
+```
+
+Or through the environment variables `FEAGENT_PARALLEL=1`, `FEAGENT_WORKERS`,
+`FEAGENT_MULTITHREAD`, `FEAGENT_THREADS`. On Windows and macOS processes start
+with `spawn`: the script must guard its main code with
+`if __name__ == "__main__":`. If the model cannot be serialised (for example it
+holds a lambda) feagent warns and carries on sequentially.

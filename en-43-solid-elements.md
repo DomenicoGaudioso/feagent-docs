@@ -181,4 +181,13 @@ Tests: `tests/test_solid.py`.
 * Exporters to other programs, the Excel workbook, the HDF5 file and
   `feagent gui` do not handle solids yet: exports and saves warn how many
   elements are left out.
-* Linear elastic isotropic material.
+* Static, modal, P-Delta and buckling analyses with a linear elastic isotropic
+  material. The nonlinear analysis of hexahedra-only models lives in
+  `feagent.solid_nl` (`SistemaNL`, Newton with load or displacement control),
+  with the Drucker-Prager, masonry Rankine-and-cone
+  (`feagent.solid_nl_muratura`) and tension/compression damage IMPL-EX
+  (`feagent.solid_nl_danno.DannoTraCo`) laws, embedded bars
+  (`feagent.solid_nl_barre`), rigid plates on a pin and time-history
+  (`feagent.solid_nl_dyn`). It is used today through the MasoBridge and GerberNL
+  plugins: see [52 - MasoBridge plugin](en-plugin-masobridge.html) and
+  [46 - Plugins](en-46-plugins.html).

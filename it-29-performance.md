@@ -152,3 +152,86 @@ di travi allineate è disattivata.
 
 Tabelle complete nel README; misure con `benchmark/benchmark_elements.py`,
 grafico con `benchmark/gen_elements_chart.py`.
+
+## Calcolo parallelo e multithread (ottobre 2026)
+
+Due ottimizzazioni, **spente di default**: le attiva l'utente.
+
+| Opzione | Cosa fa | Dove conviene |
+|---|---|---|
+| Calcolo parallelo | distribuisce su più processi le analisi indipendenti: casi di carico, combinazioni (a blocchi, una fattorizzazione per blocco), casi mobili, analisi dinamiche | modelli grandi, molte combinazioni, time-history e non lineari |
+| Algebra lineare multithread | fissa i thread di BLAS/LAPACK (e di MKL Pardiso, se installato) | solutore denso e analisi modali sui modelli medi |
+
+Si usano processi e non thread perché il tempo di feagent sta nei cicli Python
+sugli elementi (carichi equivalenti, estrazione delle azioni interne), che con
+il GIL non girano in parallelo. Ogni processo riceve una copia del modello e
+restituisce risultati **identici** a quelli sequenziali (scarto nullo su
+spostamenti, reazioni e forze d'estremità nei test).
+
+Misure su una CPU a 16 thread logici, graticcio di 9 648 GdL:
+
+| Combinazioni | Sequenziale | 4 processi | 8 processi |
+|---|---|---|---|
+| 40 | 3,0 s | 1,6 s (×1,9) | 1,5 s (×2,1) |
+| 160 | 10,4 s | 5,1 s (×2,1) | 4,0 s (×2,6) |
+
+Il guadagno sulle combinazioni statiche è limitato dal ritorno dei risultati al
+processo principale; è molto più alto sulle analisi lunghe e indipendenti
+(time-history dei sette accelerogrammi, non lineari per combinazione). La
+vettorizzazione del post-processing, prevista nella issue #7, ridurrà il tempo
+per combinazione anche in sequenza.
+
+Sul multithread, una misura che sorprende: con il default delle librerie
+(16 thread) il solutore denso a 2 900 GdL impiega 2,8 s, con 4 thread 0,6 s e
+con un solo thread 0,9 s, perché i thread logici si contendono gli stessi core.
+In una seconda serie di misure: 1 thread 0,96 s, 4 thread 0,83 s, 8 thread (i core
+fisici di quella CPU) 0,67 s, 16 thread 3,56 s. Il massimo sta sui core fisici.
+
+I valori automatici si ricavano dal PC dell'utente: core fisici letti dal
+sistema operativo (`psutil` se installato, altrimenti le API di Windows,
+`/proc/cpuinfo` su Linux, `sysctl` su macOS), RAM totale e disponibile.
+
+* **Thread**: i core fisici.
+* **Processi**: i core fisici meno uno, che resta al processo principale e
+  all'interfaccia (2 se i core sono due).
+* **Tetto della RAM**: a ogni calcolo i processi contemporanei si limitano a
+  quanti ne regge il 60 % della RAM disponibile, stimando per ciascuno 150 MB
+  più 40 volte il modello serializzato. Se la RAM basta per un solo processo
+  il calcolo resta in sequenza; il registro dice quando il tetto è intervenuto.
+
+Su un i7-10700 (8 core fisici, 16 logici) l'automatico dà 7 processi e
+8 thread. `feagent doctor` mostra cosa è stato rilevato, e così la sezione
+Calcolo delle opzioni della GUI.
+
+**Nell'interfaccia**: Strumenti > Opzioni > Calcolo. Le scelte restano nel
+browser e valgono anche per le analisi lanciate dall'IA sulla stessa sessione;
+il gruppo di processi parte appena si attiva la spunta, così la prima analisi
+non ne paga l'avvio. Sul server online il parallelo resta spento.
+
+**Da riga di comando**: `--parallel`, `--workers N` (implica `--parallel`),
+`--multithread`, `--threads N` (implica `--multithread`), prima o dopo il
+comando:
+
+```bash
+feagent solve modello.xlsx --combos --workers 4 --threads 2
+```
+
+**Dalla libreria**:
+
+```python
+import feagent.parallel as par
+
+par.configure(parallel=True, workers=4)      # per tutto il programma
+results = m.solve_many(combos)
+
+with par.use(parallel=True, multithread=True, threads=8):   # solo nel blocco
+    results = m.solve_many(combos)
+
+m.solve_many(combos, parallel=True)          # solo per questa chiamata
+```
+
+Oppure con le variabili d'ambiente `FEAGENT_PARALLEL=1`, `FEAGENT_WORKERS`,
+`FEAGENT_MULTITHREAD`, `FEAGENT_THREADS`. Su Windows e macOS i processi partono
+con `spawn`: lo script deve proteggere il codice principale con
+`if __name__ == "__main__":`. Se il modello non si può serializzare (per
+esempio contiene una lambda) feagent avvisa e prosegue in sequenza.

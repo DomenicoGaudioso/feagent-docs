@@ -202,4 +202,12 @@ I test sono in `tests/test_solid.py`.
 * Gli esportatori verso altri programmi, il workbook Excel, il file HDF5 e
   l'interfaccia `feagent gui` non trattano ancora i solidi: le esportazioni e
   i salvataggi avvisano quanti elementi restano fuori.
-* Materiale elastico lineare isotropo.
+* Statica, modale, P-Delta e buckling con materiale elastico lineare isotropo.
+  L'analisi non lineare dei soli esaedri sta in `feagent.solid_nl` (`SistemaNL`,
+  Newton a carico o a spostamento controllato) con i legami Drucker-Prager,
+  muratura Rankine e cono (`feagent.solid_nl_muratura`) e danno
+  trazione/compressione IMPL-EX (`feagent.solid_nl_danno.DannoTraCo`), le barre
+  annegate (`feagent.solid_nl_barre`), le piastre rigide su perno e la
+  time-history (`feagent.solid_nl_dyn`). Oggi si usa attraverso i plugin
+  MasoBridge e GerberNL: vedi [52 - Plugin MasoBridge](it-plugin-masobridge.html)
+  e [46 - Plugin](it-46-plugin.html).

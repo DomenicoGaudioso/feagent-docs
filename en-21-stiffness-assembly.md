@@ -466,6 +466,83 @@ transverse directions and the rotations stay free. **Unilateral** springs
 $k_{\text{eff}}$ equal to $k$ when active and $0$ when off; the state is decided
 iteratively by the solver (active-set scheme).
 
+### Spring-damper with 6 components (`kx` ... `krz`, `cx` ... `crz`)
+
+On top of the axial part a spring has a **general part**: six stiffnesses and
+six linear viscous dampers along the axes of a spring frame with matrix
+$\mathbf{R}$ (rows = spring axes in global coordinates). With
+$\mathbf{d} = \mathbf{R}(\mathbf{u}_j - \mathbf{u}_i)$ and
+$\boldsymbol{\varphi} = \mathbf{R}(\boldsymbol{\theta}_j - \boldsymbol{\theta}_i)$
+the relative displacements and rotations in the spring axes:
+
+$$
+\mathbf{F} = \mathrm{diag}(k_x, k_y, k_z)\,\mathbf{d},
+\qquad
+\mathbf{M} = \mathrm{diag}(k_{rx}, k_{ry}, k_{rz})\,\boldsymbol{\varphi}
+$$
+
+$$
+\mathbf{K}_t = \mathbf{R}^{\mathsf T}\mathrm{diag}(k_x, k_y, k_z)\,\mathbf{R},
+\qquad
+\mathbf{K}_r = \mathbf{R}^{\mathsf T}\mathrm{diag}(k_{rx}, k_{ry}, k_{rz})\,\mathbf{R},
+\qquad
+\mathbf{k}_{\text{spring}} =
+\begin{bmatrix} \mathbf{K} & -\mathbf{K} \\ -\mathbf{K} & \mathbf{K} \end{bmatrix}
+$$
+
+applied to translations ($\mathbf{K}_t$, added to the axial $k\,\mathbf{P}$) and
+rotations ($\mathbf{K}_r$). The damping matrix has the same form with the $c$
+values and acts only in dynamic analyses. The general part is always
+**two-way**; `behavior` (tension or compression only) concerns the axial $k$
+only.
+
+Spring axes (`axes`):
+
+* `None` or `'global'` (default): global X, Y, Z;
+* `'member'`: x along i-j, y from `ref_vector` with the beam rule (global Y,
+  global X when the spring is parallel to Y), z = x ^ y;
+* two vectors `(vx, vy)`: x = vx, y = component of vy orthogonal to x.
+
+Rotations enter the element only when needed: in global axes those with
+$k_r > 0$, in rotated axes all three as soon as one is non zero. With $k = 0$
+the two nodes may **coincide**: this is how a bearing between the pier cap
+node and the deck node, a semi-rigid joint or an elastic hinge is modelled.
+
+```python
+# bearing between pier cap (1) and deck (2), axes along the alignment tangent
+m.add_spring(10, 1, 2, kx=2.0e6, ky=1.0e9, kz=5.0e9, cx=4.0e5,
+             axes=((0.97, 0.24, 0.0), (0.0, 0.0, 1.0)))
+...
+Fx, Fy, Fz, Mx, My, Mz = res.spring_local_forces(10)   # spring axes, action on node i
+```
+
+`Result.spring_force(id)` is still the force of the axial part $k$;
+`Result.spring_moments(id)` returns the moments of the general part in global
+axes. Optional columns of the Excel sheet `Spring`: `kx` ... `krz`,
+`cx` ... `crz`, `Axes` (`global`, `member`, `vectors`), `xX` ... `yZ` for axes
+given by two vectors and `refX`, `refY`, `refZ` for `member` axes.
+
+### Nodal masses and dampers (`add_nodal_mass`, `add_nodal_damper`)
+
+`add_nodal_mass(node, m, mx, my, mz, Ix, Iy, Iz)` assigns a lumped non
+structural mass: `m` in the three directions or `mx`, `my`, `mz` per direction
+(for instance `mz=0` for a horizontal-only seismic mass) and the rotational
+inertias about the global axes. It adds to the masses of the source load
+cases and to the self mass of the elements in modal, spectrum, time-history
+and harmonic analyses; a model with nodal masses only needs no `mass_source`.
+
+`add_nodal_damper(node, ux=c, ...)` adds a linear viscous damper between the
+node and the ground on the given global DOF. Nodal dampers and spring dampers
+form the matrix $\mathbf{C}_d$ of the discrete dampers, reduced like the mass
+($\mathbf{C}^* = \mathbf{T}_c^{\mathsf T}\mathbf{C}_d\mathbf{T}_c$, exact when the
+dampers act on DOFs with mass) and added to the Rayleigh or modal damping in
+direct and nonlinear time-history, harmonic and moving-load dynamics. In modal
+superposition $\mathbf{C}_d$ is projected on the modes and its diagonal is kept;
+if the dampers couple the modes the warning `SMORZAMENTO_NON_CLASSICO` is
+issued (use the direct time-history then). Excel sheets `NodalMass` (`Node`,
+`m`, `mx`, `my`, `mz`, `Ix`, `Iy`, `Iz`) and `NodalDamper` (`Node`,
+`cx` ... `crz`).
+
 ### Elastic supports to ground (`add_elastic_support`)
 
 An elastic support to ground on a single nodal DOF is not a 2-node element but a

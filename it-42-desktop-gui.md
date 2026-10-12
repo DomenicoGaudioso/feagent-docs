@@ -158,9 +158,11 @@ norma e accelerogrammi sono definiti in secondi.
 | Vista | 3D, pianta, prospetto, laterale, adatta; numeri, assi locali, vincoli, carichi, griglia |
 | Modello | strumenti di disegno, nodi per coordinate, griglia strutturale, dividi, unisci nodi, proprietà, materiali e sezioni |
 | Carichi | casi di carico, carichi nodali, distribuiti, concentrati, termici, peso proprio, combinazioni |
-| Analisi | controllo del modello (codici E01-E63 di `feagent check`), statica per casi, combinazione libera, combinazioni, modale, buckling |
-| Risultati | deformata, N, Vy, Vz, T, My, Mz, reazioni, modi, tabelle |
-| Strumenti | collega un'IA (indirizzo, token, configurazioni pronte), opzioni |
+| Analisi | controllo del modello (codici E01-E63 di `feagent check`), statica per casi, combinazione libera, combinazioni, modale, buckling, P-Delta, non lineare con i cavi, spettro di risposta, carichi mobili, ottimizzazione topologica, analisi dinamiche |
+| Risultati | deformata, N, Vy, Vz, T, My, Mz, reazioni, modi, tensioni nelle travi e nei gusci, tensioni nella sezione, densità e storia dell'ottimizzazione, modello ridotto, tabelle |
+| Plugin | strumenti costruiti sul motore: ponti, convogli, telai, reticolari, gemello digitale, ponti in muratura, selle Gerber ([46](it-46-plugin.html)) |
+| Strumenti | collega un'IA (indirizzo, token, configurazioni pronte), opzioni: unità, vista e disegno, calcolo parallelo e multithread |
+| Aiuto | scorciatoie, documentazione, esempi, informazioni |
 
 **Esporta** scrive il modello per OpenSees (Tcl e Python), SAP2000, MIDAS,
 Robot e Straus7 (in aggiornamento, segnati 🚧 WIP nel menu: vedi
@@ -289,7 +291,9 @@ gruppo nell'albero:
 |---|---|---|
 | Guscio o piastra (Q4, triangolo) | Shell, ShellSection | strumento **P** (3 o 4 vertici in ordine), **Modello > Genera piastra a maglia**, tabella |
 | Biella | Truss | strumento Bielle (area e comportamento chiesti all'inizio), tabella |
-| Molla assiale | Spring | strumento Molle, tabella |
+| Molla-smorzatore (assiale k e sei rigidezze e smorzamenti in assi globali, dell'asta o dati) | Spring | strumento Molle, tabella |
+| Masse e smorzatori nodali | NodalMass, NodalDamper | nodi selezionati, **Modello > Masse nodali** e **Smorzatori nodali** (anche dal menu col tasto destro), tabella (albero: Dinamica); nella vista un disco per le masse e un pistone per gli smorzatori |
+| Elemento piano T3, Q4, T6 o Q8 (tensione e deformazione piana, assialsimmetria) | Plane | strumento **Q** (Disegna elementi piani: si cliccano 3 o 4 angoli nel piano X-Y; con l'ordine quadratico i nodi a meta' dei lati si creano da soli e si condividono con gli elementi vicini, cosi' nascono T6 e Q8), **Modello > Piastre** (tutti i comandi di gusci ed elementi piani: disegno, generatori di mesh, elemento dai nodi selezionati, proprieta' dei gusci, sezioni, tabelle), tabella; pressione sui lati con **Carichi > Pressione sui lati degli elementi piani** sui nodi selezionati. Un modello di soli elementi piani si apre con Y verticale |
 | Cavo (asta o catenaria) | Cable | strumento Cavi, tabella |
 | Vincolo elastico a terra | ElasticSupport | nodi selezionati, **Modello > Vincoli elastici** |
 | Collegamento rigido, equalDOF, diaframma | Constraint | due o più nodi selezionati, **Modello > Vincolo cinematico** (il primo è il master) |
@@ -618,6 +622,38 @@ sollecitazioni; le storie temporali e i cicli dei dispositivi sono quelli della
 corsa che governa lo spostamento. Modello e dati tornano com'erano alla fine di
 ogni corsa; la validazione controlla target, coefficiente e insiemi citati.
 
+## Ottimizzazione topologica, tensioni, calcolo parallelo e plugin
+
+Quattro funzioni recenti, ciascuna con una pagina di dettaglio.
+
+**Ottimizzazione topologica.** **Analisi > Ottimizzazione topologica
+(SIMP/BESO)…** svuota i gusci poco sollecitati del modello aperto, con la
+frazione di volume chiesta. La mappa delle densità colora ogni guscio con la sua
+densità (BESO: pieno o vuoto); **Risultati > Storia dell'ottimizzazione** traccia
+deformabilità e volume per iterazione e **Risultati > Apri il modello ridotto**
+apre il modello senza i gusci tolti, pronto da rianalizzare. Esempio guidato,
+scelta del metodo e messaggi in [55 - Ottimizzazione topologica](it-55-ottimizzazione-topologica.html).
+
+![Densità BESO](images/gui_topology_beso.png)
+
+**Tensioni.** Dopo una statica, **Risultati > σ max travi / σ min travi** e
+**Tensione in una fibra** disegnano le tensioni lungo le travi; con la vista
+estrusa (tasto E) la sezione vera si colora punto per punto; **Tensioni nella
+sezione…** mostra il diagramma σ(y) con i contributi delle fasi delle sezioni
+composte; i gusci hanno le mappe di σ von Mises, principali e componenti sulle
+due facce. Vedi [47 - Tensioni](it-47-tensioni.html).
+
+**Calcolo parallelo.** **Strumenti > Opzioni > Calcolo** accende i processi
+paralleli (casi, combinazioni, carichi mobili, analisi dinamiche) e il
+multithread dell'algebra lineare, con valori automatici ricavati dal PC. Le
+spunte sono spente di default: conviene accenderle sui modelli grandi o con
+molte combinazioni. Tempi e consigli in [29 - Prestazioni](it-29-performance.html).
+
+**Plugin.** Il menu **Plugin** apre gli strumenti costruiti sul motore (ponti,
+convogli, telai, reticolari, gemello digitale, ponti ad arco in muratura, selle
+Gerber): si sceglie l'azione, si compila il modulo e il modello prodotto si apre
+nella finestra. Vedi [46 - Plugin](it-46-plugin.html).
+
 ## Pilotare l'interfaccia con un'IA
 
 Il modello di ogni sessione vive sul server: la finestra, gli assistenti IA
@@ -736,6 +772,16 @@ partire. Il workflow `Docker` del repository la costruisce e la collauda a
 ogni modifica con `deploy/smoke_test.py`: pagina e script, chiave sbagliata
 rifiutata, sessioni isolate, analisi statica e dinamica, export Excel e Word,
 nessun accesso al file system del server.
+
+## Registrazione dell'uso
+
+L'eseguibile (build protetta delle release e build libera) invia a civilbox.xyz un evento all'avvio e
+uno per ogni analisi, comando di plugin o relazione: programma, versione, build, sistema operativo,
+tipo di evento, impronta del PC (sha256 dell'identificativo di macchina, mai in chiaro) e indirizzo IP;
+se sul PC c'e' un account civilBox l'evento si collega all'account. Parte anche senza accesso, per
+riconoscere le copie usate fuori licenza. Nessun dato del modello lascia il PC. Da sorgente e dal
+pacchetto installato con pip non parte nulla. L'invio non blocca mai il programma: senza rete gli eventi
+si perdono.
 
 ## Scorciatoie
 

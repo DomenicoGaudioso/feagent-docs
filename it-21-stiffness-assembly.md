@@ -466,6 +466,83 @@ direzioni trasversali e le rotazioni restano libere. Le molle **unilatere**
 $k_{\text{eff}}$ pari a $k$ se attiva, $0$ se spenta; lo stato è deciso
 iterativamente dal solutore (schema active-set).
 
+### Molla-smorzatore a 6 componenti (`kx` ... `krz`, `cx` ... `crz`)
+
+Alla parte assiale si somma una **parte generale**: sei rigidezze e sei
+smorzatori viscosi lineari lungo gli assi di un sistema di riferimento della
+molla, di matrice $\mathbf{R}$ (righe = assi della molla in coordinate globali).
+Detti $\mathbf{d} = \mathbf{R}(\mathbf{u}_j - \mathbf{u}_i)$ e
+$\boldsymbol{\varphi} = \mathbf{R}(\boldsymbol{\theta}_j - \boldsymbol{\theta}_i)$
+gli spostamenti e le rotazioni relative negli assi della molla:
+
+$$
+\mathbf{F} = \mathrm{diag}(k_x, k_y, k_z)\,\mathbf{d},
+\qquad
+\mathbf{M} = \mathrm{diag}(k_{rx}, k_{ry}, k_{rz})\,\boldsymbol{\varphi}
+$$
+
+$$
+\mathbf{K}_t = \mathbf{R}^{\mathsf T}\mathrm{diag}(k_x, k_y, k_z)\,\mathbf{R},
+\qquad
+\mathbf{K}_r = \mathbf{R}^{\mathsf T}\mathrm{diag}(k_{rx}, k_{ry}, k_{rz})\,\mathbf{R},
+\qquad
+\mathbf{k}_{\text{molla}} =
+\begin{bmatrix} \mathbf{K} & -\mathbf{K} \\ -\mathbf{K} & \mathbf{K} \end{bmatrix}
+$$
+
+applicata alle traslazioni ($\mathbf{K}_t$, sommata a $k\,\mathbf{P}$ della parte
+assiale) e alle rotazioni ($\mathbf{K}_r$). La matrice di smorzamento ha la stessa
+forma con le $c$ ed entra solo nelle analisi dinamiche. La parte generale e'
+sempre **bilaterale**; l'unilateralita' (`behavior`) riguarda la sola $k$ assiale.
+
+Gli assi della molla (`axes`):
+
+* `None` o `'global'` (default): assi globali X, Y, Z;
+* `'member'`: x lungo i-j, y dal `ref_vector` con la regola delle travi
+  (Y globale, X globale se la molla e' parallela a Y), z = x ^ y;
+* due vettori `(vx, vy)`: x = vx, y = componente di vy ortogonale a x.
+
+Le rotazioni entrano nella matrice solo se servono: in assi globali quelle con
+$k_r > 0$, in assi ruotati tutte e tre appena una e' non nulla. Con $k = 0$ i
+due nodi possono **coincidere**: e' il modo di modellare un appoggio fra il nodo
+del pulvino e quello dell'impalcato, un giunto semirigido o una cerniera
+elastica.
+
+```python
+# appoggio fra pulvino (1) e impalcato (2), assi lungo la tangente al tracciato
+m.add_spring(10, 1, 2, kx=2.0e6, ky=1.0e9, kz=5.0e9, cx=4.0e5,
+             axes=((0.97, 0.24, 0.0), (0.0, 0.0, 1.0)))
+...
+Fx, Fy, Fz, Mx, My, Mz = res.spring_local_forces(10)   # assi della molla, azione sul nodo i
+```
+
+`Result.spring_force(id)` resta lo sforzo della parte assiale $k$;
+`Result.spring_moments(id)` restituisce i momenti della parte generale in assi
+globali. Nel foglio Excel `Spring` le colonne facoltative sono `kx` ... `krz`,
+`cx` ... `crz`, `Axes` (`global`, `member`, `vectors`), `xX` ... `yZ` per gli
+assi dati con due vettori e `refX`, `refY`, `refZ` per gli assi `member`.
+
+### Masse e smorzatori nodali (`add_nodal_mass`, `add_nodal_damper`)
+
+`add_nodal_mass(nodo, m, mx, my, mz, Ix, Iy, Iz)` assegna una massa concentrata
+non strutturale: `m` nelle tre direzioni oppure `mx`, `my`, `mz` per direzione
+(per esempio `mz=0` per una massa sismica solo orizzontale) e le inerzie
+rotazionali attorno agli assi globali. Si somma alle masse dei load case
+sorgente e alla massa propria degli elementi in modale, spettro, time-history e
+armonica; un modello con le sole masse nodali non richiede `mass_source`.
+
+`add_nodal_damper(nodo, ux=c, ...)` aggiunge uno smorzatore viscoso lineare fra
+il nodo e il suolo sul GdL globale indicato. Smorzatori nodali e smorzamenti
+delle molle formano la matrice $\mathbf{C}_d$ degli smorzatori discreti, ridotta
+come la massa ($\mathbf{C}^* = \mathbf{T}_c^{\mathsf T}\mathbf{C}_d\mathbf{T}_c$,
+esatta quando gli smorzatori agiscono su GdL con massa) e sommata allo
+smorzamento di Rayleigh o modale nella time-history diretta e non lineare,
+nell'armonica e nella dinamica dei carichi mobili. Nella sovrapposizione modale
+$\mathbf{C}_d$ e' proiettato sui modi e se ne tiene la diagonale; se gli
+smorzatori accoppiano i modi viene emesso l'avviso `SMORZAMENTO_NON_CLASSICO`
+(usare allora la time-history diretta). Fogli Excel `NodalMass` (`Node`, `m`,
+`mx`, `my`, `mz`, `Ix`, `Iy`, `Iz`) e `NodalDamper` (`Node`, `cx` ... `crz`).
+
 ### Vincoli elastici a terra (`add_elastic_support`)
 
 Un vincolo elastico verso il suolo su un singolo GdL nodale non è un elemento
