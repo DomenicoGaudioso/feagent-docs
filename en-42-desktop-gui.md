@@ -633,6 +633,98 @@ trains, frames, trusses, digital twin, masonry arch bridges, Gerber saddles):
 pick the action, fill in the form and the model produced opens in the window.
 See [46 - Plugins](en-46-plugins.html).
 
+## Bars, Winkler foundations, large displacements, plasticity, fields and error estimation
+
+The elements and analyses of the finite element textbook chapters (isoparametric
+bars, beams on elastic foundation, large-displacement frames, plasticity, heat
+conduction and torsion, error estimation) are in the interface with the same
+sheets as the Excel file: they are written in tables, saved and read back by the
+library and the command line.
+
+**Elements.**
+
+- **L2 and L3 bars** (sheet *Bar*): **Model > Draw bars (L2, L3)…** asks for the
+  area and the type and draws like trusses, one click per end; the L3 creates its
+  midside node. In the view they are green lines with square nodes, the L3 passes
+  through its midside node. A per-node area (tapered bar) is written in the
+  table, e.g. `0.002 0.001`. Ids are shared with solids and plane elements.
+  **Loads > Load along the bars…** writes the *BarLineLoad* sheet (one value or one
+  per node). In static results **Bars: axial stress** and **Bars: normal force**
+  colour the bars with the nodal values.
+- **Q9 plane elements and integration**: plane element drawing, **Generate 2D
+  plane mesh** and **Plane element from the selected nodes** accept the Q9 (centre
+  node) and the integration rule (full, reduced, selective, volumetric) with the
+  hourglass control of the reduced Q4 (*Integration* and *Hourglass* columns of the
+  *Plane* sheet).
+- **Winkler foundation**: **Model > Winkler foundation under the beams…** (sheet
+  *Foundation*, stiffness per unit length in the local axes) and, in the Plates
+  submenu, **Winkler foundation under the selected shells…** (sheet
+  *PlateFoundation*, modulus of subgrade reaction along the normal). The soil is
+  drawn as a hatch under the element; after a static analysis **Soil reaction
+  qy / qz** draws q = k v along the beams.
+
+![Beam on Winkler foundation and L2/L3 bars: soil reaction](images/gui_winkler_bars.png)
+
+**Large displacements (plane frame).** **Analysis > Large displacements (plane
+frame)…** solves beams, trusses and L2 bars in the X-Z plane (Z up) or X-Y with
+the corotational formulation, under load, displacement or arc-length control
+(snap-through and snap-back). The deformed shape is at true scale; the **λ**
+slider of the results bar walks through the steps (▶ animates them) and
+**Results > Load-displacement curve…** plots λ against the displacement of any
+node, or a support reaction.
+
+![Cantilever closed by a tip moment: deformed shape at step 15](images/gui_corotational.png)
+
+**Material and contact nonlinearity.** The laws are written in two sheets
+(**Analysis > Material and contact nonlinearity**): *Plasticity* (elements, σy,
+E_t or H_iso and H_kin, Kinematic; E and ν come from the element material) for
+bars, trusses and plane elements, *SpringLaw* for springs with a gap (gap, k,
+Side) or a force-elongation law (Points `d:N; d:N`). **Run…** performs the
+incremental static analysis (equal steps or factors such as `0.5 1 0.5 0` for
+cycles) or the **explicit dynamics** with central differences (dt, duration,
+step force or a function of the Accelerogram sheet). The slider shows the
+deformed shape, plane stresses and reactions at every converged step;
+**Equivalent plastic strain** colours the yielded elements.
+
+![Elastoplastic plate: equivalent plastic strain](images/gui_inelastic.png)
+
+**Field problems.** Heat, torsion, potential, stream function, seepage:
+**Analysis > Field problem** uses the nodes and the plane, solid and bar elements
+of the model with the sheets *FieldSettings* (problem, G, theta, symmetry,
+temperature_offset), *FieldMaterial* (k, ky, kz, angle, rho, c, perimeter per
+material name), *FieldValue*, *FieldFlux*, *FieldConvection*, *FieldLateral*,
+*FieldSource* (per element or at a node) and *FieldRadiation*. Steady or
+transient (dt, duration, θ, initial value, lumped capacity); for torsion the
+**Free boundary at 0** box. Results: contour of the field with the legend in the
+view units (absolute temperatures go from °C to K with the scale zero), flux
+arrows, tables of the values and of the flows at the prescribed nodes, for
+torsion J, torque and maximum τ; for transients the time slider and **History of
+a node…**. **Results > Apply the temperatures to the model…** writes the
+*SolidThermal* sheet (dT = T − reference T on the elements with the same ids) for
+the thermal stress analysis. The quantities of the field sheets follow the chosen
+problem (for heat: W/(m·K), W/m², W/m³...).
+
+![Heated plate: temperature and heat flux](images/gui_field.png)
+
+![Torsion of the square section: Prandtl function and stresses](images/gui_torsion.png)
+
+**Error estimation.** **Analysis > Error estimate (Zienkiewicz-Zhu)…** runs the
+static analysis of the combination and estimates the energy-norm error on plane
+and solid elements: global η in the log and in the tree, **Error per element**,
+**Elements to refine** (ratio > 1, red outline) and the **smoothed** stress maps
+(SPR or averaging) next to the nodal averages.
+
+![σxx stresses recovered with SPR](images/gui_zz.png)
+
+**Central difference time history.** In the dynamic analysis window the direct
+linear time history has the **Direct integration** choice: Newmark or central
+differences (*Method* column = `central_difference`); with a step above the
+critical one the analysis stops with an error.
+
+All these analyses are also available through the live API (`live/run` with
+`type` `corotational`, `inelastic`, `field`, `zz`) and through the `gui_run` tool
+of the AI connector (`options` parameter).
+
 ## Driving the interface with an AI
 
 Each session's model lives on the server: the window, AI assistants and other

@@ -654,6 +654,99 @@ convogli, telai, reticolari, gemello digitale, ponti ad arco in muratura, selle
 Gerber): si sceglie l'azione, si compila il modulo e il modello prodotto si apre
 nella finestra. Vedi [46 - Plugin](it-46-plugin.html).
 
+## Barre, suolo alla Winkler, grandi spostamenti, plasticità, campi e stima dell'errore
+
+Gli elementi e le analisi dei capitoli dei testi di elementi finiti (barre
+isoparametriche, travi su suolo elastico, telai a grandi spostamenti, plasticità,
+conduzione del calore e torsione, stima dell'errore) sono nell'interfaccia con
+gli stessi fogli del file Excel: si scrivono in tabella, si salvano e si rileggono
+dalla libreria e dalla riga di comando.
+
+**Elementi.**
+
+- **Barre L2 e L3** (foglio *Bar*): **Modello > Disegna barre (L2, L3)…** chiede
+  area e tipo e si disegna come le bielle, con un clic per estremo; la L3 crea da
+  sola il nodo medio. Nella vista sono linee verdi con i nodi a quadratino, la L3
+  passa per il nodo medio. L'area per nodo (asta rastremata) si scrive nella
+  tabella, es. `0.002 0.001`. Gli id sono condivisi con solidi ed elementi piani.
+  **Carichi > Carico lungo le barre…** scrive il foglio *BarLineLoad* (un valore o
+  uno per nodo). Nei risultati statici **Barre: tensione assiale** e **Barre: sforzo
+  normale** colorano le barre con i valori ai nodi.
+- **Elementi piani Q9 e integrazione**: il disegno degli elementi piani, **Genera
+  mesh piana 2D** e **Elemento piano dai nodi selezionati** accettano il Q9 (nodo
+  centrale) e la scelta dell'integrazione (completa, ridotta, selettiva,
+  volumetrica) con il controllo hourglass del Q4 ridotto (colonne *Integration* e
+  *Hourglass* del foglio *Plane*).
+- **Suolo alla Winkler**: **Modello > Suolo alla Winkler sotto le travi…** (foglio
+  *Foundation*, rigidezze per unità di lunghezza negli assi locali) e, nel
+  sottomenu Piastre, **Suolo alla Winkler sotto i gusci selezionati…** (foglio
+  *PlateFoundation*, modulo di reazione lungo la normale). Il suolo si vede come un
+  tratteggio sotto l'elemento; dopo una statica **Reazione del suolo qy / qz**
+  disegna q = k v lungo le travi.
+
+![Trave su suolo alla Winkler e barre L2/L3: reazione del suolo](images/gui_winkler_bars.png)
+
+**Grandi spostamenti (telaio piano).** **Analisi > Grandi spostamenti (telaio
+piano)…** risolve travi, bielle e barre L2 nel piano X-Z (Z verticale) o X-Y con
+la formulazione corotazionale, con controllo di carico, di spostamento di un
+grado di libertà o in lunghezza d'arco (snap-through e snap-back). La deformata è
+in scala reale; il cursore **λ** della barra dei risultati scorre i passi (▶ li
+anima) e **Risultati > Curva carico-spostamento…** traccia λ in funzione dello
+spostamento di un nodo qualunque, o la reazione di un vincolo.
+
+![Mensola chiusa dal momento di punta: deformata al passo 15](images/gui_corotational.png)
+
+**Non lineare di materiale e contatto.** Le leggi si scrivono in due fogli
+(**Analisi > Non lineare di materiale e contatto**): *Plasticity* (elementi,
+σy, E_t oppure H_iso e H_kin, Kinematic; E e ν vengono dal materiale
+dell'elemento) per barre, bielle ed elementi piani, *SpringLaw* per le molle con
+gioco (gap, k, Side) o con legge forza-allungamento (Points `d:N; d:N`).
+**Esegui…** fa la statica incrementale (passi uguali o fattori come
+`0.5 1 0.5 0` per i cicli) oppure la **dinamica esplicita** alle differenze
+centrali (dt, durata, forza a gradino o funzione del foglio Accelerogram). Il
+cursore mostra deformata, tensioni dei piani e reazioni a ogni passo convergente;
+**Deformazione plastica equivalente** colora gli elementi plasticizzati.
+
+![Lastra elastoplastica: deformazione plastica equivalente](images/gui_inelastic.png)
+
+**Problemi di campo.** Calore, torsione, potenziale, funzione di corrente,
+filtrazione: **Analisi > Problema di campo** usa i nodi e gli elementi piani,
+solidi e barre del modello con i fogli *FieldSettings* (problem, G, theta,
+symmetry, temperature_offset), *FieldMaterial* (k, ky, kz, angle, rho, c,
+perimeter per nome di materiale), *FieldValue*, *FieldFlux*, *FieldConvection*,
+*FieldLateral*, *FieldSource* (per elementi o nel nodo) e *FieldRadiation*.
+Stazionario o transitorio (dt, durata, θ, valore iniziale, capacità
+concentrata); per la torsione la spunta **Contorno libero a valore 0**. I
+risultati: mappa del campo con la legenda nelle unità di vista (le temperature
+assolute passano da °C a K con lo zero della scala), frecce del flusso, tabelle
+dei valori e dei flussi ai nodi imposti, per la torsione J, momento torcente e
+τ max; nel transitorio il cursore del tempo e **Storia di un nodo…**. **Risultati >
+Applica le temperature al modello…** scrive il foglio *SolidThermal* (dT = T − T
+di riferimento sugli elementi con gli stessi id) per l'analisi delle tensioni
+termiche. Le grandezze dei fogli di campo seguono il problema scelto (per il
+calore: W/(m·K), W/m², W/m³...).
+
+![Lastra riscaldata: temperatura e flusso di calore](images/gui_field.png)
+
+![Torsione della sezione quadrata: funzione di Prandtl e tensioni](images/gui_torsion.png)
+
+**Stima dell'errore.** **Analisi > Stima dell'errore (Zienkiewicz-Zhu)…** fa la
+statica della combinazione e stima l'errore nella norma dell'energia sugli
+elementi piani e solidi: η globale nel registro e nell'albero, **Errore per
+elemento**, **Elementi da raffinare** (rapporto > 1 con contorno rosso) e le mappe
+delle tensioni **lisciate** (SPR o media) accanto a quelle mediate ai nodi.
+
+![Tensioni σxx recuperate con il metodo SPR](images/gui_zz.png)
+
+**Time history alle differenze centrali.** Nella finestra delle analisi dinamiche
+la time history lineare diretta ha la scelta **Integrazione diretta**: Newmark o
+differenze centrali (colonna *Method* = `central_difference`); con un passo oltre
+quello critico l'analisi si ferma con un errore.
+
+Tutte queste analisi passano anche dall'API live (`live/run` con `type`
+`corotational`, `inelastic`, `field`, `zz`) e dallo strumento `gui_run` del
+connettore IA (parametro `options`).
+
 ## Pilotare l'interfaccia con un'IA
 
 Il modello di ogni sessione vive sul server: la finestra, gli assistenti IA
